@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<meta name="theme-color" content="#1F1410"/>
+<meta name="description" content="Welcome guide for Sen's Homestay guests — address, check-in times, Wi-Fi, and on-site services in Cao Bang, Vietnam."/>
+<title>Welcome · Sen's Homestay · Cao Bang</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..700,0..100,0..1;1,9..144,300..700,0..100,0..1&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+/* ───────────────────────────────────────────────────────
+   TOKENS
+─────────────────────────────────────────────────────── */
+:root{
+  --bg:        #FDFBF7;
+  --bg-soft:   #F7F2E9;
+  --paper:     #FFFCF6;
+  --espresso:  #1F1410;
+  --ink:       #2A1D14;
+  --ink-2:     #4A3A2D;
+  --mute:      #7A6A5B;
+  --mute-2:    #9D8E7D;
+  --hairline:  rgba(31,20,16,0.08);
+  --hairline-2:rgba(31,20,16,0.13);
+
+  --sage:      #6E8253;
+  --sage-2:    #8FA372;
+  --sage-soft: #DCE5CB;
+  --sage-paper:#EEF1E2;
+  --terra:     #B85030;
+  --terra-d:   #9A3E22;
+  --gold:      #C9A86B;
+
+  --shell:     rgba(31,20,16,0.045);
+  --shell-2:   rgba(31,20,16,0.07);
+  --core:      #FFFFFF;
+  --core-warm: #FBF6EC;
+
+  --ease:   cubic-bezier(0.32, 0.72, 0, 1);
+  --ease-2: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur:    700ms;
+}
+
+/* ───────────────────────────────────────────────────────
+   RESET & BASE
+─────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+body {
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  font-feature-settings: 'ss01', 'ss02', 'cv11';
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+  line-height: 1.5;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+a { text-decoration: none; color: inherit; }
+button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+img { display: block; max-width: 100%; }
+.num { font-family: 'JetBrains Mono', monospace; font-feature-settings: 'tnum'; letter-spacing: -0.02em; }
+
+:focus { outline: none; }
+a:focus-visible, button:focus-visible {
+  outline: 2px solid var(--terra);
+  outline-offset: 3px;
+  border-radius: 8px;
+}
+
+@media (prefers-reduced-motion: reduce){
+  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+  .reveal { opacity:1 !important; transform:none !important; filter:none !important; }
+}
+
+.grain{
+  position: fixed; inset: 0; z-index: 80; pointer-events: none;
+  opacity: 0.035; mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.85 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  background-size: 240px 240px;
+}
+
+.mesh{
+  position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background:
+    radial-gradient(60vw 50vh at 12% 8%,  rgba(220,229,203,0.55) 0%, transparent 60%),
+    radial-gradient(50vw 45vh at 92% 18%, rgba(201,168,107,0.18) 0%, transparent 60%),
+    radial-gradient(70vw 55vh at 88% 96%, rgba(184,80,48,0.10)   0%, transparent 65%),
+    radial-gradient(60vw 50vh at 5% 90%,  rgba(110,130,83,0.10)  0%, transparent 60%);
+}
+
+/* ───────────────────────────────────────────────────────
+   TYPOGRAPHY PRIMITIVES
+─────────────────────────────────────────────────────── */
+.display{
+  font-family: 'Fraunces', 'Cormorant Garamond', serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  letter-spacing: -0.025em;
+  line-height: 0.96;
+  color: var(--espresso);
+  text-wrap: balance;
+  font-variation-settings: 'opsz' 144, 'SOFT' 30, 'WONK' 0;
+}
+.display em{
+  font-style: italic;
+  font-variation-settings: 'opsz' 144, 'SOFT' 50, 'WONK' 1;
+  color: var(--terra);
+}
+.eyebrow{
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 10px; font-weight: 500;
+  letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--mute);
+  padding: 6px 12px;
+  border: 1px solid var(--hairline-2);
+  border-radius: 999px;
+  background: rgba(255,252,246,0.6);
+  backdrop-filter: blur(8px);
+}
+.eyebrow::before{
+  content: ''; width: 6px; height: 6px; border-radius: 50%;
+  background: var(--sage); box-shadow: 0 0 0 3px var(--sage-soft);
+}
+.lede{
+  font-family: 'Fraunces', serif;
+  font-variation-settings: 'opsz' 36, 'SOFT' 50;
+  font-size: 1.15rem; line-height: 1.45;
+  color: var(--ink-2);
+  font-style: italic;
+  font-weight: 300;
+  text-wrap: pretty;
+}
+
+/* ───────────────────────────────────────────────────────
+   FLUID ISLAND NAV
+─────────────────────────────────────────────────────── */
+.nav-wrap{
+  position: fixed; top: 0; left: 0; right: 0; z-index: 90;
+  display: flex; justify-content: center;
+  padding: 18px 16px 0;
+  pointer-events: none;
+}
+.nav{
+  pointer-events: auto;
+  display: flex; align-items: center; gap: 6px;
+  padding: 6px 6px 6px 18px;
+  background: rgba(253,251,247,0.7);
+  backdrop-filter: blur(20px) saturate(1.4);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  border: 1px solid var(--hairline-2);
+  border-radius: 999px;
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.6) inset,
+    0 12px 40px -12px rgba(31,20,16,0.18);
+  max-width: calc(100vw - 32px);
+}
+.nav-brand{
+  font-family: 'Fraunces', serif;
+  font-variation-settings: 'opsz' 36, 'SOFT' 30;
+  font-size: 0.98rem; font-weight: 500;
+  color: var(--espresso); white-space: nowrap;
+  padding-right: 6px;
+  letter-spacing: -0.01em;
+}
+.nav-brand .dot{ color: var(--terra); margin: 0 4px; font-style: italic; }
+.nav-links-desktop{
+  display: none;
+  gap: 4px; align-items: center;
+  border-left: 1px solid var(--hairline-2);
+  padding-left: 6px;
+}
+.nav-links-desktop a{
+  padding: 8px 12px; border-radius: 999px;
+  font-size: 0.78rem; font-weight: 500;
+  color: var(--ink-2);
+  transition: background var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+.nav-links-desktop a:hover{ background: var(--shell); color: var(--espresso); }
+
+.nav-cta{
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 7px 7px 7px 14px;
+  background: var(--espresso); color: var(--paper);
+  border-radius: 999px;
+  font-size: 0.78rem; font-weight: 500;
+  white-space: nowrap;
+  transition: transform var(--dur) var(--ease), background var(--dur) var(--ease);
+  position: relative; overflow: hidden;
+}
+.nav-cta .cta-icon{
+  width: 26px; height: 26px;
+  border-radius: 999px;
+  background: rgba(255,252,246,0.14);
+  display: inline-flex; align-items: center; justify-content: center;
+  transition: transform var(--dur) var(--ease), background var(--dur) var(--ease);
+}
+.nav-cta:hover{ background: #2D1F18; }
+.nav-cta:hover .cta-icon{ transform: translate(2px,-1px) scale(1.05); background: rgba(255,252,246,0.22); }
+.nav-cta:active{ transform: scale(0.97); }
+.nav-cta svg{ width: 11px; height: 11px; stroke: var(--paper); fill: none; stroke-width: 2; }
+
+.nav-toggle{
+  width: 40px; height: 40px;
+  border-radius: 999px;
+  background: transparent;
+  display: inline-flex; align-items: center; justify-content: center;
+  position: relative;
+  transition: background var(--dur) var(--ease);
+}
+.nav-toggle:hover{ background: var(--shell); }
+.nav-toggle .bar{
+  position: absolute; left: 50%; top: 50%;
+  width: 18px; height: 1.5px; background: var(--espresso);
+  border-radius: 2px;
+  transform-origin: center;
+  transition: transform var(--dur) var(--ease), opacity 240ms var(--ease);
+}
+.nav-toggle .bar:nth-child(1){ transform: translate(-50%, -6px); }
+.nav-toggle .bar:nth-child(2){ transform: translate(-50%, 0); }
+.nav-toggle .bar:nth-child(3){ transform: translate(-50%, 6px); }
+.nav-toggle[aria-expanded="true"] .bar:nth-child(1){ transform: translate(-50%, 0) rotate(45deg); }
+.nav-toggle[aria-expanded="true"] .bar:nth-child(2){ opacity: 0; transform: translate(-50%, 0) scaleX(0); }
+.nav-toggle[aria-expanded="true"] .bar:nth-child(3){ transform: translate(-50%, 0) rotate(-45deg); }
+
+.nav-modal{
+  position: fixed; inset: 0; z-index: 89;
+  background: rgba(253,251,247,0.82);
+  backdrop-filter: blur(40px) saturate(1.3);
+  -webkit-backdrop-filter: blur(40px) saturate(1.3);
+  opacity: 0; pointer-events: none;
+  transition: opacity 600ms var(--ease);
+  display: flex; align-items: center; justify-content: center;
+  padding: 100px 24px 60px;
+}
+.nav-modal.open{ opacity: 1; pointer-events: auto; }
+.nav-modal-inner{
+  width: 100%; max-width: 720px;
+  display: flex; flex-direction: column; gap: 0;
+}
+.nav-modal a{
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--hairline);
+  font-family: 'Fraunces', serif;
+  font-variation-settings: 'opsz' 96, 'SOFT' 30;
+  font-size: clamp(1.5rem, 5vw, 2.4rem);
+  font-weight: 400; color: var(--espresso);
+  letter-spacing: -0.02em; line-height: 1;
+  opacity: 0; transform: translateY(28px); filter: blur(4px);
+  transition: opacity 700ms var(--ease), transform 700ms var(--ease), filter 700ms var(--ease), color 240ms var(--ease);
+}
+.nav-modal a:hover{ color: var(--terra); }
+.nav-modal a:hover .nav-modal-arrow{ transform: translate(4px,-4px) rotate(0deg); color: var(--terra); }
+.nav-modal a span.num-pre{
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; color: var(--mute); font-weight: 400;
+  letter-spacing: 0.06em;
+  margin-right: 14px;
+  font-style: normal;
+}
+.nav-modal a em{ font-style: italic; }
+.nav-modal-arrow{
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 38px; height: 38px; border-radius: 999px;
+  background: var(--shell);
+  color: var(--ink-2);
+  transition: transform 500ms var(--ease), background 240ms var(--ease), color 240ms var(--ease);
+}
+.nav-modal-arrow svg{ width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.nav-modal.open a{ opacity: 1; transform: none; filter: none; }
+.nav-modal.open a:nth-child(1){ transition-delay: 120ms; }
+.nav-modal.open a:nth-child(2){ transition-delay: 180ms; }
+.nav-modal.open a:nth-child(3){ transition-delay: 240ms; }
+.nav-modal.open a:nth-child(4){ transition-delay: 300ms; }
+.nav-modal.open a:nth-child(5){ transition-delay: 360ms; }
+.nav-modal.open a:nth-child(6){ transition-delay: 420ms; }
+.nav-modal.open a:nth-child(7){ transition-delay: 480ms; }
+
+.nav-modal-foot{
+  margin-top: 32px; padding-top: 22px;
+  border-top: 1px solid var(--hairline);
+  display: flex; flex-wrap: wrap; gap: 18px; align-items: center;
+  font-size: 0.78rem; color: var(--mute);
+  opacity: 0; transform: translateY(20px);
+  transition: opacity 700ms var(--ease) 560ms, transform 700ms var(--ease) 560ms;
+}
+.nav-modal.open .nav-modal-foot{ opacity: 1; transform: none; }
+.nav-modal-foot a{
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.82rem; padding: 0; border: none; opacity: 1; transform: none; filter: none;
+  color: var(--ink-2);
+  display: inline; line-height: inherit;
+  font-weight: 500;
+}
+.nav-modal-foot a:hover{ color: var(--terra); }
+
+/* ───────────────────────────────────────────────────────
+   LAYOUT WRAPPERS
+─────────────────────────────────────────────────────── */
+.wrap{ max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+section{ position: relative; }
+
+.addr-actions{ margin-top: 16px; }
+
+/* Button-in-Button CTA pattern */
+.cta-pill{
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 10px 10px 20px;
+  background: var(--espresso); color: var(--paper);
+  border-radius: 999px;
+  font-size: 0.84rem; font-weight: 500;
+  transition: transform var(--dur) var(--ease), background var(--dur) var(--ease);
+  position: relative;
+}
+.cta-pill .cta-icon{
+  width: 30px; height: 30px;
+  border-radius: 999px;
+  background: rgba(255,252,246,0.14);
+  display: inline-flex; align-items: center; justify-content: center;
+  transition: transform var(--dur) var(--ease), background var(--dur) var(--ease);
+}
+.cta-pill svg{ width: 12px; height: 12px; stroke: var(--paper); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.cta-pill:hover{ background: #2D1F18; }
+.cta-pill:hover .cta-icon{ transform: translate(2px,-1px) scale(1.06); background: rgba(255,252,246,0.22); }
+.cta-pill:active{ transform: scale(0.97); }
+
+.cta-pill.ghost{ background: var(--paper); color: var(--ink); border: 1px solid var(--hairline-2); }
+.cta-pill.ghost .cta-icon{ background: var(--shell); }
+.cta-pill.ghost svg{ stroke: var(--ink); }
+.cta-pill.ghost:hover{ background: var(--core-warm); }
+
+.cta-pill.wa{ background: #1FAA53; }
+.cta-pill.wa:hover{ background: #178f44; }
+
+/* ───────────────────────────────────────────────────────
+   SECTION HEAD
+─────────────────────────────────────────────────────── */
+.section-head{
+  display: flex; flex-direction: column; gap: 12px;
+  margin-bottom: 24px;
+  max-width: 720px;
+}
+.section-head h2{
+  font-size: clamp(2rem, 5.5vw, 4rem);
+  margin-top: 2px;
+}
+.section-head .lede{ max-width: 52ch; }
+@media (min-width: 720px){
+  .section-head{ gap: 18px; margin-bottom: 48px; }
+  .section-head h2{ font-size: clamp(2.4rem, 5.5vw, 4rem); margin-top: 4px; }
+}
+
+/* ───────────────────────────────────────────────────────
+   ESSENTIAL INFO — Asymmetrical Bento
+─────────────────────────────────────────────────────── */
+.essential{ padding: 88px 0 24px; }
+@media (min-width: 920px){ .essential{ padding: 120px 0 48px; } }
+
+.bento{
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+@media (min-width: 720px){
+  .bento{ grid-template-columns: repeat(6, 1fr); gap: 18px; }
+}
+
+.card-shell{
+  background: var(--shell);
+  border: 1px solid var(--hairline-2);
+  padding: 8px;
+  border-radius: 28px;
+  transition: transform var(--dur) var(--ease), border-color var(--dur) var(--ease), background var(--dur) var(--ease);
+  position: relative;
+}
+.card-core{
+  background: var(--core);
+  border-radius: calc(28px - 8px);
+  padding: 18px 18px 20px;
+  height: 100%;
+  display: flex; flex-direction: column;
+  box-shadow:
+    inset 0 1px 1px rgba(255,255,255,0.7),
+    inset 0 -1px 0 rgba(31,20,16,0.03);
+  position: relative; overflow: hidden;
+}
+@media (min-width: 720px){
+  .card-core{ padding: 22px 22px 24px; }
+}
+.card-shell:hover{ transform: translateY(-3px); border-color: rgba(31,20,16,0.18); }
+
+.s-1{ grid-column: span 1; }
+.s-2{ grid-column: 1 / -1; }
+.s-3{ grid-column: 1 / -1; }
+.s-4{ grid-column: 1 / -1; }
+.s-6{ grid-column: 1 / -1; }
+@media (min-width: 720px){
+  .s-1{ grid-column: span 1; }
+  .s-2{ grid-column: span 2; }
+  .s-3{ grid-column: span 3; }
+  .s-4{ grid-column: span 4; }
+  .s-6{ grid-column: span 6; }
+}
+
+.ic-tag{
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px; font-weight: 500;
+  color: var(--ink-2);
+  letter-spacing: 0.12em; text-transform: uppercase;
+  margin-bottom: 18px;
+  padding: 5px 10px 5px 8px;
+  background: var(--sage-paper);
+  border: 1px solid rgba(110,130,83,0.22);
+  border-radius: 999px;
+}
+.ic-tag::before{
+  content: ''; width: 7px; height: 7px; border-radius: 50%;
+  background: var(--sage); box-shadow: 0 0 0 3px var(--sage-soft);
+}
+.ic-title{
+  font-family: 'Fraunces', serif;
+  font-variation-settings: 'opsz' 72, 'SOFT' 30;
+  font-size: clamp(1.3rem, 2.4vw, 1.7rem);
+  line-height: 1.05;
+  color: var(--espresso);
+  margin-bottom: 12px;
+  letter-spacing: -0.02em;
+}
+.ic-title em{ font-style: italic; color: var(--terra); font-variation-settings: 'opsz' 72, 'SOFT' 50, 'WONK' 1; }
+.ic-body{
+  font-size: 0.92rem; line-height: 1.55;
+  color: var(--ink-2);
+}
+.ic-body strong{ color: var(--espresso); font-weight: 600; }
+.ic-foot{
+  margin-top: auto; padding-top: 16px;
+  font-size: 0.78rem; color: var(--mute);
+  line-height: 1.55; font-style: italic;
+  font-family: 'Fraunces', serif;
+  font-variation-settings: 'opsz' 14, 'SOFT' 50;
+}
+
+.bus-tip{
+  margin-top: 14px;
+  padding: 14px 16px;
+  background: linear-gradient(180deg, rgba(184,80,48,0.06) 0%, rgba(184,80,48,0.02) 100%);
+  border-left: 2px solid var(--terra);
+  border-radius: 0 12px 12px 0;
+  font-size: 0.85rem; line-height: 1.5;
+  color: var(--ink);
+}
+.bus-tip .label{
+  display: block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; color: var(--terra-d);
+  letter-spacing: 0.14em; text-transform: uppercase;
+  margin-bottom: 6px; font-weight: 500;
+}
+.bus-tip .quote{
+  color: var(--terra-d); font-weight: 600;
+  font-style: italic;
+  font-family: 'Fraunces', serif;
+  font-variation-settings: 'opsz' 24;
+}
+
+.phone-stack{ display: flex; flex-direction: column; gap: 8px; margin-bottom: 8px; }
+.phone-row{
+  display: inline-flex; align-items: center; gap: 12px;
+  padding: 10px 14px;
+  background: var(--core-warm);
+  border: 1px solid var(--hairline);
+  border-radius: 14px;
+  transition: transform var(--dur) var(--ease), background var(--dur) var(--ease), border-color var(--dur) var(--ease);
+}
+.phone-row:hover{ transform: translateX(2px); background: var(--paper); border-color: var(--hairline-2); }
+.phone-row .num{
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.95rem; font-weight: 500;
+  color: var(--espresso);
+  letter-spacing: -0.01em;
+}
+.phone-row .role{ font-size: 0.7rem; color: var(--mute); letter-spacing: 0.1em; text-transform: uppercase; margin-left: auto; }
+.phone-row svg{ width: 14px; height: 14px; stroke: var(--sage); fill: none; stroke-width: 1.5; }
+
+.check-row{
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 10px; margin-bottom: 14px;
+}
+.check-cell{
+  padding: 14px;
+  background: var(--core-warm);
+  border: 1px solid var(--hairline);
+  border-radius: 16px;
+}
+.check-label{
+  display: block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; color: var(--mute);
+  letter-spacing: 0.14em; text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.check-time{
+  font-family: 'Fraunces', serif;
+  font-variation-settings: 'opsz' 72;
+  font-size: 1.6rem;
+  color: var(--espresso);
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+.check-time .meridian{ font-size: 0.85rem; color: var(--mute); margin-left: 3px; }
+.check-meta{ font-size: 0.78rem; color: var(--mute); margin-top: 4px; line-height: 1.45; }
+
+.wifi-key{
+  display: flex; align-items: center; gap: 10px;
+  padding: 14px;
+  background: var(--core-warm);
+  border: 1px dashed var(--hairline-2);
+  border-radius: 14px;
+  margin-bottom: 10px;
+}
+.wifi-pass{
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.08rem; font-weight: 500;
+  color: var(--espresso); letter-spacing: 0.02em;
+  flex: 1;
+}
+.wifi-copy{
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 12px;
+  background: var(--espresso); color: var(--paper);
+  border-radius: 999px;
+  font-size: 0.74rem; font-weight: 500;
+  transition: background var(--dur) var(--ease), transform var(--dur) var(--ease);
+}
+.wifi-copy:hover{ background: #2D1F18; }
+.wifi-copy:active{ transform: scale(0.96); }
+.wifi-copy.copied{ background: var(--sage); }
+.wifi-copy svg{ width: 11px; height: 11px; stroke: var(--paper); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+/* Late checkout fee notice */
+.late-notice{
+  font-size: 0.9rem; line-height: 1.55;
+  color: var(--ink-2);
+  margin-bottom: 14px;
+}
+.late-notice strong{ color: var(--espresso); font-weight: 600; }
+.fee-list{
+  list-style: none; padding: 0; margin: 14px 0 0;
+  display: flex; flex-direction: column; gap: 8px;
+}
+.fee-list li{
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 14px;
+  background: var(--core-warm);
+  border: 1px solid var(--hairline);
+  border-left: 3px solid var(--terra);
+  border-radius: 12px;
+  font-size: 0.86rem;
+  color: var(--ink-2);
+}
+.fee-list .fee-time{
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem;
+  color: var(--terra-d);
+  letter-spacing: 0.04em;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.fee-list .fee-rate{
+  margin-left: auto;
+  font-family: 'Fraunces', serif;
+  font-variation-settings: 'opsz' 36;
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: var(--espresso);
+  white-space: nowrap;
+}
+
+/* ───────────────────────────────────────────────────────
+   NEED ASSISTANCE — Asymmetrical Bento (horizontal row cards)
+─────────────────────────────────────────────────────── */
+.assistance{ padding: 32px 0 28px; }
+@media (min-width: 920px){ .assistance{ padding: 80px 0 56px; } }
+
+.svc{
+  position: relative;
+  display: flex; flex-direction: column;
+  text-decoration: none; color: inherit;
+}
+.svc .card-shell{ height: 100%; }
+.svc .card-core{
+  flex-direction: row;
+  align-items: center;
+  padding: 12px 48px 12px 12px;
+  min-height: 108px;
+  gap: 14px;
+}
+@media (min-width: 720px){
+  .svc .card-core{ padding: 16px 56px 16px 16px; min-height: 128px; gap: 18px; }
+}
+.svc .card-core::after{
+  content: ''; position: absolute;
+  right: -36px; bottom: -36px;
+  width: 120px; height: 120px;
+  border-radius: 50%;
+  background: var(--sage-paper);
+  opacity: 0;
+  transition: opacity 600ms var(--ease), transform 600ms var(--ease);
+  transform: scale(0.6);
+}
+.svc:hover .card-core::after{ opacity: 1; transform: scale(1); }
+
+.svc-icon{
+  flex: 0 0 26%;
+  max-width: 128px; min-width: 80px;
+  aspect-ratio: 1 / 1;
+  border-radius: 16px;
+  background: var(--core-warm);
+  border: 1px solid var(--hairline);
+  display: inline-flex; align-items: center; justify-content: center;
+  overflow: hidden;
+  position: relative; z-index: 1;
+  transition: border-color var(--dur) var(--ease), transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+}
+.svc-icon img{
+  width: 80%; height: 80%;
+  object-fit: contain;
+  mix-blend-mode: multiply;
+  transition: transform var(--dur) var(--ease);
+}
+.svc:hover .svc-icon{
+  border-color: var(--sage-2);
+  transform: rotate(-3deg) scale(1.04);
+  box-shadow: 0 10px 24px -10px rgba(110,130,83,0.4);
+}
+.svc:hover .svc-icon img{ transform: scale(1.06); }
+
+.svc-arrow{
+  position: absolute;
+  top: 12px; right: 12px;
+  width: 30px; height: 30px;
+  border-radius: 999px;
+  background: var(--shell);
+  display: inline-flex; align-items: center; justify-content: center;
+  color: var(--mute-2);
+  z-index: 2;
+  transition: transform var(--dur) var(--ease), background var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+.svc:hover .svc-arrow{ transform: translate(3px,-3px); background: var(--espresso); color: var(--paper); }
+.svc-arrow svg{ width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+.svc-body{
+  flex: 1; min-width: 0;
+  display: flex; flex-direction: column; justify-content: center;
+  gap: 4px;
+  position: relative; z-index: 1;
+}
+.svc-name{
+  font-family: 'Fraunces', serif;
+  font-variation-settings: 'opsz' 72, 'SOFT' 30;
+  font-size: clamp(1.2rem, 2vw, 1.5rem);
+  line-height: 1.05;
+  color: var(--espresso);
+  margin-bottom: 6px;
+  letter-spacing: -0.02em;
+}
+.svc-name em{ font-style: italic; color: var(--terra); font-variation-settings: 'opsz' 72, 'SOFT' 50, 'WONK' 1; }
+.svc-meta{
+  font-size: 0.8rem; color: var(--mute);
+  line-height: 1.45;
+}
+.svc-meta strong{ color: var(--terra); font-weight: 600; }
+.svc-badge{
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px; font-weight: 500;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  background: var(--sage); color: var(--paper);
+  padding: 3px 9px; border-radius: 999px;
+  margin-right: 6px;
+}
+
+.svc.static{ pointer-events: auto; cursor: default; }
+.svc.static .svc-arrow{ display: none; }
+.svc.static .card-core{ padding-right: 14px; }
+@media (min-width: 720px){ .svc.static .card-core{ padding-right: 18px; } }
+
+.refer-note{
+  margin-top: 22px;
+  font-family: 'Fraunces', serif;
+  font-variation-settings: 'opsz' 36, 'SOFT' 50;
+  font-style: italic;
+  font-size: 0.95rem;
+  color: var(--mute);
+  text-align: center;
+  letter-spacing: -0.005em;
+}
+@media (min-width: 720px){
+  .refer-note{ margin-top: 38px; font-size: 1.02rem; }
+}
+
+/* ───────────────────────────────────────────────────────
+   RECEPTION CTA — Dark double-bezel
+─────────────────────────────────────────────────────── */
+.reception{ padding: 36px 0 64px; }
+@media (min-width: 920px){ .reception{ padding: 80px 0 110px; } }
+
+.reception-shell{
+  background:
+    radial-gradient(60% 80% at 20% 20%, rgba(201,168,107,0.18) 0%, transparent 60%),
+    radial-gradient(60% 80% at 80% 80%, rgba(184,80,48,0.18) 0%, transparent 60%),
+    var(--espresso);
+  border: 1px solid rgba(255,252,246,0.08);
+  padding: 12px;
+  border-radius: 36px;
+  position: relative; overflow: hidden;
+  box-shadow: 0 40px 80px -40px rgba(31,20,16,0.5);
+}
+.reception-core{
+  background: rgba(255,252,246,0.03);
+  border: 1px solid rgba(255,252,246,0.06);
+  border-radius: calc(36px - 12px);
+  padding: 40px 22px;
+  text-align: center;
+  position: relative;
+  box-shadow: inset 0 1px 0 rgba(255,252,246,0.06);
+}
+@media (min-width: 720px){ .reception-core{ padding: 80px 56px; } }
+
+.reception-eyebrow{
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; color: rgba(255,252,246,0.6);
+  letter-spacing: 0.22em; text-transform: uppercase;
+  padding: 6px 14px;
+  border: 1px solid rgba(255,252,246,0.14);
+  border-radius: 999px;
+  margin-bottom: 28px;
+}
+.reception-eyebrow::before{
+  content: ''; width: 6px; height: 6px; border-radius: 50%;
+  background: var(--gold); box-shadow: 0 0 12px var(--gold);
+}
+.reception h2{
+  font-family: 'Fraunces', serif;
+  font-optical-sizing: auto;
+  font-variation-settings: 'opsz' 144, 'SOFT' 30;
+  font-weight: 400;
+  font-size: clamp(2.2rem, 5.5vw, 3.8rem);
+  line-height: 1.0;
+  letter-spacing: -0.025em;
+  color: var(--paper);
+  margin-bottom: 18px;
+  text-wrap: balance;
+}
+.reception h2 em{
+  font-style: italic; color: var(--gold);
+  font-variation-settings: 'opsz' 144, 'SOFT' 50, 'WONK' 1;
+}
+.reception p{
+  font-family: 'Fraunces', serif;
+  font-variation-settings: 'opsz' 24, 'SOFT' 50;
+  font-style: italic;
+  font-size: 1.1rem; line-height: 1.5;
+  color: rgba(255,252,246,0.7);
+  max-width: 48ch; margin: 0 auto 36px;
+  font-weight: 300;
+}
+.reception-ctas{ display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
+
+.reception-ctas .cta-pill{ padding: 12px 12px 12px 22px; font-size: 0.9rem; }
+.reception-ctas .cta-pill .cta-icon{ width: 34px; height: 34px; }
+.reception-ctas .cta-pill svg{ width: 13px; height: 13px; }
+
+/* ───────────────────────────────────────────────────────
+   FOOTER
+─────────────────────────────────────────────────────── */
+footer{
+  border-top: 1px solid var(--hairline);
+  padding: 36px 0 48px;
+}
+.foot-inner{
+  display: flex; flex-direction: column; gap: 18px;
+  align-items: center; text-align: center;
+}
+@media (min-width: 720px){
+  .foot-inner{
+    flex-direction: row; justify-content: space-between; text-align: left;
+  }
+}
+.foot-brand{
+  font-family: 'Fraunces', serif;
+  font-variation-settings: 'opsz' 36;
+  font-size: 1rem; color: var(--espresso);
+  letter-spacing: -0.01em;
+}
+.foot-brand .dot{ color: var(--terra); margin: 0 4px; font-style: italic; }
+.foot-meta{ font-size: 0.78rem; color: var(--mute); display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
+.foot-meta a:hover{ color: var(--terra); }
+
+/* ───────────────────────────────────────────────────────
+   REVEAL — IntersectionObserver
+─────────────────────────────────────────────────────── */
+.reveal{
+  opacity: 0;
+  transform: translateY(28px);
+  filter: blur(6px);
+  transition:
+    opacity 900ms var(--ease),
+    transform 900ms var(--ease),
+    filter 900ms var(--ease);
+  will-change: transform, opacity, filter;
+}
+.reveal.in{ opacity: 1; transform: none; filter: none; }
+.reveal[data-d="1"]{ transition-delay: 60ms; }
+.reveal[data-d="2"]{ transition-delay: 120ms; }
+.reveal[data-d="3"]{ transition-delay: 180ms; }
+.reveal[data-d="4"]{ transition-delay: 240ms; }
+.reveal[data-d="5"]{ transition-delay: 300ms; }
+.reveal[data-d="6"]{ transition-delay: 360ms; }
+.reveal[data-d="7"]{ transition-delay: 420ms; }
+.reveal[data-d="8"]{ transition-delay: 480ms; }
+.reveal[data-d="9"]{ transition-delay: 540ms; }
+
+@media (min-width: 920px){
+  .nav-links-desktop{ display: inline-flex; }
+}
+
+</style>
+</head>
+<body>
+
+<div class="mesh" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+
+<!-- ─── FLUID ISLAND NAV ─── -->
+<div class="nav-wrap">
+  <nav class="nav" aria-label="Primary">
+    <a href="index.html" class="nav-brand">Sen's<span class="dot">·</span>Cao Bang</a>
+    <div class="nav-links-desktop">
+      <a href="rooms.html">Rooms</a>
+      <a href="motorbike.html">Motorbike</a>
+      <a href="tours.html">Tours</a>
+      <a href="food.html">Food</a>
+      <a href="bus-ticket.html">Bus</a>
+    </div>
+    <a href="https://wa.me/84822946888?text=Hi%20Sen.%20I%27m%20a%20guest%20at%20Sen%27s%20Homestay%20and%20need%20some%20help." class="nav-cta" target="_blank" rel="noopener" aria-label="Contact reception on WhatsApp">
+      <span>Reception</span>
+      <span class="cta-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+      </span>
+    </a>
+    <button class="nav-toggle" id="navToggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="navModal">
+      <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+    </button>
+  </nav>
+</div>
+
+<!-- Modal overlay -->
+<div class="nav-modal" id="navModal" role="dialog" aria-modal="true" aria-label="Site menu">
+  <div class="nav-modal-inner">
+    <a href="index.html"><span><span class="num-pre">01</span><em>Home</em></span><span class="nav-modal-arrow"><svg viewBox="0 0 24 24"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg></span></a>
+    <a href="rooms.html"><span><span class="num-pre">02</span><em>Rooms</em></span><span class="nav-modal-arrow"><svg viewBox="0 0 24 24"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg></span></a>
+    <a href="motorbike.html"><span><span class="num-pre">03</span><em>Motorbike</em></span><span class="nav-modal-arrow"><svg viewBox="0 0 24 24"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg></span></a>
+    <a href="tours.html"><span><span class="num-pre">04</span><em>Tours</em></span><span class="nav-modal-arrow"><svg viewBox="0 0 24 24"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg></span></a>
+    <a href="food.html"><span><span class="num-pre">05</span><em>Food Guide</em></span><span class="nav-modal-arrow"><svg viewBox="0 0 24 24"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg></span></a>
+    <a href="bus-ticket.html"><span><span class="num-pre">06</span><em>Bus Tickets</em></span><span class="nav-modal-arrow"><svg viewBox="0 0 24 24"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg></span></a>
+    <a href="itinerary.html"><span><span class="num-pre">07</span><em>Trip Builder</em></span><span class="nav-modal-arrow"><svg viewBox="0 0 24 24"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg></span></a>
+    <div class="nav-modal-foot">
+      <span>Cao Bang · Vietnam</span>
+      <a href="tel:+84822946888">+84 822 946 888</a>
+      <a href="https://maps.app.goo.gl/kHCBRuKTaEzLyPqZ9" target="_blank" rel="noopener">Directions</a>
+    </div>
+  </div>
+</div>
+
+<main>
+
+<!-- ─── ESSENTIAL INFORMATION ─── -->
+<section class="essential" id="essential">
+  <div class="wrap">
+
+    <div class="section-head">
+      <span class="eyebrow reveal">[ 01 ] &nbsp; Essential&nbsp;Information</span>
+      <h2 class="display reveal" data-d="1">Welcome to <em>Sen's Homestay.</em></h2>
+      <p class="lede reveal" data-d="2">We hope you have a wonderful stay in Cao&nbsp;Bang — a pocket reference with the address, Wi-Fi password, check-in window, and the number that always reaches a real person.</p>
+    </div>
+
+    <div class="bento">
+
+      <!-- Address (wide) -->
+      <div class="s-4 reveal" data-d="1">
+        <div class="card-shell">
+          <div class="card-core">
+            <span class="ic-tag">Address · Find us</span>
+            <h3 class="ic-title">No. 060, Group 7, Ngoc Xuan Ward<br><em>Cao Bang City, Cao Bang Province.</em></h3>
+            <div class="bus-tip">
+              <span class="label">If you arrive by bus or taxi</span>
+              Ask the driver to drop you at <span class="quote">"Sen's Homestay, Ngoc Xuan, (Gần siêu thị Ngọc Xuân)"</span> — most local drivers in Cao Bang know the spot.
+            </div>
+            <div class="addr-actions">
+              <a class="cta-pill" href="https://maps.app.goo.gl/kHCBRuKTaEzLyPqZ9" target="_blank" rel="noopener">
+                <span>Open in Google Maps</span>
+                <span class="cta-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+                </span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Wifi -->
+      <div class="s-2 reveal" data-d="2">
+        <div class="card-shell">
+          <div class="card-core">
+            <span class="ic-tag">Wi-Fi · all networks</span>
+            <div class="wifi-key">
+              <span class="wifi-pass" id="wifiPass">sen99999</span>
+              <button class="wifi-copy" id="copyWifi" type="button" aria-label="Copy Wi-Fi password">
+                <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                <span>Copy</span>
+              </button>
+            </div>
+            <p class="ic-foot">Same password works on every "Sen" network nearby — connect to whichever signal is strongest.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hotline -->
+      <div class="s-3 reveal" data-d="3">
+        <div class="card-shell">
+          <div class="card-core">
+            <span class="ic-tag">Hotline · WhatsApp</span>
+            <div class="phone-stack">
+              <a class="phone-row" href="tel:+84822946888">
+                <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.37 1.9.72 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.35 1.85.59 2.81.72A2 2 0 0 1 22 16.92Z"/></svg>
+                <span class="num">+84 822 946 888</span>
+                <span class="role">Reception</span>
+              </a>
+            </div>
+            <p class="ic-foot">Please call if the front door is closed when you arrive — we'll come down within a minute.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Check-in / Check-out -->
+      <div class="s-3 reveal" data-d="4">
+        <div class="card-shell">
+          <div class="card-core">
+            <span class="ic-tag">Check-in &amp; Check-out</span>
+            <div class="check-row">
+              <div class="check-cell">
+                <span class="check-label">Arrival</span>
+                <div class="check-time"><span class="num">2:00</span><span class="meridian">PM</span></div>
+                <div class="check-meta">Early check-in 100,000&nbsp;₫ — availability permitting.</div>
+              </div>
+              <div class="check-cell">
+                <span class="check-label">Departure</span>
+                <div class="check-time"><span class="num">12:00</span><span class="meridian">PM</span></div>
+                <div class="check-meta">Late check-out subject to availability.</div>
+              </div>
+            </div>
+            <p class="ic-foot">Arriving in the early morning? Book the night before to guarantee your room. Late arrivals (4–5 AM) are welcome — we'll be ready for you.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Late check-out fees -->
+      <div class="s-6 reveal" data-d="5">
+        <div class="card-shell">
+          <div class="card-core">
+            <span class="ic-tag">Late check-out · fees</span>
+            <h3 class="ic-title">If your belongings remain in the room, <em>it counts as still occupied.</em></h3>
+            <p class="late-notice">Therefore, if your belongings remain in your private room, it is considered that the room is still being occupied and the check-out has not been completed.</p>
+            <p class="late-notice"><strong>As previously informed:</strong></p>
+            <ul class="fee-list">
+              <li><span class="fee-time">12:00 PM – 3:00 PM</span><span class="fee-rate">30% of room rate</span></li>
+              <li><span class="fee-time">3:00 PM – 6:00 PM</span><span class="fee-rate">50% of room rate</span></li>
+              <li><span class="fee-time">After 6:00 PM</span><span class="fee-rate">100% of room rate</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ─── NEED ASSISTANCE ─── -->
+<section class="assistance" id="assistance">
+  <div class="wrap">
+
+    <div class="section-head">
+      <span class="eyebrow reveal">[ 02 ] &nbsp; On-site &amp; on-call</span>
+      <h2 class="display reveal" data-d="1">Need assistance? <em>Just ask.</em></h2>
+      <p class="lede reveal" data-d="2">Nine of the things we handle directly for guests — from a same-day laundry to a custom Ban&nbsp;Gioc itinerary. Tap any card to open the dedicated page, or message reception.</p>
+    </div>
+
+    <div class="bento">
+
+      <!-- 1 Motorbike -->
+      <a class="svc s-3 reveal" data-d="1" href="motorbike.html">
+        <div class="card-shell"><div class="card-core">
+          <span class="svc-icon"><img src="images/welcome-icons/svc-motorbike.png" alt="" loading="lazy" width="256" height="256"></span>
+          <div class="svc-body">
+            <div class="svc-name">Motorbike <em>rental</em></div>
+            <div class="svc-meta">Semi-auto, manual &amp; scooter · from <strong>180k₫</strong>/day · helmets included</div>
+          </div>
+          <span class="svc-arrow"><svg viewBox="0 0 24 24"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg></span>
+        </div></div>
+      </a>
+
+      <!-- 2 Breakfast & Coffee -->
+      <a class="svc s-3 reveal" data-d="2" href="services.html">
+        <div class="card-shell"><div class="card-core">
+          <span class="svc-icon"><img src="images/welcome-icons/svc-coffee.png" alt="" loading="lazy" width="256" height="256"></span>
+          <div class="svc-body">
+            <div class="svc-name">Breakfast &amp; <em>coffee</em></div>
+            <div class="svc-meta">Served fresh each morning</div>
+          </div>
+          <span class="svc-arrow"><svg viewBox="0 0 24 24"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg></span>
+        </div></div>
+      </a>
+
+      <!-- 3 Luggage storage (static, no arrow) -->
+      <div class="svc s-3 static reveal" data-d="3">
+        <div class="card-shell"><div class="card-core">
+          <span class="svc-icon"><img src="images/welcome-icons/svc-luggage.png" alt="" loading="lazy" width="256" height="256"></span>
+          <div class="svc-body">
+            <div class="svc-name">Luggage <em>storage</em></div>
+            <div class="svc-meta">Before check-in &amp; after check-out</div>
+          </div>
+        </div></div>
+      </div>
+
+      <!-- 4 Laundry -->
+      <a class="svc s-3 reveal" data-d="4" href="services.html#laundry">
+        <div class="card-shell"><div class="card-core">
+          <span class="svc-icon"><img src="images/welcome-icons/svc-laundry.png" alt="" loading="lazy" width="256" height="256"></span>
+          <div class="svc-body">
+            <div class="svc-name">Laundry <em>service</em></div>
+            <div class="svc-meta">From <strong>40k₫</strong>/kg · same-day return</div>
+          </div>
+          <span class="svc-arrow"><svg viewBox="0 0 24 24"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg></span>
+        </div></div>
+      </a>
+
+      <!-- 5 Taxi -->
+      <a class="svc s-3 reveal" data-d="5" href="https://wa.me/84822946888?text=Hi%20Sen.%20I%27d%20like%20to%20arrange%20a%20taxi.">
+        <div class="card-shell"><div class="card-core">
+          <span class="svc-icon"><img src="images/welcome-icons/svc-taxi.png" alt="" loading="lazy" width="256" height="256"></span>
+          <div class="svc-body">
+            <div class="svc-name">Taxi</div>
+            <div class="svc-meta">Pick-up · day-rates · we book it for you</div>
+          </div>
+          <span class="svc-arrow"><svg viewBox="0 0 24 24"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg></span>
+        </div></div>
+      </a>
+
+      <!-- 6 Bus tickets -->
+      <a class="svc s-3 reveal" data-d="6" href="bus-ticket.html">
+        <div class="card-shell"><div class="card-core">
+          <span class="svc-icon"><img src="images/welcome-icons/svc-bus.png" alt="" loading="lazy" width="256" height="256"></span>
+          <div class="svc-body">
+            <div class="svc-name">Bus <em>tickets </em></div>
+            <div class="svc-meta">Ha Noi · Ha Giang.... Pick up at the homestay</div>
+          </div>
+          <span class="svc-arrow"><svg viewBox="0 0 24 24"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg></span>
+        </div></div>
+      </a>
+
+      <!-- 7 Tours -->
+      <a class="svc s-3 reveal" data-d="7" href="tours.html">
+        <div class="card-shell"><div class="card-core">
+          <span class="svc-icon"><img src="images/welcome-icons/svc-tours.png" alt="" loading="lazy" width="256" height="256"></span>
+          <div class="svc-body">
+            <div class="svc-name">Guided <em>tours</em></div>
+            <div class="svc-meta">Ban Gioc · Nguom Ngao · Phja Oac · custom 1–4 day trips</div>
+          </div>
+          <span class="svc-arrow"><svg viewBox="0 0 24 24"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg></span>
+        </div></div>
+      </a>
+
+      <!-- 8 Food picks -->
+      <a class="svc s-3 reveal" data-d="8" href="food.html">
+        <div class="card-shell"><div class="card-core">
+          <span class="svc-icon"><img src="images/welcome-icons/svc-food.png" alt="" loading="lazy" width="256" height="256"></span>
+          <div class="svc-body">
+            <div class="svc-name"><em>Food</em> guide</div>
+            <div class="svc-meta">Hand-picked local spots · one-tap Google Maps</div>
+          </div>
+          <span class="svc-arrow"><svg viewBox="0 0 24 24"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg></span>
+        </div></div>
+      </a>
+
+      <!-- 9 Local tips (wide feature) -->
+      <a class="svc s-6 reveal" data-d="9" href="itinerary.html">
+        <div class="card-shell"><div class="card-core">
+          <span class="svc-icon"><img src="images/welcome-icons/svc-tips.png" alt="" loading="lazy" width="256" height="256"></span>
+          <div class="svc-body">
+            <div class="svc-name">Local tips, maps &amp; <em>recommendations</em></div>
+            <div class="svc-meta">Trip builder · loops, viewpoints &amp; hidden cafés we love</div>
+          </div>
+          <span class="svc-arrow"><svg viewBox="0 0 24 24"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg></span>
+        </div></div>
+      </a>
+
+    </div>
+
+    <p class="refer-note reveal">— Tap any card above for the dedicated page with prices, photos and bookings —</p>
+  </div>
+</section>
+
+<!-- ─── RECEPTION CTA ─── -->
+<section class="reception">
+  <div class="wrap">
+    <div class="reception-shell reveal">
+      <div class="reception-core">
+        <span class="reception-eyebrow">[ 03 ] &nbsp; Always on</span>
+        <h2>
+          Please feel free to contact reception
+          <br><em>for anything at all.</em>
+        </h2>
+        <p>We are always happy to help — in English or Vietnamese, day or night.</p>
+        <div class="reception-ctas">
+          <a class="cta-pill wa" href="https://wa.me/84822946888?text=Hi%20Sen.%20I%27m%20a%20guest%20at%20Sen%27s%20Homestay%20and%20need%20some%20help." target="_blank" rel="noopener">
+            <span>WhatsApp&nbsp;us</span>
+            <span class="cta-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+            </span>
+          </a>
+          <a class="cta-pill ghost" href="tel:+84822946888" style="background:rgba(255,252,246,0.08); color:var(--paper); border-color:rgba(255,252,246,0.16);">
+            <span>Call +84&nbsp;822&nbsp;946&nbsp;888</span>
+            <span class="cta-icon" aria-hidden="true" style="background:rgba(255,252,246,0.14);">
+              <svg viewBox="0 0 24 24" style="stroke:var(--paper);"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.37 1.9.72 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.35 1.85.59 2.81.72A2 2 0 0 1 22 16.92Z"/></svg>
+            </span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-inner">
+      <span class="foot-brand">Sen's&nbsp;Homestay<span class="dot">·</span>Cao Bang</span>
+      <div class="foot-meta">
+        <span>© 2026</span>
+        <a href="tel:+84822946888">+84 822 946 888</a>
+        <a href="https://wa.me/84822946888" target="_blank" rel="noopener">WhatsApp</a>
+        <a href="https://maps.app.goo.gl/kHCBRuKTaEzLyPqZ9" target="_blank" rel="noopener">Directions</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  // ── Fluid Island nav toggle
+  var toggle = document.getElementById('navToggle');
+  var modal  = document.getElementById('navModal');
+  function setOpen(open){
+    toggle.setAttribute('aria-expanded', String(open));
+    toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    modal.classList.toggle('open', open);
+    document.body.style.overflow = open ? 'hidden' : '';
+  }
+  toggle.addEventListener('click', function(){
+    setOpen(toggle.getAttribute('aria-expanded') !== 'true');
+  });
+  modal.addEventListener('click', function(e){
+    if (e.target.closest('a')) setOpen(false);
+  });
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'Escape' && toggle.getAttribute('aria-expanded') === 'true') setOpen(false);
+  });
+
+  // ── Wifi copy
+  var copyBtn  = document.getElementById('copyWifi');
+  var wifiPass = document.getElementById('wifiPass');
+  copyBtn.addEventListener('click', function(){
+    var text = wifiPass.textContent.trim();
+    var done = function(){
+      copyBtn.classList.add('copied');
+      copyBtn.querySelector('span').textContent = 'Copied';
+      setTimeout(function(){
+        copyBtn.classList.remove('copied');
+        copyBtn.querySelector('span').textContent = 'Copy';
+      }, 1800);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(done).catch(function(){
+        var t=document.createElement('textarea'); t.value=text; document.body.appendChild(t); t.select();
+        try{document.execCommand('copy');}catch(e){}
+        document.body.removeChild(t); done();
+      });
+    } else {
+      var t=document.createElement('textarea'); t.value=text; document.body.appendChild(t); t.select();
+      try{document.execCommand('copy');}catch(e){}
+      document.body.removeChild(t); done();
+    }
+  });
+
+  // ── Reveal on scroll
+  if ('IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if (e.isIntersecting){
+          e.target.classList.add('in');
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -8% 0px' });
+    document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+  } else {
+    document.querySelectorAll('.reveal').forEach(function(el){ el.classList.add('in'); });
+  }
+})();
+</script>
+
+</body>
+</html>

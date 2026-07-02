@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>In-Stay Services · Sen's Homestay</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --gd:#2D6A4F; --gm:#52B788; --gl:#D8F3DC;
+  --or:#E76F51; --od:#C25B3F; --cr:#F8F4E9;
+  --brown:#5C3D2E; --tx:#1a1a1a; --tm:#666;
+  --line:rgba(45,106,79,0.13);
+  --r:14px; --sh:0 4px 24px rgba(0,0,0,0.08);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--cr);color:var(--tx);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+a{text-decoration:none;color:inherit}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:14px 40px;background:rgba(248,244,233,0.93);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.nav-logo{font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:var(--gd);font-weight:700;white-space:nowrap}
+.nav-logo span{color:var(--or)}
+.nav-links{display:flex;gap:22px;align-items:center}
+.nav-links a{font-size:0.85rem;font-weight:500;color:var(--brown);transition:color 0.15s}
+.nav-links a:hover,.nav-links a.active{color:var(--gd)}
+.nav-cta{background:var(--or);color:white!important;padding:8px 18px;border-radius:50px;font-size:0.82rem}
+.ham{display:none;flex-direction:column;gap:5px;cursor:pointer}
+.ham span{width:22px;height:2px;background:var(--gd);border-radius:2px}
+
+/* ── PAGE HEADER ── */
+.pg-head{padding:108px 40px 32px;max-width:1100px;margin:0 auto}
+.eyebrow{font-size:0.65rem;letter-spacing:3.5px;text-transform:uppercase;color:var(--or);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.eyebrow::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--or);flex-shrink:0}
+.pg-head h1{font-family:'Cormorant Garamond',serif;font-size:clamp(2.2rem,4.5vw,3.2rem);color:var(--gd);line-height:1.02;margin-bottom:10px}
+.pg-head h1 em{font-style:italic;color:var(--or)}
+.pg-head p{font-size:0.92rem;color:var(--tm);line-height:1.7;max-width:580px}
+
+/* ── TABS ── */
+.tabs-wrap{max-width:1100px;margin:0 auto;padding:0 40px;position:sticky;top:62px;background:rgba(248,244,233,0.97);backdrop-filter:blur(10px);z-index:50;border-bottom:1px solid var(--line)}
+.tabs{display:flex;gap:4px;padding:10px 0;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{padding:7px 15px;border-radius:50px;background:transparent;border:1.5px solid var(--line);font-size:0.8rem;font-weight:500;color:var(--brown);cursor:pointer;transition:all 0.18s;display:inline-flex;align-items:center;gap:5px;white-space:nowrap;text-decoration:none}
+.tab:hover{border-color:var(--gm);color:var(--gd);background:var(--gl)}
+.tab.active{background:var(--gd);color:white;border-color:var(--gd)}
+
+/* ── LAYOUT ── */
+.wrap{max-width:1100px;margin:0 auto;padding:28px 40px 60px;display:grid;grid-template-columns:1fr 340px;gap:24px;align-items:start}
+
+/* ── SECTION HEADER ── */
+.section-label{display:flex;align-items:center;gap:12px;margin-bottom:18px;margin-top:32px}
+.section-label:first-child{margin-top:0}
+.section-label-line{flex:1;height:1px;background:var(--line)}
+.section-label-text{font-family:'Cormorant Garamond',serif;font-size:1.6rem;color:var(--gd);font-weight:700;white-space:nowrap}
+.section-label-sub{font-size:0.72rem;color:var(--tm);margin-top:2px;line-height:1.4}
+
+/* ── MENU GRID (breakfast & coffee) ── */
+.menu-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
+.menu-card{background:white;border-radius:13px;overflow:hidden;border:1.5px solid var(--line);box-shadow:var(--sh);cursor:pointer;transition:all 0.2s;position:relative;scroll-margin-top:130px}
+.menu-card:hover{transform:translateY(-3px);box-shadow:0 10px 32px rgba(0,0,0,0.13);border-color:var(--gm)}
+.menu-card.selected{border-color:var(--gd);box-shadow:0 0 0 3px rgba(45,106,79,0.15)}
+.menu-card.selected .mc-check{opacity:1;transform:scale(1)}
+.mc-img{width:100%;height:210px;object-fit:cover;display:block;background:var(--cr)}
+.mc-img-placeholder{width:100%;height:210px;background:linear-gradient(135deg,var(--gl) 0%,rgba(248,244,233,0.8) 100%);display:flex;align-items:center;justify-content:center;font-size:3rem}
+.mc-body{padding:13px 14px 14px}
+.mc-name{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:700;color:var(--tx);line-height:1.2;margin-bottom:4px}
+.mc-desc{font-size:0.71rem;color:var(--tm);line-height:1.5;margin-bottom:10px}
+.mc-foot{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.mc-price{font-size:0.92rem;font-weight:700;color:var(--gd)}
+.mc-price small{font-size:0.62rem;color:var(--tm);font-weight:400;margin-left:3px}
+.mc-qty{display:flex;align-items:center;gap:3px;background:var(--cr);border-radius:50px;padding:2px}
+.mc-btn{width:24px;height:24px;border-radius:50%;background:white;color:var(--gd);font-size:1rem;font-weight:700;display:flex;align-items:center;justify-content:center;border:1px solid var(--line);transition:all 0.15s;line-height:1}
+.mc-btn:hover{background:var(--gd);color:white;border-color:var(--gd)}
+.mc-btn:disabled{opacity:0.3;cursor:not-allowed}
+.mc-btn:disabled:hover{background:white;color:var(--gd);border-color:var(--line)}
+.mc-num{min-width:20px;text-align:center;font-size:0.82rem;font-weight:700;color:var(--gd)}
+.mc-check{position:absolute;top:10px;right:10px;width:26px;height:26px;border-radius:50%;background:var(--gd);color:white;font-size:0.72rem;display:flex;align-items:center;justify-content:center;opacity:0;transform:scale(0.6);transition:all 0.2s;font-weight:700}
+
+/* ── COFFEE ROW STYLE (wider cards for drinks) ── */
+.coffee-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
+.coffee-card{background:white;border-radius:12px;overflow:hidden;border:1.5px solid var(--line);cursor:pointer;transition:all 0.18s;position:relative}
+.coffee-card:hover{border-color:var(--gm);background:#fdfcf7}
+.coffee-card.selected{border-color:var(--gd);background:rgba(82,183,136,0.06)}
+.coffee-card.selected .mc-check{opacity:1;transform:scale(1)}
+.cc-img{width:100%;height:150px;object-fit:cover;display:block}
+.cc-img-placeholder{width:100%;height:150px;background:linear-gradient(135deg,rgba(92,61,46,0.08) 0%,rgba(248,244,233,0.9) 100%);display:flex;align-items:center;justify-content:center;font-size:2.2rem}
+.cc-body{padding:10px 12px 11px}
+.cc-name{font-size:0.86rem;font-weight:600;color:var(--tx);margin-bottom:2px}
+.cc-desc{font-size:0.68rem;color:var(--tm);line-height:1.4;margin-bottom:8px}
+.cc-foot{display:flex;align-items:center;justify-content:space-between;gap:6px}
+.cc-price{font-size:0.88rem;font-weight:700;color:var(--gd)}
+
+/* ── SUPPORT SERVICES (compact) ── */
+.support-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:4px}
+.support-card{background:white;border-radius:12px;border:1.5px solid var(--line);padding:16px 18px;display:flex;gap:13px;align-items:flex-start;transition:border-color 0.15s}
+.support-card:hover{border-color:var(--gm)}
+.support-icon{width:36px;height:36px;border-radius:9px;background:var(--gl);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+.support-info{flex:1;min-width:0}
+.support-name{font-size:0.88rem;font-weight:600;color:var(--tx);margin-bottom:3px}
+.support-desc{font-size:0.71rem;color:var(--tm);line-height:1.45}
+.support-price{font-size:0.78rem;font-weight:600;color:var(--gd);margin-top:5px}
+.free-badge{display:inline-block;background:var(--gm);color:white;font-size:0.6rem;font-weight:700;letter-spacing:0.8px;padding:2px 8px;border-radius:50px;text-transform:uppercase;margin-top:5px}
+.support-add{margin-top:8px}
+.support-btn{padding:6px 14px;border-radius:50px;background:var(--gd);color:white;font-size:0.75rem;font-weight:500;transition:all 0.15s;border:none;cursor:pointer;font-family:inherit}
+.support-btn:hover{background:#1e4d38}
+.support-btn.added{background:var(--or)}
+
+/* ── LAUNDRY PRICE TABLE ── */
+.laundry-table{width:100%;border-collapse:collapse;font-size:0.82rem;margin-top:10px}
+.laundry-table th{text-align:left;padding:7px 12px;font-size:0.68rem;letter-spacing:1px;text-transform:uppercase;color:var(--tm);border-bottom:1.5px solid var(--line);font-weight:600}
+.laundry-table td{padding:9px 12px;border-bottom:1px solid rgba(45,106,79,0.07);color:var(--tx)}
+.laundry-table tr:last-child td{border-bottom:none}
+.laundry-table .price-col{font-weight:700;color:var(--gd);text-align:right}
+.laundry-note{margin-top:10px;padding:10px 12px;background:rgba(231,111,81,0.06);border-left:3px solid rgba(231,111,81,0.35);border-radius:0 8px 8px 0;font-size:0.74rem;color:var(--brown);line-height:1.55}
+
+/* ── SUMMARY (right col) ── */
+.summary-card{background:white;border-radius:var(--r);border:1px solid var(--line);box-shadow:var(--sh);position:sticky;top:92px;overflow:hidden}
+.summary-head{padding:15px 18px;background:var(--gd);color:white}
+.summary-head h3{font-family:'Cormorant Garamond',serif;font-size:1.25rem;font-weight:700}
+.summary-head p{font-size:0.7rem;color:rgba(255,255,255,0.72);margin-top:1px}
+.summary-body{padding:12px 16px;min-height:60px;max-height:320px;overflow-y:auto}
+.summary-empty{padding:18px 0;text-align:center;color:var(--tm);font-size:0.8rem;font-style:italic}
+.s-row{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;padding:7px 0;border-bottom:1px dashed var(--line)}
+.s-row:last-child{border-bottom:none}
+.s-name{flex:1;font-size:0.82rem;color:var(--tx);line-height:1.35}
+.s-qty{font-size:0.69rem;color:var(--tm);margin-top:1px}
+.s-right{display:flex;align-items:flex-start;gap:4px;flex-shrink:0}
+.s-price{font-size:0.82rem;font-weight:600;color:var(--gd)}
+.s-rm{color:var(--tm);font-size:1rem;line-height:1.1;cursor:pointer;user-select:none;transition:color 0.12s}
+.s-rm:hover{color:var(--or)}
+.summary-total{padding:12px 16px;border-top:1px solid var(--line);background:var(--cr);display:flex;justify-content:space-between;align-items:baseline}
+.total-label{font-size:0.68rem;letter-spacing:2px;text-transform:uppercase;color:var(--tm)}
+.total-val{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:700;color:var(--gd)}
+.total-usd{font-size:0.68rem;color:var(--tm);font-weight:400;margin-left:5px}
+
+/* ── SCHEDULE ── */
+.schedule{padding:12px 16px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:9px}
+.f-label{font-size:0.7rem;font-weight:500;color:var(--brown);margin-bottom:4px;display:block}
+.f-input{width:100%;padding:8px 11px;border:1.5px solid var(--line);border-radius:8px;font-family:inherit;font-size:0.82rem;color:var(--tx);background:#fdfcf8;outline:none;transition:border-color 0.15s}
+.f-input:focus{border-color:var(--gm)}
+
+/* ── SEND BTN ── */
+.send-wrap{padding:10px 16px 16px}
+.send-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:13px;border-radius:50px;background:#25D366;color:white;font-size:0.88rem;font-weight:600;transition:all 0.2s;cursor:pointer;border:none;font-family:inherit}
+.send-btn:hover:not(:disabled){background:#1fba58;transform:translateY(-2px);box-shadow:0 8px 20px rgba(37,211,102,0.3)}
+.send-btn:disabled{background:#c0c0c0;cursor:not-allowed;transform:none;box-shadow:none}
+.send-btn svg{width:17px;fill:white;flex-shrink:0}
+
+/* ── FOOTER ── */
+footer{background:#0f2419;color:rgba(255,255,255,0.4);text-align:center;padding:18px;font-size:0.76rem}
+footer a{color:var(--gm)}
+.waf{position:fixed;bottom:22px;right:22px;width:50px;height:50px;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(37,211,102,0.4);z-index:99}
+.waf svg{width:22px;fill:white}
+
+/* ── MOBILE ── */
+@media(max-width:960px){
+  .wrap{grid-template-columns:1fr;padding:20px 16px 50px}
+  .summary-card{position:static}
+  .summary-body{max-height:none}
+  .support-grid{grid-template-columns:1fr}
+}
+@media(max-width:700px){
+  nav{padding:12px 16px}
+  .nav-links{display:none;flex-direction:column;position:absolute;top:100%;left:0;right:0;background:rgba(248,244,233,0.98);padding:16px;gap:14px;box-shadow:0 8px 24px rgba(0,0,0,0.1)}
+  .nav-links.open{display:flex}
+  .ham{display:flex}
+  .pg-head{padding:84px 16px 20px}
+  .tabs-wrap{padding:0 16px}
+  .menu-grid{grid-template-columns:1fr 1fr}
+  .coffee-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:420px){
+  .menu-grid{grid-template-columns:1fr}
+  .coffee-grid{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">Sen's Homestay</a>
+  <div class="nav-links" id="navLinks">
+    <a href="rooms.html">Rooms</a>
+    <a href="motorbike.html">Motorbike</a>
+    <a href="tours.html">Tours</a>
+    <a href="food.html">Food</a>
+    <a href="services.html" class="active">Services</a>
+    <a href="itinerary.html">Plan Trip</a>
+    <a href="bus-ticket.html">Bus Tickets</a>
+
+    <a href="https://wa.me/84822946888" class="nav-cta" target="_blank">💬 WhatsApp</a>
+  </div>
+  <div class="ham" onclick="document.getElementById('navLinks').classList.toggle('open')">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<div class="pg-head">
+  <div class="eyebrow">In-stay services</div>
+  <h1>Order ahead,<br>wake up to <em>everything ready</em></h1>
+  <p>Pre-order breakfast the night before so Sen can have it fresh on the table. Add coffee, cold drinks, or laundry — then send the whole order in one WhatsApp message.</p>
+</div>
+
+<div class="tabs-wrap">
+  <div class="tabs">
+    <a class="tab active" href="#breakfast">🥣 Breakfast</a>
+    <a class="tab" href="#coffee">☕ Coffee &amp; tea</a>
+    <a class="tab" href="#support">🛎️ Other services</a>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- ───── LEFT COLUMN ───── -->
+  <div>
+
+    <!-- BREAKFAST -->
+    <div id="breakfast" style="scroll-margin-top:130px">
+      <div class="section-label">
+        <div>
+          <div class="section-label-text">🥣 Breakfast Menu</div>
+          <div class="section-label-sub">Served 6:30 – 9:30 am · Pre-order by 9 pm the night before · All dishes 50.000đ</div>
+        </div>
+        <div class="section-label-line"></div>
+      </div>
+      <div class="menu-grid" id="breakfastGrid"></div>
+    </div>
+
+    <!-- COFFEE & TEA -->
+    <div id="coffee" style="scroll-margin-top:130px">
+      <div class="section-label" style="margin-top:36px">
+        <div>
+          <div class="section-label-text">☕ Coffee &amp; Tea</div>
+          <div class="section-label-sub">Espresso machine · Cao Bang specialty beans · Available all day</div>
+        </div>
+        <div class="section-label-line"></div>
+      </div>
+      <div class="coffee-grid" id="coffeeGrid"></div>
+    </div>
+
+    <!-- OTHER SERVICES -->
+    <div id="support" style="scroll-margin-top:130px">
+      <div class="section-label" style="margin-top:36px">
+        <div>
+          <div class="section-label-text">🛎️ Other services</div>
+          <div class="section-label-sub">Drinks · Laundry · Taxi · Luggage storage</div>
+        </div>
+        <div class="section-label-line"></div>
+      </div>
+
+      <div class="support-grid">
+
+        <!-- DRINKS -->
+        <div class="support-card" style="flex-direction:column;padding:0;overflow:hidden">
+          <div style="padding:14px 16px 12px;border-bottom:1px solid var(--line)">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:2px">
+              <div class="support-icon">🥤</div>
+              <div>
+                <div class="support-name">Drinks &amp; Beverages</div>
+                <div class="support-desc">Cold drinks from the fridge · Pay at check-out</div>
+              </div>
+            </div>
+          </div>
+          <div id="drinksList" style="padding:8px 8px 10px"></div>
+        </div>
+
+        <!-- LAUNDRY -->
+        <div class="support-card" style="flex-direction:column;padding:0;overflow:hidden">
+          <div style="padding:14px 16px 12px;border-bottom:1px solid var(--line)">
+            <div style="display:flex;align-items:center;gap:10px">
+              <div class="support-icon">🧺</div>
+              <div>
+                <div class="support-name">Laundry Service</div>
+                <div class="support-desc">Drop off in the morning · Weighed &amp; priced after washing</div>
+              </div>
+            </div>
+          </div>
+          <div style="padding:12px 16px">
+            <table class="laundry-table">
+              <thead>
+                <tr>
+                  <th>Type</th>
+                  <th style="text-align:right">Price</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>Mixed laundry (wash, dry &amp; fold)</td><td class="price-col">30.000đ / kg</td></tr>
+                <tr><td>White shirt (pressed &amp; folded)</td><td class="price-col">8.000đ / piece</td></tr>
+              </tbody>
+            </table>
+            <div class="laundry-note">
+              ⚠️ <strong>Items that cannot be tumble-dried</strong> (wool, silk, sportswear, delicates) — please tell Sen when you drop off. They will be air-dried instead. Pricing stays the same.
+            </div>
+          </div>
+        </div>
+
+        <!-- TAXI -->
+        <div class="support-card">
+          <div class="support-icon">🚕</div>
+          <div class="support-info">
+            <div class="support-name">Taxi Booking</div>
+            <div class="support-desc">Sen calls a trusted local driver. Fare paid directly to driver — no extra charge from Sen.</div>
+          </div>
+        </div>
+
+        <!-- LUGGAGE -->
+        <div class="support-card">
+          <div class="support-icon">🧳</div>
+          <div class="support-info">
+            <div class="support-name">Luggage Storage</div>
+            <div class="support-desc">Leave bags with Sen at reception — pick up any time, even after check-out.</div>
+            <span class="free-badge">Free</span>
+          </div>
+        </div>
+
+        <!-- SPA -->
+        <div class="support-card" style="grid-column:1/-1">
+          <div class="support-icon">💆</div>
+          <div class="support-info">
+            <div class="support-name">Sen's Spa Massage</div>
+            <div class="support-desc">Unwind after a day on the road. Contact Sen directly to get the current menu and <strong style="color:var(--gd)">exclusive guest pricing</strong> — available for homestay guests only.</div>
+          </div>
+          <a href="https://wa.me/84822946888?text=Hi%20Sen!%20I%27d%20like%20to%20know%20more%20about%20the%20spa%20massage%20and%20guest%20pricing." target="_blank" style="display:inline-flex;align-items:center;gap:6px;background:var(--or);color:white;padding:9px 18px;border-radius:50px;font-size:0.78rem;font-weight:500;white-space:nowrap;align-self:center;flex-shrink:0">
+            💬 Get exclusive price
+          </a>
+        </div>
+
+      </div>
+    </div>
+
+  </div><!-- end left column -->
+
+  <!-- ───── RIGHT COLUMN: SUMMARY ───── -->
+  <div>
+    <div class="summary-card">
+      <div class="summary-head">
+        <h3>Your order</h3>
+        <p>Sen confirms via WhatsApp within minutes</p>
+      </div>
+      <div class="summary-body" id="summaryBody">
+        <div class="summary-empty">Choose breakfast, drinks, or services<br>— they'll appear here.</div>
+      </div>
+      <div class="summary-total">
+        <span class="total-label">Total</span>
+        <span class="total-val"><span id="totalText">0đ</span><span class="total-usd" id="totalUsd"></span></span>
+      </div>
+      <div class="schedule">
+        <div>
+          <label class="f-label" for="svcDate">Date</label>
+          <input class="f-input" type="date" id="svcDate" oninput="refreshSummary()">
+        </div>
+        <div>
+          <label class="f-label" for="svcTime">Preferred time (optional)</label>
+          <input class="f-input" type="time" id="svcTime" oninput="refreshSummary()">
+        </div>
+        <div>
+          <label class="f-label" for="svcRoom">Room / your name</label>
+          <input class="f-input" id="svcRoom" placeholder="e.g. Room 3 or your name" oninput="refreshSummary()">
+        </div>
+        <div>
+          <label class="f-label" for="svcNotes">Special requests / notes <span style="font-weight:400;color:var(--tm)">(optional)</span></label>
+          <textarea class="f-input" id="svcNotes" rows="2" placeholder="e.g. no chili, vegetarian pho, allergy to peanuts, no spin dry for silk shirt…" style="resize:none;line-height:1.5" oninput="refreshSummary()"></textarea>
+        </div>
+      </div>
+      <div class="send-wrap">
+        <button class="send-btn" id="sendBtn" disabled onclick="sendWhatsApp()">
+          <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          Send order to Sen →
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end wrap -->
+
+<footer>
+  <p>© 2025 Sen's Homestay · Cao Bang &nbsp;·&nbsp; <a href="https://wa.me/84822946888">WhatsApp</a></p>
+</footer>
+
+<a href="https://wa.me/84822946888" class="waf" target="_blank">
+  <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</a>
+
+<script>
+const USD = 25500;
+const fmtV = n => n.toLocaleString('vi-VN');
+
+// ── DATA ─────────────────────────────────────────────────────
+const BREAKFAST = [
+  {
+    id:'bf-western', name:'Western Breakfast', price:50000,
+    desc:'1-2 breads · 2 eggs (omelet or fried) · sausages · side salad',
+    img:'images/services/bf-western.jpg', emoji:'🍳'
+  },
+  {
+    id:'bf-pancake', name:'Pancake', price:50000,
+    desc:'Pancakes with seasonal fruit · honey, chocolate, or strawberry sauce',
+    img:'images/services/bf-pancake.jpg', emoji:'🥞'
+  },
+  {
+    id:'bf-pho', name:'Pho — Cao Bang', price:50000,
+    desc:'Rich broth · roasted duck, crispy pork belly, grilled meat, or local sausage',
+    img:'images/services/bf-pho.jpg', emoji:'🍜'
+  },
+  {
+    id:'bf-rice-roll', name:'Steamed Rice Rolls', price:50000,
+    desc:'Silky minced-pork rice sheets · bone broth · whole soft-boiled egg · pork sausage',
+    img:'images/services/bf-riceroll.jpg', emoji:'🍙'
+  },
+  {
+    id:'bf-beef', name:'Beef Noodle', price:50000,
+    desc:'Noodle soup with beef and egg in a light, flavorful broth',
+    img:'images/services/bf-beef.jpg', emoji:'🍲'
+  },
+  {
+    id:'bf-yogurt', name:'Yogurt with Oats', price:50000,
+    desc:'Creamy yogurt · rolled oats · seasonal fruit',
+    img:'images/services/bf-yogurt.jpg', emoji:'🥣'
+  },
+];
+
+const COFFEE = [
+  {
+    id:'cf-vn', name:'Vietnamese Brown Coffee', price:35000,
+    desc:'Strong espresso with sweetened condensed milk',
+    img:'images/services/cf-vn.jpg', emoji:'☕'
+  },
+  {
+    id:'cf-long', name:'Long Black', price:35000,
+    desc:'Double espresso topped with hot water',
+    img:'images/services/cf-long.jpg', emoji:'☕'
+  },
+  {
+    id:'cf-bacxiu', name:'Bac Xiu', price:40000,
+    desc:'Milky Vietnamese coffee — light espresso, more milk',
+    img:'images/services/cf-bacxiu.jpg', emoji:'🥛'
+  },
+  {
+    id:'cf-espresso', name:'Espresso', price:30000,
+    desc:'Single shot — Cao Bang specialty beans',
+    img:'images/services/cf-espresso.jpg', emoji:'☕'
+  },
+  {
+    id:'cf-tea', name:'Black Tea', price:25000,
+    desc:'Hot brewed black tea',
+    img:'images/services/cf-tea.jpg', emoji:'🍵'
+  },
+];
+
+const DRINKS = [
+  {id:'dr-ws',  name:'Water — small',   price:10000, desc:'500ml bottle',   emoji:'💧'},
+  {id:'dr-wl',  name:'Water — large',   price:20000, desc:'1.5L bottle',    emoji:'💧'},
+  {id:'dr-cola',name:'Coca-Cola',        price:15000, desc:'330ml can',      emoji:'🥤'},
+  {id:'dr-beer',name:'Beer',             price:20000, desc:'330ml can',      emoji:'🍺'},
+];
+
+// ── STATE ────────────────────────────────────────────────────
+const cart = {}; // id → {qty, name, price}
+const supportCart = {}; // id → {name, price}
+
+// ── BUILD BREAKFAST GRID ─────────────────────────────────────
+function buildBreakfast(){
+  const grid = document.getElementById('breakfastGrid');
+  BREAKFAST.forEach(item => {
+    const card = document.createElement('div');
+    card.className = 'menu-card';
+    card.id = 'card-' + item.id;
+    card.innerHTML = `
+      <div class="mc-check">✓</div>
+      <img loading="lazy" class="mc-img" src="${item.img}" alt="${item.name}"
+           onerror="this.outerHTML='<div class=mc-img-placeholder>${item.emoji}</div>'">
+      <div class="mc-body">
+        <div class="mc-name">${item.name}</div>
+        <div class="mc-desc">${item.desc}</div>
+        <div class="mc-foot">
+          <div class="mc-price">${fmtV(item.price)}đ <small>/ person</small></div>
+          <div class="mc-qty">
+            <button class="mc-btn minus" disabled>−</button>
+            <span class="mc-num">0</span>
+            <button class="mc-btn plus">+</button>
+          </div>
+        </div>
+      </div>
+    `;
+    wireQty(card, item);
+    grid.appendChild(card);
+  });
+}
+
+// ── BUILD COFFEE GRID ─────────────────────────────────────────
+function buildCoffee(){
+  const grid = document.getElementById('coffeeGrid');
+  COFFEE.forEach(item => {
+    const card = document.createElement('div');
+    card.className = 'coffee-card';
+    card.id = 'card-' + item.id;
+    card.innerHTML = `
+      <div class="mc-check">✓</div>
+      <img loading="lazy" class="cc-img" src="${item.img}" alt="${item.name}"
+           onerror="this.outerHTML='<div class=cc-img-placeholder>${item.emoji}</div>'">
+      <div class="cc-body">
+        <div class="cc-name">${item.name}</div>
+        <div class="cc-desc">${item.desc}</div>
+        <div class="cc-foot">
+          <div class="cc-price">${fmtV(item.price)}đ</div>
+          <div class="mc-qty">
+            <button class="mc-btn minus" disabled>−</button>
+            <span class="mc-num">0</span>
+            <button class="mc-btn plus">+</button>
+          </div>
+        </div>
+      </div>
+    `;
+    wireQty(card, item);
+    grid.appendChild(card);
+  });
+}
+
+// ── BUILD DRINKS LIST ─────────────────────────────────────────
+function buildDrinks(){
+  const wrap = document.getElementById('drinksList');
+  DRINKS.forEach(item => {
+    const row = document.createElement('div');
+    row.style.cssText = 'display:grid;grid-template-columns:auto 1fr auto auto;gap:8px;align-items:center;padding:7px 8px;border-radius:8px;transition:background 0.12s';
+    row.innerHTML = `
+      <span style="font-size:1.05rem">${item.emoji}</span>
+      <div>
+        <div style="font-size:0.82rem;font-weight:600;color:var(--tx)">${item.name}</div>
+        <div style="font-size:0.67rem;color:var(--tm)">${item.desc}</div>
+      </div>
+      <div style="font-size:0.82rem;font-weight:700;color:var(--gd);white-space:nowrap">${fmtV(item.price)}đ</div>
+    `;
+    row.id = 'card-' + item.id;
+    const ctrl = document.createElement('div');
+    ctrl.className = 'mc-qty';
+    ctrl.innerHTML = `<button class="mc-btn minus" disabled>−</button><span class="mc-num">0</span><button class="mc-btn plus">+</button>`;
+    row.appendChild(ctrl);
+    wireQtyRaw(ctrl, row, item);
+    wrap.appendChild(row);
+  });
+}
+
+// ── WIRE QTY ─────────────────────────────────────────────────
+function wireQty(card, item){
+  const minus = card.querySelector('.minus');
+  const plus  = card.querySelector('.plus');
+  const num   = card.querySelector('.mc-num');
+  const update = n => {
+    if(n <= 0){ delete cart[item.id]; n = 0; }
+    else cart[item.id] = {qty:n, name:item.name, price:item.price};
+    num.textContent = n;
+    minus.disabled = (n===0);
+    card.classList.toggle('selected', n>0);
+    refreshSummary();
+  };
+  minus.onclick = e => { e.stopPropagation(); update((cart[item.id]?.qty||0)-1); };
+  plus.onclick  = e => { e.stopPropagation(); update((cart[item.id]?.qty||0)+1); };
+}
+
+function wireQtyRaw(ctrl, row, item){
+  const minus = ctrl.querySelector('.minus');
+  const plus  = ctrl.querySelector('.plus');
+  const num   = ctrl.querySelector('.mc-num');
+  const update = n => {
+    if(n<=0){ delete cart[item.id]; n=0; }
+    else cart[item.id] = {qty:n, name:item.name, price:item.price};
+    num.textContent = n;
+    minus.disabled = (n===0);
+    row.style.background = n>0 ? 'rgba(82,183,136,0.07)' : '';
+    refreshSummary();
+  };
+  minus.onclick = () => update((cart[item.id]?.qty||0)-1);
+  plus.onclick  = () => update((cart[item.id]?.qty||0)+1);
+}
+
+// ── SUPPORT (laundry/taxi/luggage) toggle ────────────────────
+function toggleSupport(id, name, price, btn){
+  if(supportCart[id]){
+    delete supportCart[id];
+    btn.textContent = btn.dataset.off || btn.textContent.replace('✓ ','');
+    btn.classList.remove('added');
+  } else {
+    supportCart[id] = {name, price};
+    btn.dataset.off = btn.textContent;
+    btn.textContent = '✓ Added';
+    btn.classList.add('added');
+  }
+  refreshSummary();
+}
+
+// ── SUMMARY ──────────────────────────────────────────────────
+function refreshSummary(){
+  const body = document.getElementById('summaryBody');
+  const totalEl = document.getElementById('totalText');
+  const usdEl   = document.getElementById('totalUsd');
+  const btn     = document.getElementById('sendBtn');
+
+  const allIds = [...Object.keys(cart), ...Object.keys(supportCart)];
+  if(!allIds.length){
+    body.innerHTML = '<div class="summary-empty">Choose breakfast, drinks, or services<br>— they\'ll appear here.</div>';
+    totalEl.textContent = '0đ';
+    usdEl.textContent   = '';
+    btn.disabled = true;
+    return;
+  }
+
+  let total = 0;
+  let html  = '';
+
+  Object.entries(cart).forEach(([id, e]) => {
+    const lt = e.qty * e.price;
+    total += lt;
+    html += `<div class="s-row">
+      <div class="s-name">${e.name}<div class="s-qty">× ${e.qty} × ${fmtV(e.price)}đ</div></div>
+      <div class="s-right">
+        <span class="s-price">${fmtV(lt)}đ</span>
+        <span class="s-rm" onclick="removeCart('${id}')">×</span>
+      </div>
+    </div>`;
+  });
+
+  Object.entries(supportCart).forEach(([id, e]) => {
+    html += `<div class="s-row">
+      <div class="s-name">${e.name}<div class="s-qty">${e.price>0?fmtV(e.price)+'đ':'(free / TBD)'}</div></div>
+      <div class="s-right">
+        <span class="s-price" style="color:var(--gm)">${e.price>0?fmtV(e.price)+'đ':'Free'}</span>
+        <span class="s-rm" onclick="removeSupport('${id}')">×</span>
+      </div>
+    </div>`;
+  });
+
+  body.innerHTML = html;
+  totalEl.textContent = fmtV(total)+'đ';
+  usdEl.textContent   = total>0 ? ` ≈ $${(total/USD).toFixed(2)}` : '';
+  btn.disabled = false;
+}
+
+function removeCart(id){
+  const entry = cart[id];
+  if(!entry) return;
+  delete cart[id];
+  const card = document.getElementById('card-'+id);
+  if(card){
+    card.classList.remove('selected');
+    const num = card.querySelector('.mc-num');
+    if(num) num.textContent = '0';
+    const minus = card.querySelector('.minus');
+    if(minus) minus.disabled = true;
+  }
+  refreshSummary();
+}
+
+function removeSupport(id){
+  delete supportCart[id];
+  const btn = document.getElementById(id+'Btn');
+  if(btn){ btn.textContent = btn.dataset.off||'Add'; btn.classList.remove('added'); }
+  refreshSummary();
+}
+
+// ── SEND ─────────────────────────────────────────────────────
+function sendWhatsApp(){
+  const date  = document.getElementById('svcDate').value;
+  const time  = document.getElementById('svcTime').value;
+  const room  = document.getElementById('svcRoom').value;
+  const notes = document.getElementById('svcNotes').value;
+  const fmtDate = date
+    ? new Date(date+'T00:00:00').toLocaleDateString('en-GB',{weekday:'long',day:'2-digit',month:'long',year:'numeric'})
+    : '';
+
+  let msg = `Hi Sen! I'd like to pre-order some services:\n\n`;
+  if(room)    msg += `🏠 ${room}\n`;
+  if(fmtDate) msg += `📅 ${fmtDate}\n`;
+  if(time)    msg += `🕐 ${time}\n`;
+  if(room||fmtDate||time) msg += `\n`;
+
+  let total = 0;
+  Object.values(cart).forEach(e=>{
+    const lt=e.qty*e.price; total+=lt;
+    msg+=`${e.name} × ${e.qty} = ${fmtV(lt)}đ\n`;
+  });
+  Object.values(supportCart).forEach(e=>{
+    msg+=`${e.name}${e.price>0?' — '+fmtV(e.price)+'đ':' (free)'}\n`;
+    total+=e.price;
+  });
+
+  msg+=`\n💰 Total: ${fmtV(total)}đ`;
+  if(total>0) msg+=` (≈ $${(total/USD).toFixed(2)})`;
+  if(notes) msg+=`\n\n📝 Notes: ${notes}`;
+  msg+=`\n\nThank you Sen!`;
+
+  window.open(`https://wa.me/84822946888?text=${encodeURIComponent(msg)}`, '_blank');
+}
+
+// ── SCROLL TAB HIGHLIGHT ──────────────────────────────────────
+const SECTIONS = ['breakfast','coffee','support'];
+window.addEventListener('scroll',()=>{
+  const top = window.scrollY + 180;
+  let cur = SECTIONS[0];
+  SECTIONS.forEach(s=>{
+    const el=document.getElementById(s);
+    if(el&&el.offsetTop<=top) cur=s;
+  });
+  document.querySelectorAll('.tab').forEach(t=>{
+    t.classList.toggle('active', t.getAttribute('href')==='#'+cur);
+  });
+});
+
+// ── INIT ─────────────────────────────────────────────────────
+buildBreakfast();
+buildCoffee();
+buildDrinks();
+</script>
+</body>
+</html>

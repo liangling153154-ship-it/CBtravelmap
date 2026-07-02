@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tours · Sen's Homestay · Cao Bang</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --green-dark:  #2D6A4F;
+      --green-mid:   #52B788;
+      --green-light: #D8F3DC;
+      --orange:      #E76F51;
+      --orange-dark: #C25B3F;
+      --cream:       #F8F4E9;
+      --brown:       #5C3D2E;
+      --text:        #1a1a1a;
+      --text-muted:  #666;
+      --radius:      16px;
+      --shadow:      0 4px 28px rgba(0,0,0,0.10);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--text); overflow-x: hidden; }
+    img { display: block; width: 100%; object-fit: cover; }
+    a { text-decoration: none; color: inherit; }
+
+    /* NAV */
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 999; display: flex; align-items: center; justify-content: space-between; padding: 18px 48px; background: rgba(255,255,255,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(45,106,79,0.12); transition: box-shadow 0.3s; }
+    nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.10); }
+    .nav-logo { font-family: 'Cormorant Garamond', serif; font-size: 1.15rem; color: var(--green-dark); font-weight: 700; white-space: nowrap; }
+    .nav-logo span { color: var(--orange); }
+    .nav-links { display: flex; gap: 32px; align-items: center; }
+    .nav-links a { font-size: 0.9rem; font-weight: 500; color: var(--brown); transition: color 0.2s; }
+    .nav-links a:hover, .nav-links a.active { color: var(--green-dark); }
+    .nav-cta { background: var(--orange); color: white !important; padding: 10px 22px; border-radius: 50px; font-size: 0.88rem; transition: background 0.2s, transform 0.2s; }
+    .nav-cta:hover { background: var(--orange-dark); transform: translateY(-1px); }
+    .nav-hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; }
+    .nav-hamburger span { width: 24px; height: 2px; background: var(--green-dark); border-radius: 2px; }
+
+    /* HERO */
+    .hero { height: 88vh; min-height: 560px; position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+    .hero-bg { position: absolute; inset: 0; background: #1a3d2a; }
+    .hero-bg img { width: 100%; height: 100%; object-fit: cover; }
+    .hero-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.55) 100%); }
+    .hero-content { position: relative; z-index: 2; padding: 0 24px; }
+    .hero-label { font-size: 0.72rem; letter-spacing: 4px; text-transform: uppercase; color: rgba(255,255,255,0.6); margin-bottom: 16px; display: block; }
+    .hero h1 { font-family: 'Cormorant Garamond', serif; font-size: clamp(3rem, 7vw, 5.5rem); color: white; line-height: 1.05; margin-bottom: 20px; font-weight: 700; }
+    .hero h1 em { color: #a8d5b8; font-style: italic; }
+    .hero-sub { color: rgba(255,255,255,0.7); font-size: 1.05rem; max-width: 480px; margin: 0 auto 36px; line-height: 1.7; }
+    .hero-scroll { color: rgba(255,255,255,0.38); font-size: 0.75rem; letter-spacing: 3px; text-transform: uppercase; animation: bounce 2s infinite; display: block; }
+    @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(7px)} }
+
+    /* STEP 1 */
+    #step1 { padding: 80px 48px 60px; }
+    .step-header { text-align: center; margin-bottom: 44px; }
+    .step-pill { display: inline-flex; align-items: center; gap: 8px; background: var(--green-dark); color: white; font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase; padding: 7px 18px; border-radius: 50px; margin-bottom: 14px; }
+    .step-header h2 { font-family: 'Cormorant Garamond', serif; font-size: clamp(1.8rem, 3.5vw, 2.6rem); color: var(--green-dark); margin-bottom: 8px; }
+    .step-header p { color: var(--text-muted); font-size: 0.92rem; max-width: 460px; margin: 0 auto; line-height: 1.65; }
+    .vehicle-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; max-width: 1100px; margin: 0 auto; }
+    .vehicle-btn { background: white; border: 2px solid rgba(45,106,79,0.15); border-radius: var(--radius); padding: 28px 20px; text-align: center; cursor: pointer; transition: all 0.25s; }
+    .vehicle-btn:hover { border-color: var(--green-dark); transform: translateY(-4px); box-shadow: 0 12px 32px rgba(45,106,79,0.15); }
+    .vehicle-btn.active { border-color: var(--green-dark); background: var(--green-dark); transform: translateY(-4px); box-shadow: 0 12px 32px rgba(45,106,79,0.25); }
+    .vehicle-btn.active .vb-name, .vehicle-btn.active .vb-desc { color: white; }
+    .vehicle-btn.active .vb-tag { background: rgba(255,255,255,0.18); color: white; }
+    .vehicle-btn.budget { border-style: dashed; border-color: rgba(45,106,79,0.2); background: var(--cream); }
+    .vehicle-btn.budget.active { background: var(--brown); border-color: var(--brown); border-style: solid; }
+    .vb-icon { font-size: 2.2rem; margin-bottom: 10px; display: block; }
+    .vb-name { font-family: 'Cormorant Garamond', serif; font-size: 1.15rem; font-weight: 700; color: var(--green-dark); margin-bottom: 6px; display: block; }
+    .vb-desc { font-size: 0.78rem; color: var(--text-muted); line-height: 1.55; display: block; }
+    .vb-tag { display: inline-block; margin-top: 10px; font-size: 0.68rem; letter-spacing: 1.5px; text-transform: uppercase; padding: 4px 12px; border-radius: 50px; background: var(--green-light); color: var(--green-dark); font-weight: 600; }
+    .vb-tag.orange { background: rgba(231,111,81,0.1); color: var(--orange-dark); }
+    .vb-tag.muted { background: rgba(92,61,46,0.1); color: var(--brown); }
+    .vehicle-hint { text-align: center; margin-top: 22px; font-size: 0.82rem; color: var(--text-muted); }
+    .vehicle-hint a { color: var(--green-dark); font-weight: 500; text-decoration: underline; text-underline-offset: 3px; }
+
+    /* STEP 2 */
+    #step2 { padding: 0 48px 80px; opacity: 0; transform: translateY(32px); transition: opacity 0.5s ease, transform 0.5s ease; pointer-events: none; }
+    #step2.visible { opacity: 1; transform: none; pointer-events: all; }
+    .step2-header { text-align: center; padding: 56px 0 44px; }
+    .vehicle-confirm { display: inline-flex; align-items: center; gap: 8px; background: var(--green-dark); color: white; padding: 9px 22px; border-radius: 50px; font-size: 0.82rem; font-weight: 500; margin-bottom: 14px; }
+    .step2-header h2 { font-family: 'Cormorant Garamond', serif; font-size: clamp(1.8rem, 3vw, 2.4rem); color: var(--green-dark); }
+
+    /* TOURS GRID */
+    .tours-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 28px; max-width: 1080px; margin: 0 auto; }
+    .tour-card { background: white; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); display: flex; flex-direction: column; transition: transform 0.25s, box-shadow 0.25s; }
+    .tour-card:hover { transform: translateY(-5px); box-shadow: 0 20px 52px rgba(0,0,0,0.12); }
+    .tour-card.span2 { grid-column: span 2; display: grid; grid-template-columns: 5fr 6fr; }
+
+    /* CARD HERO */
+    .card-hero { position: relative; overflow: hidden; height: 260px; background: #1e3a2a; flex-shrink: 0; }
+    .tour-card.span2 .card-hero { height: 100%; min-height: 320px; }
+    .card-hero-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+    .tour-card:hover .card-hero-img { transform: scale(1.04); }
+    .card-hero-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.08) 55%, transparent 100%); }
+    .card-hero-top { position: absolute; top: 14px; left: 14px; display: flex; flex-direction: column; gap: 6px; z-index: 2; }
+    .card-hero-bottom { position: absolute; bottom: 16px; left: 18px; right: 18px; z-index: 2; }
+    .card-duration-days { font-family: 'DM Sans', sans-serif; font-size: 2.8rem; color: white; font-weight: 700; line-height: 1; letter-spacing: -1px; }
+    .card-duration-label { font-size: 0.72rem; color: rgba(255,255,255,0.65); letter-spacing: 2px; text-transform: uppercase; margin-top: 2px; }
+    .cbadge { font-size: 0.68rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 5px 12px; border-radius: 50px; display: inline-block; }
+    .cbadge-pop { background: var(--orange); color: white; }
+    .cbadge-best { background: #FFD166; color: var(--brown); }
+    .cbadge-loop { background: rgba(255,255,255,0.15); color: white; border: 1px solid rgba(255,255,255,0.35); backdrop-filter: blur(4px); }
+    .cbadge-start { background: rgba(255,255,255,0.15); color: white; border: 1px solid rgba(255,255,255,0.25); backdrop-filter: blur(4px); }
+
+    /* CARD BODY */
+    .card-body { padding: 22px 22px 18px; flex: 1; display: flex; flex-direction: column; }
+    .card-title { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; color: var(--green-dark); margin-bottom: 3px; }
+    .card-subtitle { font-size: 0.78rem; color: var(--text-muted); font-style: italic; margin-bottom: 16px; }
+    .day-buttons { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+    .day-btn { background: var(--cream); border: 1.5px solid rgba(45,106,79,0.2); color: var(--green-dark); font-family: 'DM Sans', sans-serif; font-size: 0.75rem; font-weight: 500; padding: 6px 14px; border-radius: 50px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 5px; }
+    .day-btn:hover { background: var(--green-light); border-color: var(--green-dark); }
+    .day-btn .day-km { color: var(--text-muted); font-size: 0.68rem; }
+    .card-pricing { background: var(--cream); border-radius: 10px; padding: 13px 14px; margin-bottom: 14px; }
+    .pricing-lbl { font-size: 0.67rem; text-transform: uppercase; letter-spacing: 2px; color: var(--green-mid); font-weight: 600; margin-bottom: 8px; }
+    .price-row { display: flex; justify-content: space-between; align-items: center; font-size: 0.83rem; margin-bottom: 4px; }
+    .price-row:last-child { margin-bottom: 0; }
+    .price-group { color: var(--text-muted); }
+    .price-val { font-weight: 700; color: var(--green-dark); }
+    .price-usd { font-size: 0.7rem; color: var(--text-muted); font-weight: 400; margin-left: 4px; }
+    .driver-note { background: rgba(92,61,46,0.06); border: 1px solid rgba(92,61,46,0.15); border-radius: 8px; padding: 9px 13px; font-size: 0.76rem; color: var(--brown); margin-bottom: 14px; line-height: 1.5; }
+    .self-drive-note { background: rgba(82,183,136,0.08); border: 1px solid rgba(82,183,136,0.25); border-radius: 8px; padding: 9px 13px; font-size: 0.76rem; color: var(--green-dark); margin-bottom: 14px; line-height: 1.5; }
+    .card-actions { display: flex; gap: 10px; margin-top: auto; }
+    .btn-details { flex: 1; background: white; border: 1.5px solid rgba(45,106,79,0.25); color: var(--green-dark); font-family: 'DM Sans', sans-serif; font-size: 0.82rem; font-weight: 500; padding: 11px; border-radius: 50px; cursor: pointer; transition: all 0.2s; text-align: center; display: flex; align-items: center; justify-content: center; gap: 6px; }
+    .btn-details:hover { background: var(--green-light); border-color: var(--green-dark); }
+    .btn-book { flex: 1; background: var(--orange); color: white; font-family: 'DM Sans', sans-serif; font-size: 0.82rem; font-weight: 500; padding: 11px; border-radius: 50px; border: none; cursor: pointer; transition: background 0.2s, transform 0.2s; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 6px; }
+    .btn-book:hover { background: var(--orange-dark); transform: translateY(-1px); }
+
+    /* LOLO */
+    .lolo-wrap { max-width: 1080px; margin: 24px auto 0; }
+    .lolo-card { background: white; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); display: grid; grid-template-columns: 1fr 2fr; border: 2px dashed rgba(82,183,136,0.3); }
+    .lolo-visual { background: linear-gradient(135deg, #1e4d38, #3d8b6b); display: flex; align-items: center; justify-content: center; padding: 40px; min-height: 200px; }
+    .lolo-visual-inner { text-align: center; color: white; }
+    .lolo-emoji { font-size: 3rem; display: block; margin-bottom: 10px; }
+    .lolo-visual-inner h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; margin-bottom: 5px; }
+    .lolo-visual-inner p { font-size: 0.8rem; color: rgba(255,255,255,0.6); }
+    .lolo-body { padding: 28px; display: flex; flex-direction: column; justify-content: center; }
+    .lolo-body h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; color: var(--green-dark); margin: 10px 0 7px; }
+    .lolo-body > p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.65; margin-bottom: 14px; }
+    .lolo-acts { display: flex; gap: 7px; flex-wrap: wrap; margin-bottom: 16px; }
+    .lolo-act { background: var(--green-light); color: var(--green-dark); font-size: 0.73rem; padding: 5px 11px; border-radius: 50px; }
+    .lolo-prices { margin-bottom: 16px; }
+    .btn-lolo { display: inline-flex; align-items: center; gap: 8px; background: var(--green-dark); color: white; padding: 11px 22px; border-radius: 50px; font-size: 0.83rem; font-weight: 500; transition: background 0.2s; }
+    .btn-lolo:hover { background: #1e4d38; }
+
+    /* MODAL */
+    .modal-overlay { position: fixed; inset: 0; z-index: 1000; background: rgba(0,0,0,0.75); backdrop-filter: blur(6px); display: flex; align-items: center; justify-content: center; padding: 24px; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+    .modal-overlay.open { opacity: 1; pointer-events: all; }
+    .modal { background: white; border-radius: 20px; max-width: 720px; width: 100%; max-height: 88vh; overflow-y: auto; transform: scale(0.95) translateY(20px); transition: transform 0.3s; }
+    .modal-overlay.open .modal { transform: scale(1) translateY(0); }
+    .modal-header { padding: 22px 24px 0; display: flex; justify-content: space-between; align-items: flex-start; }
+    .modal-title { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; color: var(--green-dark); }
+    .modal-sub { font-size: 0.8rem; color: var(--text-muted); margin-top: 3px; }
+    .modal-close { background: var(--cream); border: none; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: background 0.2s; }
+    .modal-close:hover { background: #e0ddd3; }
+    .modal-body { padding: 20px 24px 24px; }
+    .modal-day-tabs { display: flex; gap: 8px; margin-bottom: 18px; flex-wrap: wrap; }
+    .modal-tab { background: var(--cream); border: 1.5px solid rgba(45,106,79,0.2); color: var(--green-dark); font-size: 0.78rem; font-weight: 500; padding: 7px 16px; border-radius: 50px; cursor: pointer; transition: all 0.2s; font-family: 'DM Sans', sans-serif; }
+    .modal-tab.active { background: var(--green-dark); color: white; border-color: var(--green-dark); }
+    .modal-day-meta { background: var(--cream); border-radius: 10px; padding: 12px 14px; margin-bottom: 16px; font-size: 0.82rem; color: var(--text-muted); display: flex; gap: 16px; flex-wrap: wrap; }
+    .modal-day-meta span { display: flex; align-items: center; gap: 5px; }
+    .modal-places { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .modal-place { border-radius: 12px; overflow: hidden; background: var(--green-light); }
+    .modal-place-img { height: 180px; width: 100%; object-fit: cover; }
+    .modal-place-ph { height: 180px; display: flex; align-items: center; justify-content: center; font-size: 2rem; background: var(--green-light); }
+    .modal-place-info { padding: 10px 12px; }
+    .modal-place-name { font-weight: 600; font-size: 0.88rem; color: var(--green-dark); margin-bottom: 3px; }
+    .modal-place-desc { font-size: 0.76rem; color: var(--text-muted); line-height: 1.5; }
+
+    /* INCLUDED */
+    #included { background: var(--green-dark); padding: 72px 48px; }
+    .inc-inner { max-width: 960px; margin: 0 auto; }
+    .section-label { font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase; color: var(--green-mid); margin-bottom: 10px; display: block; }
+    .section-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(1.8rem, 3vw, 2.4rem); color: white; margin-bottom: 36px; }
+    .inc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .inc-col h4 { font-size: 0.7rem; letter-spacing: 2.5px; text-transform: uppercase; font-weight: 600; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .inc-col.yes h4 { color: var(--green-mid); }
+    .inc-col.no h4 { color: rgba(231,111,81,0.8); }
+    .inc-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .inc-list li { display: flex; gap: 10px; font-size: 0.84rem; color: rgba(255,255,255,0.78); line-height: 1.45; }
+    .inc-list li .ico { flex-shrink: 0; }
+    .inc-note { margin-top: 26px; text-align: center; font-size: 0.78rem; color: rgba(255,255,255,0.4); line-height: 1.65; }
+
+    /* DRIVER ONLY */
+    #driver-only { padding: 64px 48px; background: var(--cream); border-top: 1px solid rgba(45,106,79,0.1); }
+    .do-inner { max-width: 840px; margin: 0 auto; text-align: center; }
+    .do-section-label { font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 10px; display: block; }
+    .do-inner h2 { font-family: 'Cormorant Garamond', serif; font-size: clamp(1.5rem, 2.5vw, 2rem); color: var(--brown); margin-bottom: 10px; }
+    .do-inner > p { font-size: 0.87rem; color: var(--text-muted); margin-bottom: 28px; line-height: 1.65; }
+    .do-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; text-align: left; }
+    .do-card { background: white; border-radius: var(--radius); padding: 22px; border: 1.5px solid rgba(92,61,46,0.12); }
+    .do-icon { font-size: 1.6rem; margin-bottom: 10px; }
+    .do-card h4 { font-family: 'Cormorant Garamond', serif; font-size: 1.05rem; color: var(--brown); margin-bottom: 6px; }
+    .do-card p { font-size: 0.78rem; color: var(--text-muted); line-height: 1.55; margin-bottom: 12px; }
+    .do-price { font-size: 0.88rem; font-weight: 700; color: var(--brown); }
+    .do-price span { font-size: 0.72rem; font-weight: 400; color: var(--text-muted); }
+    .do-warning { margin-top: 22px; font-size: 0.78rem; color: var(--text-muted); line-height: 1.65; }
+
+    /* MEMORIES */
+    #memories { padding: 80px 48px; background: white; }
+    .mem-header { text-align: center; margin-bottom: 44px; }
+    .mem-header .mem-label { font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase; color: var(--green-mid); margin-bottom: 10px; display: block; }
+    .mem-header h2 { font-family: 'Cormorant Garamond', serif; font-size: clamp(1.8rem, 3vw, 2.6rem); color: var(--green-dark); margin-bottom: 8px; }
+    .mem-header p { font-size: 0.9rem; color: var(--text-muted); max-width: 380px; margin: 0 auto; line-height: 1.65; }
+    .masonry { columns: 4; column-gap: 14px; max-width: 1200px; margin: 0 auto; }
+    .masonry-item { break-inside: avoid; margin-bottom: 14px; border-radius: 12px; overflow: hidden; cursor: pointer; }
+    .masonry-item img { width: 100%; height: auto; display: block; transition: transform 0.4s ease; }
+    .masonry-item:hover img { transform: scale(1.04); }
+    .masonry-ph { background: var(--green-light); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: var(--green-dark); }
+    .masonry-item:nth-child(4n+1) .masonry-ph { height: 240px; }
+    .masonry-item:nth-child(4n+2) .masonry-ph { height: 180px; }
+    .masonry-item:nth-child(4n+3) .masonry-ph { height: 200px; }
+    .masonry-item:nth-child(4n)   .masonry-ph { height: 160px; }
+
+    /* CTA */
+    #cta { background: linear-gradient(135deg, #1a3d2a, var(--green-dark)); padding: 80px 48px; text-align: center; }
+    #cta .cta-label { font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase; color: var(--green-mid); margin-bottom: 14px; display: block; }
+    #cta h2 { font-family: 'Cormorant Garamond', serif; font-size: clamp(2rem, 4vw, 3rem); color: white; margin-bottom: 14px; }
+    #cta p { color: rgba(255,255,255,0.65); margin-bottom: 36px; font-size: 0.95rem; line-height: 1.65; max-width: 480px; margin-left: auto; margin-right: auto; }
+    .cta-btns { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+    .btn-wa { background: #25D366; color: white; padding: 14px 30px; border-radius: 50px; font-weight: 500; font-size: 0.95rem; display: inline-flex; align-items: center; gap: 10px; box-shadow: 0 4px 20px rgba(37,211,102,0.35); transition: filter 0.2s, transform 0.2s; }
+    .btn-wa:hover { filter: brightness(1.08); transform: translateY(-2px); }
+    .btn-outline { background: transparent; border: 1.5px solid rgba(255,255,255,0.35); color: white; padding: 14px 30px; border-radius: 50px; font-size: 0.95rem; display: inline-flex; align-items: center; gap: 10px; transition: background 0.2s, transform 0.2s; }
+    .btn-outline:hover { background: rgba(255,255,255,0.1); transform: translateY(-2px); }
+
+    footer { background: #0f2419; color: rgba(255,255,255,0.4); text-align: center; padding: 22px; font-size: 0.8rem; }
+    footer a { color: var(--green-mid); }
+    .wa-float { position: fixed; bottom: 28px; right: 28px; width: 56px; height: 56px; background: #25D366; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 20px rgba(37,211,102,0.45); z-index: 998; transition: transform 0.2s; }
+    .wa-float:hover { transform: scale(1.1); }
+    .wa-float svg { width: 28px; fill: white; }
+
+    .fade-in { opacity: 0; transform: translateY(20px); transition: opacity 0.55s ease, transform 0.55s ease; }
+    .fade-in.visible { opacity: 1; transform: none; }
+
+    @media (max-width: 960px) {
+      nav { padding: 16px 24px; }
+      .nav-links { display: none; flex-direction: column; position: absolute; top: 100%; left: 0; right: 0; background: white; padding: 24px; gap: 20px; box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
+      .nav-links.open { display: flex; }
+      .nav-hamburger { display: flex; }
+      .hero { height: 70vh; }
+      #step1 { padding: 56px 24px 40px; }
+      .vehicle-grid { grid-template-columns: 1fr 1fr; max-width: 600px; margin: 0 auto; }
+      #step2 { padding: 0 24px 60px; }
+      .tours-grid { grid-template-columns: 1fr; }
+      .tour-card.span2 { grid-column: span 1; display: flex; flex-direction: column; }
+      .tour-card.span2 .card-hero { min-height: 220px; height: 220px; }
+      .lolo-card { grid-template-columns: 1fr; }
+      .masonry { columns: 2; }
+      #included, #driver-only, #memories, #cta { padding: 52px 24px; }
+      .inc-grid, .do-cards { grid-template-columns: 1fr; }
+      .modal-places { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<nav id="navbar">
+  <a href="index.html" class="nav-logo">Sen's Homestay</a>
+  <div class="nav-links" id="navLinks">
+    <a href="rooms.html">Rooms</a>
+    <a href="motorbike.html">Motorbike</a>
+    <a href="tours.html" class="active">Tours</a>
+    <a href="food.html">Food</a>
+    <a href="services.html">Services</a>
+    <a href="itinerary.html">Plan Trip</a>
+    <a href="bus-ticket.html">Bus Tickets</a>
+
+    <a href="https://wa.me/84822946888" class="nav-cta" target="_blank">💬 WhatsApp</a>
+  </div>
+  <div class="nav-hamburger" id="hamburger" onclick="toggleNav()"><span></span><span></span><span></span></div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-bg">
+    <img loading="lazy" src="images/tours/hero.jpg" alt="Cao Bang Tours" onerror="this.style.display='none';this.insertAdjacentHTML('afterend','<div style=\'position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:monospace;font-size:0.9rem;color:rgba(255,255,255,0.5);\'>images/tours/hero.jpg</div>')">
+  </div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <span class="hero-label">Tours · Cao Bang · Vietnam</span>
+    <h1>Discover Cao Bang<br><em>Your way</em></h1>
+    <p class="hero-sub">Waterfalls, caves, mountain passes, and quiet villages — guided tours built around how you want to travel.</p>
+    <span class="hero-scroll">↓ choose your ride</span>
+  </div>
+</div>
+
+<!-- STEP 1 -->
+<section id="step1">
+  <div class="step-header fade-in">
+    <div class="step-pill">Step 1 · How do you want to travel?</div>
+    <h2>Choose your vehicle</h2>
+    <p>This changes your price and experience. You can always ask Sen to customize anything.</p>
+  </div>
+  <div class="vehicle-grid fade-in">
+    <div class="vehicle-btn" onclick="selectVehicle('car-guide', this)">
+      <span class="vb-icon">🚗</span>
+      <span class="vb-name">Private Car + Guide</span>
+      <span class="vb-desc">Comfortable 4-seat car. English-speaking guide included. Best for couples and families who want zero hassle.</span>
+      <span class="vb-tag">Most comfortable</span>
+    </div>
+    <div class="vehicle-btn" onclick="selectVehicle('easy-rider', this)">
+      <span class="vb-icon">🏍️</span>
+      <span class="vb-name">Easy Rider + Guide</span>
+      <span class="vb-desc">Ride pillion on our guide's motorbike. Immersive, authentic, and adventurous — the classic way to explore.</span>
+      <span class="vb-tag orange">Most adventurous</span>
+    </div>
+    <div class="vehicle-btn budget" onclick="selectVehicle('driver-only', this)">
+      <span class="vb-icon">🚗🏍️</span>
+      <span class="vb-name">Driver Only</span>
+      <span class="vb-desc">Just a driver — no guide, no meals. Car or motorbike. Explore independently at a lower cost.</span>
+      <span class="vb-tag muted">Budget option</span>
+    </div>
+    <div class="vehicle-btn budget" onclick="selectVehicle('self-ride', this)">
+      <span class="vb-icon">🏍️⛽</span>
+      <span class="vb-name">Self-ride Motorbike</span>
+      <span class="vb-desc">Ride your own rented motorbike alongside the tour group with our guide. 20% off the Easy Rider price. Fuel paid by you — Sen handles everything else.</span>
+      <span class="vb-tag" style="background:rgba(231,111,81,0.12);color:#C25B3F;">−20% · Fuel on you</span>
+    </div>
+  </div>
+  <p class="vehicle-hint fade-in">Not sure which to pick? <a href="https://wa.me/84822946888?text=Hi%20Sen!%20I%27m%20not%20sure%20which%20tour%20option%20suits%20me." target="_blank">Ask Sen on WhatsApp</a> — she'll help in 2 minutes.</p>
+</section>
+
+<!-- STEP 2 -->
+<section id="step2">
+  <div class="step2-header">
+    <div class="vehicle-confirm" id="vehicleConfirm">🚗 Private Car + Guide</div>
+    <div class="step-pill" style="margin-bottom:12px;">Step 2 · Pick your duration</div>
+    <h2>Choose your tour</h2>
+  </div>
+
+  <div class="tours-grid">
+
+    <!-- 1 DAY -->
+    <div class="tour-card fade-in">
+      <div class="card-hero">
+        <img loading="lazy" class="card-hero-img" src="images/tours/card-1d.jpg" alt="1 Day Tour" onerror="this.style.opacity='0';var ph=document.createElement('div');ph.style.cssText='position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:monospace;font-size:0.78rem;color:rgba(255,255,255,0.45);';ph.textContent='images/tours/card-1d.jpg';this.parentElement.appendChild(ph);">
+        <div class="card-hero-overlay"></div>
+        <div class="card-hero-top"><span class="cbadge cbadge-start">Quick Start</span></div>
+        <div class="card-hero-bottom">
+          <div class="card-duration-days">1</div>
+          <div class="card-duration-label">Day · ~195km</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <h3 class="card-title">The Classic Day</h3>
+        <p class="card-subtitle">Blacksmith Village · Ban Gioc · Thoongot · Eye Mountain</p>
+        <div class="day-buttons">
+          <button class="day-btn" onclick="openModal('1d',0)">🗺️ See itinerary <span class="day-km">~195km</span></button>
+        </div>
+        <div class="card-pricing">
+          <div class="pricing-lbl" id="pl-1d">Private Car + Guide · Price per person</div>
+          <div id="pr-1d">
+            <div class="price-row"><span class="price-group">1–8 people</span><span class="price-val">1.570.000đ <span class="price-usd">≈ $62</span></span></div>
+          </div>
+        </div>
+        <div class="card-actions">          <a href="https://wa.me/84822946888?text=Hi%20Sen!%20I%27d%20like%20to%20book%20the%201-day%20tour." class="btn-book" target="_blank">💬 Book Now</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2 DAYS -->
+    <div class="tour-card fade-in">
+      <div class="card-hero">
+        <img loading="lazy" class="card-hero-img" src="images/tours/card-2d.jpg" alt="2 Days Tour" onerror="this.style.opacity='0';var ph=document.createElement('div');ph.style.cssText='position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:monospace;font-size:0.78rem;color:rgba(255,255,255,0.45);';ph.textContent='images/tours/card-2d.jpg';this.parentElement.appendChild(ph);">
+        <div class="card-hero-overlay"></div>
+        <div class="card-hero-top"><span class="cbadge cbadge-start">No overnight</span></div>
+        <div class="card-hero-bottom">
+          <div class="card-duration-days">2</div>
+          <div class="card-duration-label">Days · No overnight</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <h3 class="card-title">Two-Day Explorer</h3>
+        <p class="card-subtitle">Cave · Stone Village · Waterfall · Pac Bo</p>
+        <div class="day-buttons">
+          <button class="day-btn" onclick="openModal('2d',0)">🗺️ Day 1 <span class="day-km">~183km</span></button>
+          <button class="day-btn" onclick="openModal('2d',1)">🗺️ Day 2 <span class="day-km">~136km</span></button>
+        </div>
+        <div class="card-pricing">
+          <div class="pricing-lbl" id="pl-2d">Private Car + Guide · Price per person</div>
+          <div id="pr-2d">
+            <div class="price-row"><span class="price-group">1–3 people</span><span class="price-val">3.450.000đ <span class="price-usd">≈ $135</span></span></div>
+            <div class="price-row"><span class="price-group">4–8 people</span><span class="price-val">2.900.000đ <span class="price-usd">≈ $112</span></span></div>
+          </div>
+        </div>
+        <div class="card-actions">          <a href="https://wa.me/84822946888?text=Hi%20Sen!%20I%27d%20like%20to%20book%20the%202-day%20tour." class="btn-book" target="_blank">💬 Book Now</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2D1N -->
+    <div class="tour-card span2 fade-in">
+      <div class="card-hero">
+        <img loading="lazy" class="card-hero-img" src="images/tours/card-2d1n.jpg" alt="2D1N Tour" onerror="this.style.opacity='0';var ph=document.createElement('div');ph.style.cssText='position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:monospace;font-size:0.78rem;color:rgba(255,255,255,0.45);';ph.textContent='images/tours/card-2d1n.jpg';this.parentElement.appendChild(ph);">
+        <div class="card-hero-overlay"></div>
+        <div class="card-hero-top">
+          <span class="cbadge cbadge-pop">⭐ Most Popular</span>
+          <span class="cbadge cbadge-loop" style="margin-top:4px;">Overnight at Ban Gioc</span>
+        </div>
+        <div class="card-hero-bottom">
+          <div class="card-duration-days">2D 1N</div>
+          <div class="card-duration-label">The most popular choice</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <h3 class="card-title">Overnight at Ban Gioc</h3>
+        <p class="card-subtitle">Ba Quang Panorama · Nguom Ngao Cave · Stone Village · Ban Gioc · Eye Mountain</p>
+        <div class="day-buttons">
+          <button class="day-btn" onclick="openModal('2d1n',0)">🗺️ Day 1 <span class="day-km">~124km</span></button>
+          <button class="day-btn" onclick="openModal('2d1n',1)">🗺️ Day 2 <span class="day-km">~114km</span></button>
+        </div>
+        <div class="card-pricing">
+          <div class="pricing-lbl" id="pl-2d1n">Private Car + Guide · Price per person · Overnight included</div>
+          <div id="pr-2d1n">
+            <div class="price-row"><span class="price-group">1–3 people</span><span class="price-val">3.580.000đ <span class="price-usd">≈ $140</span></span></div>
+            <div class="price-row"><span class="price-group">4–8 people</span><span class="price-val">2.950.000đ <span class="price-usd">≈ $115</span></span></div>
+          </div>
+        </div>
+        <div class="card-actions">          <a href="https://wa.me/84822946888?text=Hi%20Sen!%20I%27d%20like%20to%20book%20the%202D1N%20tour." class="btn-book" target="_blank">💬 Book Now</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3D2N -->
+    <div class="tour-card fade-in">
+      <div class="card-hero">
+        <img loading="lazy" class="card-hero-img" src="images/tours/card-3d2n.jpg" alt="3D2N Tour" onerror="this.style.opacity='0';var ph=document.createElement('div');ph.style.cssText='position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:monospace;font-size:0.78rem;color:rgba(255,255,255,0.45);';ph.textContent='images/tours/card-3d2n.jpg';this.parentElement.appendChild(ph);">
+        <div class="card-hero-overlay"></div>
+        <div class="card-hero-top"><span class="cbadge cbadge-best">🏆 Bestseller</span></div>
+        <div class="card-hero-bottom">
+          <div class="card-duration-days">3D 2N</div>
+          <div class="card-duration-label">Best seller · 2 overnights</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <h3 class="card-title">The Full Experience</h3>
+        <p class="card-subtitle">Valley · Lake · Cave · Panorama · Waterfall · Viewpoint</p>
+        <div class="day-buttons">
+          <button class="day-btn" onclick="openModal('3d2n',0)">🗺️ Day 1 <span class="day-km">~136km</span></button>
+          <button class="day-btn" onclick="openModal('3d2n',1)">🗺️ Day 2 <span class="day-km">~124km</span></button>
+          <button class="day-btn" onclick="openModal('3d2n',2)">🗺️ Day 3 <span class="day-km">~102km</span></button>
+        </div>
+        <div class="card-pricing">
+          <div class="pricing-lbl" id="pl-3d2n">Private Car + Guide · Price per person · 2 nights included</div>
+          <div id="pr-3d2n">
+            <div class="price-row"><span class="price-group">1–3 people</span><span class="price-val">5.150.000đ <span class="price-usd">≈ $202</span></span></div>
+            <div class="price-row"><span class="price-group">4–8 people</span><span class="price-val">4.550.000đ <span class="price-usd">≈ $176</span></span></div>
+          </div>
+        </div>
+        <div class="card-actions">          <a href="https://wa.me/84822946888?text=Hi%20Sen!%20I%27d%20like%20to%20book%20the%203D2N%20tour." class="btn-book" target="_blank">💬 Book Now</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4D3N -->
+    <div class="tour-card fade-in">
+      <div class="card-hero">
+        <img loading="lazy" class="card-hero-img" src="images/tours/card-4d3n.jpg" alt="4D3N Tour" onerror="this.style.opacity='0';var ph=document.createElement('div');ph.style.cssText='position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:monospace;font-size:0.78rem;color:rgba(255,255,255,0.45);';ph.textContent='images/tours/card-4d3n.jpg';this.parentElement.appendChild(ph);">
+        <div class="card-hero-overlay"></div>
+        <div class="card-hero-top"><span class="cbadge cbadge-loop">🗺️ Cao Bang Loop</span></div>
+        <div class="card-hero-bottom">
+          <div class="card-duration-days">4D 3N</div>
+          <div class="card-duration-label">The full loop · 3 overnights</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <h3 class="card-title">Cao Bang Loop</h3>
+        <p class="card-subtitle">The complete Cao Bang — bamboo forest, mountain pass, tea hills</p>
+        <div class="day-buttons">
+          <button class="day-btn" onclick="openModal('4d3n',0)">🗺️ Day 1 <span class="day-km">~124km</span></button>
+          <button class="day-btn" onclick="openModal('4d3n',1)">🗺️ Day 2 <span class="day-km">~149km</span></button>
+          <button class="day-btn" onclick="openModal('4d3n',2)">🗺️ Day 3 <span class="day-km">~69km</span></button>
+          <button class="day-btn" onclick="openModal('4d3n',3)">🗺️ Day 4 <span class="day-km">~144km</span></button>
+        </div>
+        <div class="card-pricing">
+          <div class="pricing-lbl" id="pl-4d3n">Private Car + Guide · Price per person · 3 nights included</div>
+          <div id="pr-4d3n">
+            <div class="price-row"><span class="price-group">1–3 people</span><span class="price-val">4.910.000đ <span class="price-usd">≈ $193</span></span></div>
+            <div class="price-row"><span class="price-group">4–8 people</span><span class="price-val">6.150.000đ <span class="price-usd">≈ $237</span></span></div>
+          </div>
+        </div>
+        <div class="card-actions">          <a href="https://wa.me/84822946888?text=Hi%20Sen!%20I%27d%20like%20to%20book%20the%204D3N%20Cao%20Bang%20Loop." class="btn-book" target="_blank">💬 Book Now</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- LOLO -->
+  <div class="lolo-wrap fade-in">
+    <div class="lolo-card">
+      <div class="lolo-visual" style="position:relative;overflow:hidden;">
+        <img loading="lazy" src="images/tours/card-lolo.jpg" alt="Lolo Village"
+             style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:1;"
+             onerror="this.style.display='none'">
+        <div style="position:absolute;inset:0;background:linear-gradient(to top, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.15) 100%);"></div>
+        <div class="lolo-visual-inner" style="position:relative;z-index:2;">
+          <h3>Lolo Village</h3>
+          <p>3 Days · 2 Nights · Car or Motorbike</p>
+        </div>
+      </div>
+      <div class="lolo-body">
+        <span class="cbadge cbadge-pop" style="width:fit-content;">✨ New Experience</span>
+        <h3>Life in a Lolo Village</h3>
+        <p>Step into the daily life of the Lolo ethnic minority — one of Cao Bang's most unique communities. Weave, cook, hike, and share meals with the villagers.</p>
+        <div class="lolo-acts">
+          <span class="lolo-act">🧵 Weaving cloth</span>
+          <span class="lolo-act">🪓 Chopping wood</span>
+          <span class="lolo-act">🍳 Cooking together</span>
+          <span class="lolo-act">🐄 Feeding animals</span>
+          <span class="lolo-act">🥾 Village hiking</span>
+        </div>
+        <div class="lolo-prices">
+          <div class="price-row"><span class="price-group" style="font-size:0.82rem;">Per person</span><span class="price-val">5.850.000đ <span class="price-usd">≈ $229</span></span></div>
+        </div>
+        <a href="https://wa.me/84822946888?text=Hi%20Sen!%20I%27m%20interested%20in%20the%20Lolo%20Village%20experience." class="btn-lolo" target="_blank">💬 Ask Sen for details</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INCLUDED -->
+<section id="included">
+  <div class="inc-inner fade-in">
+    <span class="section-label">What's covered</span>
+    <h2 class="section-title">Included & Not Included</h2>
+    <div class="inc-grid">
+      <div class="inc-col yes">
+        <h4>✅ Included in all full tours</h4>
+        <ul class="inc-list">
+          <li><span class="ico">🎟️</span> Entrance tickets to all attractions</li>
+          <li><span class="ico">🍳</span> Breakfast and lunch <em style="color:var(--text-muted);font-size:0.78rem;">(dinner included only on overnight tours)</em></li>
+          <li><span class="ico">💧</span> One bottle of water per person per day</li>
+          <li><span class="ico">👨‍🦯</span> Experienced local guide (Easy Rider & Car+Guide)</li>
+          <li><span class="ico">⛽</span> Vehicle and fuel</li>
+          <li><span class="ico">🛏️</span> Overnight accommodation (2D1N and longer)</li>
+          <li><span class="ico">🌧️</span> Raincoat and helmet (motorbike tours)</li>
+          <li><span class="ico">📋</span> Flexible schedule — adjustable to your needs</li>
+        </ul>
+      </div>
+      <div class="inc-col no">
+        <h4>❌ Not included</h4>
+        <ul class="inc-list">
+          <li><span class="ico">🥤</span> Drinks during meals and on the road</li>
+          <li><span class="ico">🗣️</span> English-speaking guide: +300.000đ/day (optional)</li>
+          <li><span class="ico">🚌</span> Sleeper bus tickets (if needed)</li>
+          <li><span class="ico">💸</span> Tips for driver or guide</li>
+          <li><span class="ico">🧺</span> Personal expenses (laundry, shopping, etc.)</li>
+        </ul>
+      </div>
+    </div>
+    <p class="inc-note">👶 Children 8 and under receive 20% off all packages &nbsp;·&nbsp; 🛵 Self-drive tours are discounted 20% on all packages</p>
+  </div>
+</section>
+
+<!-- DRIVER ONLY -->
+<section id="driver-only">
+  <div class="do-inner">
+    <span class="do-section-label">Budget options</span>
+    <h2>Just need a ride?</h2>
+    <p>No guide, no meals — just a driver who takes you where you want to go. Best if you prefer to eat local and explore at your own pace.</p>
+    <div class="do-cards fade-in">
+      <div class="do-card">
+        <div class="do-icon">🚗</div>
+        <h4>Driver Only · Car</h4>
+        <p>Private 4-seat car + experienced driver. Communicates via Google Translate. Follow our itinerary or choose your own spots.</p>
+        <div class="do-price">1.900.000đ / day <span>· for the whole vehicle (up to 4 people)</span></div>
+      </div>
+      <div class="do-card">
+        <div class="do-icon">🏍️</div>
+        <h4>Driver Only · Motorbike</h4>
+        <p>A driver takes you on his motorbike. Flexible, affordable, and gets you everywhere. No English guide — communication by gesture and translate apps.</p>
+        <div class="do-price">Contact Sen <span>· price depends on route & duration</span></div>
+      </div>
+    </div>
+    <p class="do-warning">⚠️ Meals, entrance fees, and personal expenses are not covered. Sen can recommend the best local spots to eat along the route.</p>
+  </div>
+</section>
+
+<!-- MEMORIES -->
+<section id="memories">
+  <div class="mem-header fade-in">
+    <span class="mem-label">Real experiences</span>
+    <h2>Tourists' Memories</h2>
+    <p>Moments captured by our guests on the road through Cao Bang.</p>
+  </div>
+  <div class="masonry fade-in" id="memoriesGrid"></div>
+</section>
+
+<!-- CTA -->
+<section id="cta">
+  <span class="cta-label">Ready to explore?</span>
+  <h2>Message Sen to book</h2>
+  <p>All tours are fully customizable. Tell Sen your dates, group size, and preferences — she'll put together the perfect itinerary.</p>
+  <div class="cta-btns">
+    <a href="https://wa.me/84822946888?text=Hi%20Sen!%20I%27d%20like%20to%20book%20a%20tour%20in%20Cao%20Bang." class="btn-wa" target="_blank">
+      <svg viewBox="0 0 24 24" fill="white" width="20"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      WhatsApp Sen
+    </a>
+    <a href="rooms.html" class="btn-outline">🛏️ View Rooms</a>
+  </div>
+</section>
+
+<footer>
+  <p>© 2025 Sen's Homestay · Cao Bang, Vietnam &nbsp;·&nbsp; <a href="https://wa.me/84822946888" target="_blank">WhatsApp</a> &nbsp;·&nbsp; Made with ❤️ in Cao Bang</p>
+</footer>
+
+<a href="https://wa.me/84822946888" class="wa-float" target="_blank">
+  <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</a>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+  <div class="modal" id="modal">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title" id="modalTitle"></div>
+        <div class="modal-sub" id="modalSub"></div>
+      </div>
+      <button class="modal-close" onclick="closeModalDirect()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-day-tabs" id="modalTabs"></div>
+      <div class="modal-day-meta" id="modalMeta"></div>
+      <div class="modal-places" id="modalPlaces"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // NAV
+  window.addEventListener('scroll', () => document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 40));
+  function toggleNav() { document.getElementById('navLinks').classList.toggle('open'); }
+
+  // FADE IN
+  const obs = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }), { threshold: 0.07 });
+  document.querySelectorAll('.fade-in').forEach(el => obs.observe(el));
+
+  // TOUR DATA
+  const tourData = {
+    '1d': { title: 'The Classic Day', days: [
+      { label:'Full Day', km:'~195km', depart:'7:30 AM', back:'5–6 PM', places:[
+        { name:'Blacksmith Village', desc:'Traditional Nung An people blacksmith craft village — watch artisans forge tools by hand', img:'images/places/blacksmith.jpg', emoji:'🔨', pos:'center 35%' },
+        { name:'Ban Gioc Waterfall', desc:'Vietnam\'s most spectacular waterfall straddling the China border', img:'images/places/ban-gioc.jpg', emoji:'💧' },
+        { name:'Thoongot Viewpoint', desc:'Panoramic mountain viewpoint — 10–15 min hike to the top', img:'images/places/thoongot.jpg', emoji:'🏔️' },
+        { name:'Eye Mountain Angel', desc:'Famous natural rock formation that looks like a giant eye from the valley below', img:'images/places/eye-mountain.jpg', emoji:'👁️' },
+      ]}
+    ]},
+    '2d': { title:'Two-Day Explorer', days:[
+      { label:'Day 1', km:'~183km', night:'Return to city', places:[
+        { name:'Blacksmith Village', desc:'Traditional Nung An people blacksmith craft village', img:'images/places/blacksmith.jpg', emoji:'🔨', pos:'center 35%' },
+        { name:'Nguom Ngao Cave', desc:'Stunning ancient cave with spectacular stalactites and underground streams', img:'images/places/nguom-ngao.jpg', emoji:'🪨' },
+        { name:'Stone Village', desc:'Remote village nestled deep among karst limestone formations', img:'images/places/stone-village.jpg', emoji:'🏘️' },
+        { name:'Ban Gioc Waterfall', desc:'Vietnam\'s most spectacular waterfall on the China border', img:'images/places/ban-gioc.jpg', emoji:'💧' },
+        { name:'Thoongot Viewpoint', desc:'Panoramic mountain viewpoint — short hike required', img:'images/places/thoongot.jpg', emoji:'🏔️' },
+      ]},
+      { label:'Day 2', km:'~136km', night:'Return to city', places:[
+        { name:'Eye Mountain Angel', desc:'Famous natural rock formation with a giant eye shape', img:'images/places/eye-mountain.jpg', emoji:'👁️' },
+        { name:'Thang Hen Lake', desc:'Serene turquoise lake surrounded by karst mountains', img:'images/places/thang-hen.jpg', emoji:'🏞️' },
+        { name:'Lung Luong Valley', desc:'Sweeping valley with terraced rice fields and morning mist', img:'images/places/lung-luong.jpg', emoji:'🌾' },
+        { name:'Pac Bo', desc:'Historic revolutionary site with peaceful jungle streams', img:'images/places/pac-bo.jpg', emoji:'🌿' },
+      ]},
+    ]},
+    '2d1n': { title:'Overnight at Ban Gioc', days:[
+      { label:'Day 1', km:'~124km', night:'Night at Stone Village', places:[
+        { name:'Blacksmith Village', desc:'Traditional Nung An people blacksmith craft village', img:'images/places/blacksmith.jpg', emoji:'🔨', pos:'center 35%' },
+        { name:'Ba Quang Panorama', desc:'Sweeping panoramic viewpoint over the karst landscape', img:'images/places/ba-quang.jpg', emoji:'🏔️' },
+        { name:'Nguom Ngao Cave', desc:'Stunning ancient cave with spectacular stalactites', img:'images/places/nguom-ngao.jpg', emoji:'🪨' },
+        { name:'Stone Village', desc:'Remote village — overnight stay here among the limestone peaks', img:'images/places/stone-village.jpg', emoji:'🛏️' },
+      ]},
+      { label:'Day 2', km:'~114km', night:'Return to city', places:[
+        { name:'Phat Tich Pagoda', desc:'Beautiful ancient pagoda perched in the mountains', img:'images/places/phat-tich.jpg', emoji:'🛕' },
+        { name:'Ban Gioc Waterfall', desc:'Vietnam\'s most spectacular waterfall on the China border', img:'images/places/ban-gioc.jpg', emoji:'💧' },
+        { name:'Thoongot Viewpoint', desc:'Panoramic mountain viewpoint — short hike required', img:'images/places/thoongot.jpg', emoji:'🏔️' },
+        { name:'Eye Mountain Angel', desc:'Famous natural rock formation with a giant eye shape', img:'images/places/eye-mountain.jpg', emoji:'👁️' },
+      ]},
+    ]},
+    '3d2n': { title:'The Full Experience', days:[
+      { label:'Day 1', km:'~136km', night:'Night at Homestay', places:[
+        { name:'Pac Bo', desc:'Historic revolutionary site with peaceful jungle streams', img:'images/places/pac-bo.jpg', emoji:'🌿' },
+        { name:'Lung Luong Valley', desc:'Sweeping valley with terraced rice fields', img:'images/places/lung-luong.jpg', emoji:'🌾' },
+        { name:'Eye Mountain Angel', desc:'Famous natural rock formation', img:'images/places/eye-mountain.jpg', emoji:'👁️' },
+        { name:'Thang Hen Lake', desc:'Serene turquoise lake surrounded by karst mountains', img:'images/places/thang-hen.jpg', emoji:'🏞️' },
+      ]},
+      { label:'Day 2', km:'~124km', night:'Night at Stone Village', places:[
+        { name:'Blacksmith Village', desc:'Traditional Nung An people blacksmith craft village', img:'images/places/blacksmith.jpg', emoji:'🔨', pos:'center 35%' },
+        { name:'Ba Quang Panorama', desc:'Sweeping panoramic viewpoint over the karst landscape', img:'images/places/ba-quang.jpg', emoji:'🏔️' },
+        { name:'Nguom Ngao Cave', desc:'Stunning ancient cave with spectacular stalactites', img:'images/places/nguom-ngao.jpg', emoji:'🪨' },
+        { name:'Stone Village', desc:'Remote village — overnight stay here', img:'images/places/stone-village.jpg', emoji:'🛏️' },
+      ]},
+      { label:'Day 3', km:'~102km', night:'Return to city', places:[
+        { name:'Phat Tich Pagoda', desc:'Beautiful ancient pagoda in the mountains', img:'images/places/phat-tich.jpg', emoji:'🛕' },
+        { name:'Ban Gioc Waterfall', desc:'Vietnam\'s most spectacular waterfall', img:'images/places/ban-gioc.jpg', emoji:'💧' },
+        { name:'Thoongot Viewpoint', desc:'Panoramic mountain viewpoint', img:'images/places/thoongot.jpg', emoji:'🏔️' },
+      ]},
+    ]},
+    '4d3n': { title:'Cao Bang Loop', days:[
+      { label:'Day 1', km:'~124km', night:'Night at Stone Village', places:[
+        { name:'Blacksmith Village', desc:'Traditional Nung An people blacksmith craft village', img:'images/places/blacksmith.jpg', emoji:'🔨', pos:'center 35%' },
+        { name:'Ba Quang Panorama', desc:'Sweeping panoramic viewpoint', img:'images/places/ba-quang.jpg', emoji:'🏔️' },
+        { name:'Ban Gioc Waterfall', desc:'Vietnam\'s most spectacular waterfall', img:'images/places/ban-gioc.jpg', emoji:'💧' },
+        { name:'Phat Tich Pagoda', desc:'Beautiful ancient pagoda', img:'images/places/phat-tich.jpg', emoji:'🛕' },
+      ]},
+      { label:'Day 2', km:'~149km', night:'Night at PacBo Homestay', places:[
+        { name:'Nguom Ngao Cave', desc:'Stunning ancient cave with spectacular stalactites', img:'images/places/nguom-ngao.jpg', emoji:'🪨' },
+        { name:'Thoongot Viewpoint', desc:'Panoramic mountain viewpoint', img:'images/places/thoongot.jpg', emoji:'🏔️' },
+        { name:'Eye Mountain Angel', desc:'Famous natural rock formation', img:'images/places/eye-mountain.jpg', emoji:'👁️' },
+        { name:'Thang Hen Lake', desc:'Serene turquoise lake', img:'images/places/thang-hen.jpg', emoji:'🏞️' },
+        { name:'Lung Luong Valley', desc:'Sweeping valley with terraced rice fields', img:'images/places/lung-luong.jpg', emoji:'🌾' },
+      ]},
+      { label:'Day 3', km:'~69km', night:'Night at Khau Coc Cha', places:[
+        { name:'Pac Bo', desc:'Historic revolutionary site', img:'images/places/pac-bo.jpg', emoji:'🌿' },
+        { name:'Kim Dong Historical Site', desc:'Important historical landmark of the revolution', img:'images/places/kim-dong.jpg', emoji:'🏛️' },
+        { name:'Khau Coc Cha Pass', desc:'Dramatic mountain pass with stunning panoramic views', img:'images/places/khau-coc-cha.jpg', emoji:'⛰️' },
+      ]},
+      { label:'Day 4', km:'~144km', night:'Return to city', places:[
+        { name:'Nguyen Binh Bamboo Forest', desc:'Magical dense bamboo forest — peaceful and otherworldly', img:'images/places/bamboo.jpg', emoji:'🎋' },
+        { name:'Phia Oac Peak', desc:'Cloud-covered mountain peak with misty panoramic views', img:'images/places/phia-oac.jpg', emoji:'🌫️' },
+        { name:'Kolia Tea Hills', desc:'Rolling green tea plantations cascading down hillsides', img:'images/places/kolia-tea.jpg', emoji:'🍃' },
+      ]},
+    ]},
+  };
+
+  // PRICING
+  const vehicleNames = { 'car-guide':'🚗 Private Car + Guide', 'easy-rider':'🏍️ Easy Rider + Guide', 'driver-only':'🚗🏍️ Driver Only', 'self-ride':'🏍️⛽ Self-ride Motorbike' };
+  const pricing = {
+    'car-guide': { lbl:'Private Car + Guide · Price per person',
+      '1d':[{g:'1–8 people',p:'1.570.000đ',u:'≈ $62'}],
+      '2d':[{g:'1–3 people',p:'3.450.000đ',u:'≈ $135'},{g:'4–8 people',p:'2.900.000đ',u:'≈ $112'}],
+      '2d1n':[{g:'1–3 people',p:'3.580.000đ',u:'≈ $140'},{g:'4–8 people',p:'2.950.000đ',u:'≈ $115'}],
+      '3d2n':[{g:'1–3 people',p:'5.150.000đ',u:'≈ $202'},{g:'4–8 people',p:'4.550.000đ',u:'≈ $176'}],
+      '4d3n':[{g:'1–3 people',p:'4.910.000đ',u:'≈ $193'},{g:'4–8 people',p:'6.150.000đ',u:'≈ $237'}],
+    },
+    'easy-rider': { lbl:'Easy Rider + Guide · Price per person',
+      '1d':[{g:'1–8 people',p:'1.570.000đ',u:'≈ $62'}],
+      '2d':[{g:'1–3 people',p:'3.450.000đ',u:'≈ $135'},{g:'4–8 people',p:'2.900.000đ',u:'≈ $112'}],
+      '2d1n':[{g:'1–3 people',p:'3.580.000đ',u:'≈ $140'},{g:'4–8 people',p:'2.950.000đ',u:'≈ $115'}],
+      '3d2n':[{g:'1–3 people',p:'5.150.000đ',u:'≈ $202'},{g:'4–8 people',p:'4.550.000đ',u:'≈ $176'}],
+      '4d3n':[{g:'1–3 people',p:'4.910.000đ',u:'≈ $193'},{g:'4–8 people',p:'6.150.000đ',u:'≈ $237'}],
+    },
+    'driver-only': { lbl:'Driver Only · No guide, no meals',
+      '1d':[{g:'Car — whole vehicle',p:'1.900.000đ',u:'/ day'},{g:'Motorbike',p:'Contact Sen',u:''}],
+      '2d':[{g:'Car — whole vehicle',p:'1.900.000đ',u:'/ day'},{g:'Motorbike',p:'Contact Sen',u:''}],
+      '2d1n':[{g:'Car — whole vehicle',p:'1.900.000đ',u:'/ day'},{g:'Motorbike',p:'Contact Sen',u:''}],
+      '3d2n':[{g:'Car — whole vehicle',p:'1.900.000đ',u:'/ day'},{g:'Motorbike',p:'Contact Sen',u:''}],
+      '4d3n':[{g:'Car — whole vehicle',p:'1.900.000đ',u:'/ day'},{g:'Motorbike',p:'Contact Sen',u:''}],
+    },
+    'self-ride': { lbl:'Self-ride Motorbike · 20% off · Fuel paid by you',
+      '1d':[{g:'1–8 people',p:'1.256.000đ',u:'≈ $49'}],
+      '2d':[{g:'1–3 people',p:'2.760.000đ',u:'≈ $108'},{g:'4–8 people',p:'2.320.000đ',u:'≈ $90'}],
+      '2d1n':[{g:'1–3 people',p:'2.864.000đ',u:'≈ $112'},{g:'4–8 people',p:'2.360.000đ',u:'≈ $92'}],
+      '3d2n':[{g:'1–3 people',p:'4.120.000đ',u:'≈ $162'},{g:'4–8 people',p:'3.640.000đ',u:'≈ $141'}],
+      '4d3n':[{g:'1–3 people',p:'3.928.000đ',u:'≈ $154'},{g:'4–8 people',p:'4.920.000đ',u:'≈ $190'}],
+    },
+  };
+
+  let currentVehicle = 'car-guide';
+
+  function selectVehicle(key, btn) {
+    document.querySelectorAll('.vehicle-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentVehicle = key;
+    document.getElementById('vehicleConfirm').textContent = vehicleNames[key];
+    ['1d','2d','2d1n','3d2n','4d3n'].forEach(t => {
+      const pl = document.getElementById('pl-' + t);
+      const pr = document.getElementById('pr-' + t);
+      if (!pl || !pr) return;
+      const d = pricing[key];
+      const overnight = t.includes('n') ? ' · Overnight included' : '';
+      pl.textContent = d.lbl + overnight;
+      pr.innerHTML = d[t].map(r =>
+        `<div class="price-row"><span class="price-group">${r.g}</span><span class="price-val">${r.p} <span class="price-usd">${r.u}</span></span></div>`
+      ).join('');
+    });
+    document.querySelectorAll('.driver-note, .self-drive-note').forEach(n => n.remove());
+    if (key === 'easy-rider') {
+      document.querySelectorAll('.card-pricing').forEach(el => {
+        const n = document.createElement('div');
+        n.className = 'self-drive-note';
+        n.innerHTML = '🛵 Prefer to ride yourself? Join our group on your own bike — 20% off. Ask Sen about availability.';
+        el.after(n);
+      });
+    }
+    if (key === 'self-ride') {
+      document.querySelectorAll('.card-pricing').forEach(el => {
+        const n = document.createElement('div');
+        n.className = 'self-drive-note';
+        n.innerHTML = '⛽ Ride your own rented motorbike alongside the tour group with a guide. Price already includes the 20% discount. <strong>Fuel paid by you</strong> — everything else (guide, entrance tickets, lunch) is included as usual.';
+        el.after(n);
+      });
+    }
+    if (key === 'driver-only') {
+      document.querySelectorAll('.card-pricing').forEach(el => {
+        const n = document.createElement('div');
+        n.className = 'driver-note';
+        n.innerHTML = '⚠️ No guide, no meals, no entrance fees. Car rate is per day for the whole vehicle.';
+        el.after(n);
+      });
+    }
+    const step2 = document.getElementById('step2');
+    step2.classList.add('visible');
+    setTimeout(() => step2.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+  }
+
+  // MODAL
+  let currentTour = null, currentDay = 0;
+
+  function openModal(tourKey, dayIdx) {
+    currentTour = tourKey; currentDay = dayIdx;
+    renderModal();
+    document.getElementById('modalOverlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function renderModal() {
+    const tour = tourData[currentTour];
+    document.getElementById('modalTitle').textContent = tour.title;
+    document.getElementById('modalTabs').innerHTML = tour.days.map((d, i) =>
+      `<button class="modal-tab${i===currentDay?' active':''}" onclick="switchDay(${i})">${d.label}</button>`
+    ).join('');
+    renderDay();
+  }
+  function renderDay() {
+    const day = tourData[currentTour].days[currentDay];
+    document.getElementById('modalSub').textContent = `${day.label} · ${day.km} · ${day.night || 'Return to city'}`;
+    document.getElementById('modalMeta').innerHTML =
+      `<span>📏 ${day.km}</span><span>🌙 ${day.night || 'Return to city'}</span>`
+      + (day.depart ? `<span>⏰ Depart ${day.depart}</span>` : '')
+      + (day.back ? `<span>🏠 Back ${day.back}</span>` : '');
+    document.getElementById('modalPlaces').innerHTML = day.places.map(p =>
+      `<div class="modal-place">
+        <img loading="lazy" class="modal-place-img" src="${p.img}" alt="${p.name}"
+             style="object-position:${p.pos || 'center'}"
+             onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="modal-place-ph" style="display:none;font-size:0.72rem;color:var(--text-muted);font-family:monospace;padding:12px;text-align:center;word-break:break-all;">${p.img}</div>
+        <div class="modal-place-info">
+          <div class="modal-place-name">${p.name}</div>
+          <div class="modal-place-desc">${p.desc}</div>
+        </div>
+      </div>`
+    ).join('');
+    document.querySelectorAll('.modal-tab').forEach((t,i) => t.classList.toggle('active', i===currentDay));
+  }
+  function switchDay(idx) { currentDay = idx; renderDay(); }
+  function closeModal(e) { if (e.target === document.getElementById('modalOverlay')) closeModalDirect(); }
+  function closeModalDirect() { document.getElementById('modalOverlay').classList.remove('open'); document.body.style.overflow = ''; }
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModalDirect(); });
+
+  // MEMORIES GALLERY
+  const grid = document.getElementById('memoriesGrid');
+  for (let i = 1; i <= 16; i++) {
+    const num = String(i).padStart(2, '0');
+    const item = document.createElement('div');
+    item.className = 'masonry-item';
+    item.innerHTML = `
+      <img loading="lazy" src="images/memories/${num}.jpg" alt="Tourist memory ${i}"
+           onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="masonry-ph" style="display:none;font-size:0.72rem;color:var(--text-muted);font-family:monospace;padding:16px;text-align:center;">images/memories/${num}.jpg</div>`;
+    grid.appendChild(item);
+  }
+
+  // DEFAULT: Car+Guide selected on load, step2 visible immediately
+  const defaultBtn = document.querySelector('.vehicle-btn');
+  selectVehicle('car-guide', defaultBtn);
+  // show step2 without scroll
+  document.getElementById('step2').classList.add('visible');
+  document.getElementById('step2').style.transition = 'none';
+
+</script>
+</body>
+</html>

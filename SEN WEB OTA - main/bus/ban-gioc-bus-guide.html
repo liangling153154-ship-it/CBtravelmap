@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="theme-color" content="#2D6A4F"/>
+<title>Hoa Binh Bus · Direct to Ban Gioc · Sen's Homestay</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* Editorial Luxury — Sen palette, warmer */
+  --gd:    #1F4A37;        /* deep espresso green */
+  --gm:    #52B788;
+  --gl:    #D8F3DC;
+  --or:    #C25B3F;        /* burnt terracotta */
+  --or2:   #E76F51;
+  --cr:    #F8F4E9;        /* warm cream */
+  --cr-d:  #EFE8D4;        /* deeper paper */
+  --paper: #FDFBF5;        /* lightest */
+  --brown: #2A1E14;
+  --ink:   #14110D;
+  --tx:    #1a1a1a;
+  --tm:    #6a5f50;
+  --line:  rgba(31,74,55,0.10);
+  --line2: rgba(31,74,55,0.18);
+  --ease:  cubic-bezier(0.32,0.72,0,1);
+  --ease2: cubic-bezier(0.22,1,0.36,1);
+}
+*,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Plus Jakarta Sans', 'DM Sans', sans-serif;
+  background: var(--cr);
+  color: var(--tx); line-height: 1.6;
+  overflow-x: hidden; -webkit-font-smoothing: antialiased;
+  letter-spacing: -0.005em;
+}
+a { text-decoration: none; color: inherit; }
+button { font-family: inherit; cursor: pointer; border: none; background: none; }
+img, video { display: block; max-width: 100%; }
+
+/* ── FILM GRAIN OVERLAY ──────────────────────────────────── */
+body::after {
+  content: '';
+  position: fixed; inset: 0; z-index: 200;
+  pointer-events: none;
+  opacity: 0.045;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ── NAV — Fluid Island ──────────────────────────────────── */
+nav {
+  position: fixed; top: 18px; left: 50%; transform: translateX(-50%);
+  z-index: 100;
+  display: flex; align-items: center; gap: 14px;
+  padding: 8px 8px 8px 22px;
+  background: rgba(253,251,245,0.72);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(31,74,55,0.08);
+  border-radius: 999px;
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.6) inset,
+    0 12px 40px -12px rgba(31,74,55,0.18),
+    0 2px 6px rgba(31,74,55,0.04);
+  max-width: calc(100vw - 32px);
+}
+.nav-logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 0.95rem; color: var(--gd); font-weight: 700;
+  white-space: nowrap; line-height: 1; letter-spacing: -0.01em;
+  display: flex; align-items: baseline; gap: 8px;
+}
+.nav-logo i { font-style: italic; color: var(--or); font-weight: 600; }
+.nav-logo small {
+  display: inline-block; font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.55rem; color: var(--tm); font-weight: 500;
+  letter-spacing: 0.22em; text-transform: uppercase;
+  padding-left: 10px; margin-left: 4px;
+  border-left: 1px solid rgba(31,74,55,0.15);
+}
+.nav-back {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 0.78rem; color: var(--paper); font-weight: 500;
+  padding: 9px 8px 9px 16px;
+  border-radius: 999px;
+  background: var(--gd);
+  transition: transform 0.5s var(--ease), background 0.4s var(--ease);
+  position: relative;
+}
+.nav-back .arr {
+  width: 22px; height: 22px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.14);
+  display: inline-flex; align-items: center; justify-content: center;
+  margin-left: 8px;
+  transition: transform 0.5s var(--ease), background 0.4s var(--ease);
+}
+.nav-back .arr svg { width: 10px; height: 10px; stroke: white; fill: none; stroke-width: 1.5; }
+.nav-back:hover { background: var(--ink); }
+.nav-back:hover .arr { transform: translate(-2px,1px) scale(1.05); background: rgba(255,255,255,0.22); }
+.nav-back:active { transform: translateX(-50%) scale(0.97); }
+
+/* ── HERO ─────────────────────────────────────────────────── */
+.hero {
+  padding: 140px 40px 80px;
+  position: relative; overflow: hidden;
+  color: white;
+  background-image: url('bus-hero.jpg');
+  background-size: cover;
+  background-position: center;
+  isolation: isolate;
+}
+.hero::before {
+  content: '';
+  position: absolute; inset: 0; z-index: -1;
+  background:
+    radial-gradient(ellipse 70% 55% at 30% 40%, rgba(0,0,0,0.55) 0%, transparent 70%),
+    linear-gradient(170deg, rgba(20,17,13,0.78) 0%, rgba(31,74,55,0.55) 55%, rgba(0,0,0,0.7) 100%);
+}
+.hero::after {
+  content: '';
+  position: absolute; inset: 0; z-index: -1;
+  background: radial-gradient(ellipse 50% 40% at 80% 80%, rgba(231,111,81,0.18) 0%, transparent 60%);
+}
+.hero-inner { position: relative; max-width: 720px; margin: 0 auto; }
+
+/* eyebrow pill */
+.eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 0.62rem; letter-spacing: 0.28em; text-transform: uppercase;
+  font-weight: 500;
+  color: rgba(255,255,255,0.95);
+  padding: 6px 14px 6px 12px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.16);
+  backdrop-filter: blur(10px);
+  margin-bottom: 26px;
+}
+.eyebrow .dot {
+  width: 6px; height: 6px; border-radius: 999px;
+  background: var(--or2);
+  box-shadow: 0 0 0 3px rgba(231,111,81,0.25), 0 0 12px rgba(231,111,81,0.6);
+  animation: pulse 2.4s var(--ease) infinite;
+}
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 0 3px rgba(231,111,81,0.25), 0 0 12px rgba(231,111,81,0.6); }
+  50%      { box-shadow: 0 0 0 6px rgba(231,111,81,0.05), 0 0 18px rgba(231,111,81,0.8); }
+}
+
+.hero h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2.4rem, 6.5vw, 4.6rem);
+  font-weight: 700; line-height: 0.98; margin-bottom: 22px;
+  letter-spacing: -0.03em;
+  text-shadow: 0 2px 32px rgba(0,0,0,0.85), 0 1px 4px rgba(0,0,0,0.6);
+}
+.hero h1 em {
+  font-style: italic; color: #E8C9A0;
+  font-weight: 400;
+  display: block;
+  letter-spacing: -0.02em;
+}
+.hero-sub {
+  font-size: 1rem; color: rgba(255,255,255,0.88);
+  max-width: 480px; line-height: 1.55; margin-bottom: 32px;
+  font-weight: 400;
+  text-shadow: 0 2px 14px rgba(0,0,0,0.7);
+}
+
+.hero-pills { display: flex; gap: 8px; flex-wrap: wrap; }
+.hero-pill {
+  background: rgba(0,0,0,0.35);
+  border: 1px solid rgba(255,255,255,0.18);
+  color: white; font-size: 0.76rem; font-weight: 500;
+  padding: 8px 16px; border-radius: 999px;
+  backdrop-filter: blur(12px);
+  letter-spacing: -0.005em;
+}
+.hero-pill strong { color: #E8C9A0; font-weight: 600; }
+
+/* ── OVERVIEW — Double-Bezel cards ───────────────────────── */
+.overview {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+  max-width: 720px; margin: 36px auto 0;
+}
+.ov-shell {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.14);
+  border-radius: 22px;
+  padding: 5px;
+  backdrop-filter: blur(14px);
+  transition: transform 0.6s var(--ease), background 0.6s var(--ease);
+}
+.ov-shell:hover { transform: translateY(-2px); background: rgba(255,255,255,0.1); }
+.ov-card {
+  background: rgba(0,0,0,0.4);
+  border-radius: 17px;
+  padding: 18px 12px 16px;
+  text-align: center;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
+}
+.ov-val {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.8rem; font-weight: 700; color: #F0D6AE;
+  font-style: italic; line-height: 1;
+  letter-spacing: -0.02em;
+  text-shadow: 0 1px 6px rgba(0,0,0,0.5);
+}
+.ov-label {
+  font-size: 0.62rem;
+  color: rgba(255,255,255,0.7);
+  margin-top: 8px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+/* ── SHARED SECTION HEADERS ───────────────────────────────── */
+.section-label {
+  font-size: 0.6rem; letter-spacing: 0.28em; text-transform: uppercase;
+  color: var(--or); font-weight: 600; margin-bottom: 14px;
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 5px 12px 5px 10px;
+  border-radius: 999px;
+  background: rgba(194,91,63,0.08);
+  border: 1px solid rgba(194,91,63,0.15);
+}
+.section-label::before {
+  content: ''; width: 5px; height: 5px; border-radius: 999px;
+  background: var(--or); flex-shrink: 0;
+}
+
+h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.9rem, 4vw, 2.6rem);
+  color: var(--gd); margin-bottom: 8px; line-height: 1.04;
+  letter-spacing: -0.025em;
+  font-weight: 700;
+}
+h2 em { font-style: italic; color: var(--or); font-weight: 500; }
+.rule { width: 36px; height: 2px; background: var(--or); border-radius: 2px; margin-bottom: 32px; }
+
+/* ── ROUTE SECTION ─────────────────────────────────────────── */
+.routes-sec {
+  background: var(--paper);
+  border-bottom: 1px solid var(--line);
+  position: relative;
+}
+.routes-wrap { max-width: 720px; margin: 0 auto; padding: 80px 40px; }
+.routes-intro {
+  font-size: 1.02rem; color: var(--tm); line-height: 1.65;
+  margin-bottom: 36px; max-width: 560px;
+  font-weight: 400;
+}
+.routes-intro strong { color: var(--ink); font-weight: 600; }
+
+/* Double-Bezel route card */
+.route-card-shell {
+  background: linear-gradient(180deg, rgba(31,74,55,0.04), rgba(31,74,55,0.01));
+  border: 1px solid var(--line);
+  border-radius: 32px;
+  padding: 6px;
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.8) inset,
+    0 30px 60px -30px rgba(31,74,55,0.18),
+    0 8px 20px -10px rgba(31,74,55,0.08);
+}
+.route-card {
+  border-radius: 26px;
+  overflow: hidden;
+  background: var(--paper);
+}
+
+.route-head {
+  padding: 22px 24px;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px; flex-wrap: wrap;
+  background: linear-gradient(135deg, var(--gd) 0%, #163A2A 100%);
+  position: relative; overflow: hidden;
+}
+.route-head::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(ellipse 60% 100% at 100% 0%, rgba(231,111,81,0.18), transparent 60%);
+  pointer-events: none;
+}
+.route-head-left { display: flex; align-items: center; gap: 14px; position: relative; }
+.route-badge {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.22);
+  color: white; font-size: 0.62rem; font-weight: 700;
+  letter-spacing: 0.16em;
+  padding: 5px 12px; border-radius: 999px;
+  white-space: nowrap;
+  backdrop-filter: blur(8px);
+}
+.route-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.25rem; font-weight: 700; color: white;
+  line-height: 1.1; letter-spacing: -0.015em;
+}
+.route-via {
+  font-size: 0.68rem; color: rgba(255,255,255,0.55);
+  margin-top: 4px; letter-spacing: 0.04em;
+}
+.route-stats { display: flex; gap: 22px; flex-shrink: 0; position: relative; }
+.route-stat { text-align: center; }
+.route-stat-val {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: 1.05rem; font-weight: 700; color: #F0D6AE;
+  display: block; line-height: 1;
+}
+.route-stat-lbl {
+  font-size: 0.54rem; color: rgba(255,255,255,0.5);
+  text-transform: uppercase; letter-spacing: 0.2em;
+  margin-top: 6px; display: block;
+}
+
+.route-map-full {
+  width: 100%; overflow: hidden;
+  background: #e8efe5;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  position: relative;
+}
+.route-map-full img { width: 100%; height: auto; display: block; }
+
+.route-sched {
+  padding: 22px 24px;
+  background: var(--cr);
+}
+.sched-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+.sched-group-title {
+  font-size: 0.58rem; font-weight: 600; color: var(--gd);
+  text-transform: uppercase; letter-spacing: 0.2em;
+  margin-bottom: 12px;
+}
+.time-pills { display: flex; flex-wrap: wrap; gap: 4px; }
+.time-pill {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-size: 0.73rem; font-weight: 500;
+  padding: 4px 9px; border-radius: 7px;
+  font-variant-numeric: tabular-nums; white-space: nowrap;
+  letter-spacing: -0.01em;
+  transition: transform 0.4s var(--ease), border-color 0.4s var(--ease);
+}
+.time-pill:hover { transform: translateY(-1px); border-color: var(--gm); }
+.time-pill.last {
+  border-color: var(--or);
+  color: var(--or);
+  font-weight: 700;
+  background: rgba(194,91,63,0.04);
+}
+.sched-note {
+  font-size: 0.76rem; color: var(--tm);
+  margin-top: 16px; line-height: 1.6;
+  padding-top: 14px;
+  border-top: 1px dashed var(--line2);
+}
+
+/* ── STEPS CONTAINER ───────────────────────────────────────── */
+.container { max-width: 720px; margin: 0 auto; padding: 80px 40px; }
+
+.steps { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
+
+.step {
+  display: flex; gap: 20px;
+  position: relative;
+  padding: 8px 0;
+}
+.step:not(:last-child)::after {
+  content: '';
+  position: absolute; left: 21px; top: 56px; bottom: -8px; width: 1.5px;
+  background: linear-gradient(to bottom,
+    var(--gm) 0%,
+    rgba(82,183,136,0.4) 40%,
+    rgba(82,183,136,0.08) 100%);
+}
+
+.step-left { flex-shrink: 0; }
+
+/* Double-bezel step number */
+.step-num-shell {
+  width: 42px; height: 42px;
+  border-radius: 999px;
+  padding: 3px;
+  background: linear-gradient(135deg, rgba(31,74,55,0.12), rgba(31,74,55,0.04));
+  border: 1px solid var(--line2);
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.8) inset,
+    0 8px 18px -8px rgba(31,74,55,0.25);
+  position: relative; z-index: 2;
+}
+.step-num {
+  width: 100%; height: 100%; border-radius: 999px;
+  background: linear-gradient(135deg, var(--gd) 0%, #163A2A 100%);
+  color: white;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Playfair Display', serif;
+  font-weight: 700; font-size: 1rem;
+  font-style: italic;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.18);
+}
+.step.final .step-num {
+  background: linear-gradient(135deg, var(--or) 0%, #9A4A33 100%);
+}
+
+.step-body { padding-bottom: 28px; flex: 1; min-width: 0; padding-top: 4px; }
+.step:last-child .step-body { padding-bottom: 0; }
+
+.step-body h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.45rem; color: var(--gd); font-weight: 700;
+  line-height: 1.12; margin-bottom: 10px;
+  letter-spacing: -0.02em;
+}
+.step-body h3 em { font-style: italic; color: var(--or); font-weight: 500; }
+.step-body > p { font-size: 0.94rem; color: var(--tm); line-height: 1.7; font-weight: 400; }
+.step-body > p strong { color: var(--ink); font-weight: 600; }
+
+/* phrase box */
+.phrase {
+  display: inline-flex; align-items: center; gap: 14px;
+  background: var(--gl);
+  border: 1px solid rgba(82,183,136,0.3);
+  border-radius: 14px;
+  padding: 12px 18px; margin-top: 14px;
+  box-shadow: 0 1px 0 rgba(255,255,255,0.6) inset;
+}
+.phrase-vn {
+  font-weight: 700; color: var(--gd);
+  font-family: 'Playfair Display', serif;
+  font-style: italic; font-size: 1.15rem;
+  letter-spacing: -0.015em;
+}
+.phrase-sep {
+  width: 1px; height: 18px; background: rgba(31,74,55,0.25);
+}
+.phrase-en { color: var(--tm); font-size: 0.78rem; font-style: italic; letter-spacing: 0.01em; }
+
+/* show-card — Double-Bezel */
+.show-card-shell {
+  margin-top: 16px;
+  background: linear-gradient(135deg, rgba(31,74,55,0.06), rgba(31,74,55,0.02));
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 5px;
+  box-shadow: 0 1px 0 rgba(255,255,255,0.7) inset, 0 8px 22px -10px rgba(31,74,55,0.12);
+}
+.show-card {
+  background: var(--paper);
+  border: 1.5px dashed rgba(82,183,136,0.4);
+  border-radius: 13px;
+  padding: 16px 18px;
+}
+.show-card-label {
+  font-size: 0.58rem; font-weight: 600; color: var(--gd);
+  text-transform: uppercase; letter-spacing: 0.2em;
+  margin-bottom: 10px;
+  display: flex; align-items: center; gap: 8px;
+}
+.show-card-label::before {
+  content: ''; width: 18px; height: 1px; background: var(--gm);
+}
+.show-card p {
+  font-size: 0.98rem; color: var(--ink); line-height: 1.65;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 400;
+}
+.show-card p strong { color: var(--gd); font-weight: 700; }
+
+/* photo block — Double-Bezel media */
+.step-photo-shell {
+  margin-top: 18px;
+  background: linear-gradient(135deg, rgba(31,74,55,0.08), rgba(31,74,55,0.02));
+  border: 1px solid var(--line2);
+  border-radius: 22px;
+  padding: 6px;
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.7) inset,
+    0 24px 50px -24px rgba(31,74,55,0.25),
+    0 6px 14px -6px rgba(31,74,55,0.08);
+}
+.step-photo {
+  border-radius: 16px; overflow: hidden; position: relative;
+  background: var(--gd);
+}
+.step-photo img,
+.step-photo video {
+  width: 100%; display: block;
+  max-height: 320px; object-fit: cover;
+}
+.photo-caption {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  background: linear-gradient(to top, rgba(20,17,13,0.85), rgba(20,17,13,0) 90%);
+  color: white; font-size: 0.76rem; padding: 28px 16px 14px;
+  line-height: 1.5;
+  letter-spacing: -0.005em;
+}
+
+/* tip box */
+.tip-box {
+  background: linear-gradient(135deg, rgba(194,91,63,0.06), rgba(194,91,63,0.02));
+  border: 1px solid rgba(194,91,63,0.15);
+  border-left: 2px solid var(--or);
+  border-radius: 4px 14px 14px 4px;
+  padding: 14px 18px; margin-top: 16px;
+  font-size: 0.86rem; color: var(--tm); line-height: 1.65;
+}
+.tip-box strong { color: var(--ink); font-weight: 600; }
+
+/* ── RETURN BOX — Double-Bezel ───────────────────────────── */
+.return-shell {
+  background: linear-gradient(160deg, rgba(31,74,55,0.05), rgba(31,74,55,0.01));
+  border: 1px solid var(--line);
+  border-radius: 32px;
+  padding: 6px;
+  margin-top: 52px;
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.8) inset,
+    0 30px 60px -30px rgba(31,74,55,0.18);
+}
+.return-box {
+  background: var(--paper);
+  border-radius: 26px;
+  padding: 36px 32px;
+  overflow: hidden;
+}
+.return-box h2 { font-size: 1.7rem; }
+.return-box > p { font-size: 0.95rem; color: var(--tm); margin-top: 10px; line-height: 1.68; }
+.return-box > p strong { color: var(--ink); font-weight: 600; }
+
+.last-bus-banner {
+  margin-top: 18px;
+  padding: 14px 18px;
+  background: linear-gradient(135deg, rgba(194,91,63,0.08), rgba(194,91,63,0.02));
+  border: 1px solid rgba(194,91,63,0.2);
+  border-radius: 14px;
+  display: flex; align-items: center; gap: 14px;
+  font-size: 0.88rem; color: var(--tm);
+}
+.last-bus-time {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: 1.5rem; color: var(--or);
+  font-weight: 700; line-height: 1;
+  letter-spacing: -0.02em;
+}
+.last-bus-banner strong { color: var(--ink); font-weight: 600; }
+
+.sched-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 22px;
+}
+.sched-col {
+  background: var(--cr);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 18px 20px;
+}
+.sched-title {
+  font-size: 0.58rem; font-weight: 600; color: var(--gd);
+  text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 14px;
+}
+.sched-times {
+  font-size: 0.92rem; color: var(--ink); line-height: 1.9;
+  font-variant-numeric: tabular-nums;
+}
+.t-last { color: var(--or); font-weight: 700; font-style: italic; font-family: 'Playfair Display', serif; }
+.sched-tip { font-size: 0.85rem; color: var(--tm); line-height: 1.75; }
+.sched-tip strong { color: var(--ink); font-weight: 600; }
+
+/* ── WA CTA — Double-Bezel + Button-in-Button ──────────── */
+.wa-shell {
+  margin-top: 40px;
+  background: linear-gradient(180deg, rgba(31,74,55,0.08), rgba(31,74,55,0.02));
+  border: 1px solid var(--line2);
+  border-radius: 28px;
+  padding: 5px;
+  box-shadow: 0 1px 0 rgba(255,255,255,0.7) inset, 0 24px 50px -24px rgba(31,74,55,0.25);
+}
+.wa-cta {
+  border-radius: 23px;
+  background: linear-gradient(135deg, var(--gd) 0%, #163A2A 100%);
+  padding: 32px 32px;
+  display: flex; align-items: center; justify-content: space-between; gap: 24px;
+  flex-wrap: wrap;
+  position: relative; overflow: hidden;
+}
+.wa-cta::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(ellipse 60% 100% at 100% 0%, rgba(231,111,81,0.18), transparent 60%);
+  pointer-events: none;
+}
+.wa-cta-text { position: relative; }
+.wa-cta-text h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.55rem; color: white; margin-bottom: 6px;
+  letter-spacing: -0.02em;
+  font-weight: 700;
+}
+.wa-cta-text h3 em { font-style: italic; color: #F0D6AE; font-weight: 500; }
+.wa-cta-text p {
+  font-size: 0.86rem; color: rgba(255,255,255,0.7);
+  line-height: 1.5; max-width: 320px;
+}
+.wa-btn {
+  position: relative;
+  display: inline-flex; align-items: center;
+  background: #25D366; color: white;
+  padding: 8px 8px 8px 22px;
+  border-radius: 999px;
+  font-size: 0.9rem; font-weight: 600;
+  white-space: nowrap; flex-shrink: 0;
+  box-shadow: 0 8px 24px rgba(37,211,102,0.4), inset 0 1px 0 rgba(255,255,255,0.25);
+  transition: transform 0.5s var(--ease), filter 0.4s var(--ease);
+  letter-spacing: -0.005em;
+}
+.wa-btn .ic {
+  width: 34px; height: 34px;
+  margin-left: 12px;
+  border-radius: 999px;
+  background: rgba(0,0,0,0.18);
+  display: inline-flex; align-items: center; justify-content: center;
+  transition: transform 0.5s var(--ease), background 0.4s var(--ease);
+}
+.wa-btn .ic svg { width: 16px; fill: white; }
+.wa-btn:hover { filter: brightness(1.08); }
+.wa-btn:hover .ic { transform: translate(2px,-1px) scale(1.05); background: rgba(0,0,0,0.28); }
+.wa-btn:active { transform: scale(0.97); }
+
+/* ── FOOTER ───────────────────────────────────────────────── */
+footer {
+  text-align: center; padding: 36px 40px;
+  font-size: 0.78rem; color: var(--tm);
+  border-top: 1px solid var(--line);
+  background: var(--paper);
+  letter-spacing: -0.005em;
+}
+footer a { color: var(--or); border-bottom: 1px solid transparent; transition: border-color 0.3s var(--ease); }
+footer a:hover { border-color: var(--or); }
+footer .sep { color: var(--line2); margin: 0 10px; }
+
+/* ── REVEAL ANIMATIONS ────────────────────────────────────── */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  filter: blur(6px);
+  transition:
+    opacity 0.9s var(--ease),
+    transform 0.9s var(--ease),
+    filter 0.9s var(--ease);
+  will-change: transform, opacity, filter;
+}
+.reveal.in {
+  opacity: 1;
+  transform: translateY(0);
+  filter: blur(0);
+}
+.reveal[data-d="1"] { transition-delay: 0.06s; }
+.reveal[data-d="2"] { transition-delay: 0.12s; }
+.reveal[data-d="3"] { transition-delay: 0.18s; }
+.reveal[data-d="4"] { transition-delay: 0.24s; }
+
+/* ── RESPONSIVE ───────────────────────────────────────────── */
+@media (max-width: 720px) {
+  nav { top: 12px; padding: 7px 7px 7px 16px; gap: 10px; }
+  .nav-logo { font-size: 0.85rem; }
+  .nav-logo small { font-size: 0.5rem; padding-left: 8px; margin-left: 2px; }
+  .nav-back { padding: 7px 7px 7px 14px; font-size: 0.72rem; }
+  .nav-back .arr { width: 20px; height: 20px; margin-left: 6px; }
+  .hero { padding: 120px 22px 60px; }
+  .hero h1 { font-size: clamp(2rem, 11vw, 3rem); }
+  .routes-wrap { padding: 56px 22px; }
+  .container { padding: 56px 22px; }
+  .overview { gap: 8px; }
+  .ov-val { font-size: 1.45rem; }
+  .ov-label { font-size: 0.56rem; }
+  .route-stats { gap: 16px; }
+  .sched-cols { grid-template-columns: 1fr; gap: 18px; }
+  .sched-grid { grid-template-columns: 1fr; }
+  .return-box { padding: 28px 22px; }
+  .wa-cta { padding: 26px 24px; }
+  .step { gap: 14px; }
+  .step:not(:last-child)::after { left: 18px; top: 50px; }
+  .step-num-shell { width: 38px; height: 38px; }
+  .step-body h3 { font-size: 1.25rem; }
+  footer { padding: 26px 22px; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV — Fluid Island -->
+<nav>
+  <a href="../index.html" class="nav-logo">
+    Sen's <i>Homestay</i>
+    <small>Guest Guide</small>
+  </a>
+  <a href="../index.html" class="nav-back">
+    Back
+    <span class="arr">
+      <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </span>
+  </a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="eyebrow reveal"><span class="dot"></span>Cao Bang · Public Transport</div>
+    <h1 class="reveal" data-d="1">Hoa Binh Bus<em>direct to Ban Gioc.</em></h1>
+    <p class="hero-sub reveal" data-d="2">One bus. No transfers. It stops right in front of Sen's Homestay — just step outside and wave.</p>
+    <div class="hero-pills reveal" data-d="3">
+      <div class="hero-pill"><strong>~80,000₫</strong> per ride</div>
+      <div class="hero-pill"><strong>1 bus</strong> · no transfer</div>
+      <div class="hero-pill"><strong>~2 hrs</strong> each way</div>
+    </div>
+    <div class="overview reveal" data-d="4">
+      <div class="ov-shell"><div class="ov-card">
+        <div class="ov-val">80k₫</div>
+        <div class="ov-label">one-way</div>
+      </div></div>
+      <div class="ov-shell"><div class="ov-card">
+        <div class="ov-val">4</div>
+        <div class="ov-label">easy steps</div>
+      </div></div>
+      <div class="ov-shell"><div class="ov-card">
+        <div class="ov-val">17:00</div>
+        <div class="ov-label">last bus back</div>
+      </div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ROUTE 03 CARD -->
+<section class="routes-sec">
+  <div class="routes-wrap">
+
+    <div class="section-label reveal">The bus you'll take</div>
+    <h2 class="reveal" data-d="1">Route 03 — <em>direct line</em></h2>
+    <div class="rule reveal" data-d="1"></div>
+    <p class="routes-intro reveal" data-d="2">One public bus connects Cao Bang City to Ban Gioc Waterfall, and it passes <strong>right in front of Sen's Homestay</strong>. No bus station. No transfers. Flag it down from the pavement, pay the conductor on board.</p>
+
+    <div class="route-card-shell reveal" data-d="3">
+      <div class="route-card">
+        <div class="route-head">
+          <div class="route-head-left">
+            <div class="route-badge">Route 03</div>
+            <div>
+              <div class="route-title">Cao Bằng → Bản Giốc</div>
+              <div class="route-via">via Quảng Uyên · Trùng Khánh · waterfall</div>
+            </div>
+          </div>
+          <div class="route-stats">
+            <div class="route-stat">
+              <span class="route-stat-val">86.8km</span>
+              <span class="route-stat-lbl">distance</span>
+            </div>
+            <div class="route-stat">
+              <span class="route-stat-val">~2h</span>
+              <span class="route-stat-lbl">journey</span>
+            </div>
+          </div>
+        </div>
+        <div class="route-map-full">
+          <img src="route-03-map.jpg" alt="Route 03 map — Cao Bang to Ban Gioc" onerror="this.parentElement.style.display='none'">
+        </div>
+        <div class="route-sched">
+          <div class="sched-cols">
+            <div>
+              <div class="sched-group-title">Past Sen's → Falls</div>
+              <div class="time-pills">
+                <span class="time-pill">5:05</span><span class="time-pill">5:35</span><span class="time-pill">6:10</span><span class="time-pill">6:45</span>
+                <span class="time-pill">7:25</span><span class="time-pill">8:00</span><span class="time-pill">8:35</span><span class="time-pill">9:15</span>
+                <span class="time-pill">9:55</span><span class="time-pill">10:30</span><span class="time-pill">11:05</span><span class="time-pill">11:45</span>
+                <span class="time-pill">12:30</span><span class="time-pill">13:10</span><span class="time-pill">13:50</span><span class="time-pill">14:30</span>
+                <span class="time-pill">15:10</span><span class="time-pill">15:45</span><span class="time-pill">16:20</span><span class="time-pill last">17:00</span>
+              </div>
+            </div>
+            <div>
+              <div class="sched-group-title">Ban Gioc → Sen's</div>
+              <div class="time-pills">
+                <span class="time-pill">5:05</span><span class="time-pill">5:35</span><span class="time-pill">6:10</span><span class="time-pill">6:45</span>
+                <span class="time-pill">7:25</span><span class="time-pill">8:00</span><span class="time-pill">8:35</span><span class="time-pill">9:15</span>
+                <span class="time-pill">9:55</span><span class="time-pill">10:30</span><span class="time-pill">11:05</span><span class="time-pill">11:45</span>
+                <span class="time-pill">12:30</span><span class="time-pill">13:10</span><span class="time-pill">13:50</span><span class="time-pill">14:30</span>
+                <span class="time-pill">15:10</span><span class="time-pill">15:45</span><span class="time-pill">16:20</span><span class="time-pill last">17:00</span>
+              </div>
+            </div>
+          </div>
+          <p class="sched-note">Buses roughly every 30–40 min. The driver does not stop automatically — you must wave.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- CONTENT — STEPS -->
+<div class="container">
+
+  <div class="section-label reveal">Step by step</div>
+  <h2 class="reveal" data-d="1">How to get there <em>(it's simple)</em></h2>
+  <div class="rule reveal" data-d="1"></div>
+
+  <div class="steps">
+
+    <!-- 1 -->
+    <div class="step reveal" data-d="1">
+      <div class="step-left">
+        <div class="step-num-shell"><div class="step-num">1</div></div>
+      </div>
+      <div class="step-body">
+        <h3>Wait at the homestay gate</h3>
+        <p>Step outside Sen's and stand on the <strong>pavement directly in front of the gate</strong>. The bus runs along this road on the same side — no need to cross.</p>
+        <div class="step-photo-shell">
+          <div class="step-photo">
+            <video autoplay loop muted playsinline>
+              <source src="bus-sen.mp4" type="video/mp4">
+            </video>
+            <div class="photo-caption">Right here — in front of Sen's gate. The bus comes from this direction.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2 -->
+    <div class="step reveal" data-d="2">
+      <div class="step-left">
+        <div class="step-num-shell"><div class="step-num">2</div></div>
+      </div>
+      <div class="step-body">
+        <h3>Wave down Route <em>03</em></h3>
+        <p>When you see a bus approaching (same direction as in the video), <strong>raise your hand</strong> to flag it down. It won't stop on its own — the driver needs to see you wave.</p>
+        <div class="tip-box">Any bus passing Sen's heading away from Cao Bang City is going the right way. Just wave — the driver pulls over.</div>
+      </div>
+    </div>
+
+    <!-- 3 -->
+    <div class="step reveal" data-d="3">
+      <div class="step-left">
+        <div class="step-num-shell"><div class="step-num">3</div></div>
+      </div>
+      <div class="step-body">
+        <h3>Tell the conductor: <em>"Bản Giốc"</em></h3>
+        <p>Once on board, tell the conductor your destination and pay on the spot — around <strong>80,000₫</strong>. Have small notes ready. The bus drops you right at the entrance, so you don't need to watch the stops.</p>
+        <div class="phrase">
+          <span class="phrase-vn">Thác Bản Giốc</span>
+          <span class="phrase-sep"></span>
+          <span class="phrase-en">say: "Tahk Bahn Zok"</span>
+        </div>
+        <div class="show-card-shell">
+          <div class="show-card">
+            <div class="show-card-label">Show this to the conductor</div>
+            <p>Tôi muốn đi <strong>Thác Bản Giốc</strong>, xin cho tôi xuống ngay <strong>cổng vào khu du lịch thác</strong>. Cảm ơn!</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4 -->
+    <div class="step final reveal" data-d="4">
+      <div class="step-left">
+        <div class="step-num-shell"><div class="step-num">4</div></div>
+      </div>
+      <div class="step-body">
+        <h3>You've arrived</h3>
+        <p>The bus drops you right at the <strong>Ban Gioc entrance gate</strong>. Buy your admission ticket at the kiosk and enjoy the waterfall — two hours is enough for a relaxed visit.</p>
+        <div class="tip-box">Best light is before 10 am. Take the <strong>7:25 or 8:00</strong> bus past Sen's to arrive early and beat the tour groups.</div>
+      </div>
+    </div>
+
+  </div><!-- /steps -->
+
+  <!-- RETURN -->
+  <div class="return-shell reveal">
+    <div class="return-box">
+      <div class="section-label">Getting back</div>
+      <h2>The return journey</h2>
+      <div class="rule"></div>
+      <p>Just as simple. From the waterfall entrance, <strong>flag down a bus going the opposite direction</strong>. Tell the conductor <em>"Cao Bằng"</em> and ask to get off at <strong>Sen's Homestay</strong> (or show the card below). The same Route 03 bus passes our gate on the way back.</p>
+
+      <div class="show-card-shell" style="margin-top: 18px;">
+        <div class="show-card">
+          <div class="show-card-label">Show this on the return bus</div>
+          <p>Tôi muốn xuống ở <strong>Sen's Homestay</strong> gần <strong>Siêu thị Ngọc Xuân</strong>, Cao Bằng. Cảm ơn bác tài!</p>
+        </div>
+      </div>
+
+      <div class="last-bus-banner">
+        <span class="last-bus-time">17:00</span>
+        <span><strong>Last bus back.</strong> Don't miss it.</span>
+      </div>
+
+      <div class="sched-grid">
+        <div class="sched-col">
+          <div class="sched-title">Good departures from falls</div>
+          <div class="sched-times">
+            13:10<br>13:50<br>14:30<br>15:10<br>15:45<br>16:20<br>
+            <span class="t-last">17:00 — last</span>
+          </div>
+        </div>
+        <div class="sched-col">
+          <div class="sched-title">Pro tips</div>
+          <div class="sched-tip">
+            Take the <strong>7:25 or 8:00</strong> bus to arrive mid-morning.<br><br>
+            Buses run roughly every <strong>30–40 min</strong>.<br><br>
+            Schedules can vary — confirm with us the evening before.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WA CTA -->
+  <div class="wa-shell reveal">
+    <div class="wa-cta">
+      <div class="wa-cta-text">
+        <h3>Not sure? <em>Just ask Sen.</em></h3>
+        <p>We'll confirm today's bus times, weather at the falls, and walk you to the gate if you'd like a hand.</p>
+      </div>
+      <a class="wa-btn" href="https://wa.me/84941687931?text=Hi%20Sen.%20I%27d%20like%20to%20know%20more%20about%20the%20public%20bus%20to%20Ban%20Gioc." target="_blank" rel="noopener">
+        WhatsApp Sen
+        <span class="ic">
+          <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        </span>
+      </a>
+    </div>
+  </div>
+
+</div><!-- /container -->
+
+<footer>
+  Bus operated by Hoa Binh Transport
+  <span class="sep">·</span>
+  Schedule may vary
+  <span class="sep">·</span>
+  Call <a href="tel:1900561562">1900 561 562</a> to confirm
+  <br style="display:block; margin-top:6px; content:'';">
+  © 2025 Sen's Homestay · Cao Bang
+</footer>
+
+<script>
+  // Scroll-reveal via IntersectionObserver
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('in');
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+</script>
+
+</body>
+</html>

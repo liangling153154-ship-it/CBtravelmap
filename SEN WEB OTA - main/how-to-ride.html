@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>How to Ride a Semi-Auto Bike · Sen's Homestay</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --gd:#2D6A4F;--gm:#52B788;--gl:#D8F3DC;
+      --or:#E76F51;--od:#C25B3F;--cr:#F8F4E9;
+      --brown:#5C3D2E;--tx:#1a1a1a;--tm:#666;
+      --r:14px;--sh:0 4px 24px rgba(0,0,0,0.09);
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{font-family:'DM Sans',sans-serif;background:var(--cr);color:var(--tx);overflow-x:hidden}
+    a{text-decoration:none;color:inherit}
+    img{display:block;max-width:100%}
+
+    /* NAV */
+    nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:16px 48px;background:rgba(248,244,233,0.95);backdrop-filter:blur(14px);border-bottom:1px solid rgba(45,106,79,0.12)}
+    .nav-logo{font-family:'Cormorant Garamond',serif;font-size:1.15rem;color:var(--gd);font-weight:700;white-space:nowrap}
+    .nav-logo span{color:var(--or)}
+    .nav-links{display:flex;gap:28px;align-items:center}
+    .nav-links a{font-size:0.88rem;font-weight:500;color:var(--brown)}
+    .nav-links a:hover{color:var(--gd)}
+    .nav-links.open{display:flex!important}
+    .nav-cta{background:var(--or);color:white!important;padding:9px 20px;border-radius:50px;font-size:0.85rem}
+    .ham{display:none;flex-direction:column;gap:5px;cursor:pointer}
+    .ham span{width:24px;height:2px;background:var(--gd);border-radius:2px}
+
+    /* PAGE */
+    .pg{max-width:760px;margin:0 auto;padding:100px 24px 80px}
+
+    /* HEADER */
+    .pg-header{margin-bottom:48px}
+    .back{display:inline-flex;align-items:center;gap:6px;font-size:0.82rem;color:var(--tm);margin-bottom:24px;transition:color 0.2s}
+    .back:hover{color:var(--gd)}
+    .eyebrow{font-size:0.68rem;letter-spacing:3px;text-transform:uppercase;color:var(--gm);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+    .eyebrow::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--gm);flex-shrink:0}
+    h1{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,5vw,3rem);color:var(--gd);line-height:1.05;margin-bottom:12px}
+    h1 em{font-style:italic;color:var(--or)}
+    .subtitle{font-size:1rem;color:var(--tm);line-height:1.6}
+    .tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+    .tag{font-size:0.75rem;background:var(--gl);color:var(--gd);padding:5px 12px;border-radius:50px}
+
+    /* STEP */
+    .step{margin-bottom:56px}
+    .step-label{display:flex;align-items:center;gap:12px;margin-bottom:20px}
+    .step-num{width:36px;height:36px;border-radius:50%;background:var(--gd);color:white;font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .step-label h2{font-family:'Cormorant Garamond',serif;font-size:1.5rem;color:var(--gd)}
+    .step-label p{font-size:0.82rem;color:var(--tm);margin-top:2px}
+
+    /* IMAGE */
+    .img-block{border-radius:var(--r);overflow:hidden;box-shadow:var(--sh);margin-bottom:24px}
+    .img-block img{width:100%;height:auto}
+    .img-cap{font-size:0.78rem;color:var(--tm);text-align:center;padding:10px 16px;background:white;border-top:1px solid rgba(45,106,79,0.08)}
+
+    /* GRID 2 col */
+    .img-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px}
+
+    /* CONTROLS LIST */
+    .controls{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:28px}
+    .ctrl{background:white;border-radius:11px;padding:16px 18px;border-left:4px solid var(--gm)}
+    .ctrl.danger{border-left-color:var(--or)}
+    .ctrl h4{font-size:0.9rem;font-weight:600;color:var(--gd);margin-bottom:6px}
+    .ctrl p{font-size:0.82rem;color:var(--tm);line-height:1.55}
+
+    /* WARNING BOX */
+    .warn{background:rgba(231,111,81,0.08);border:1.5px solid rgba(231,111,81,0.3);border-radius:11px;padding:16px 18px;display:flex;gap:12px;margin-bottom:24px}
+    .warn-icon{font-size:1.4rem;flex-shrink:0;line-height:1}
+    .warn h4{font-size:0.88rem;font-weight:600;color:var(--od);margin-bottom:4px}
+    .warn p{font-size:0.82rem;color:var(--tm);line-height:1.55}
+
+    /* RULE STEPS */
+    .rule-steps{display:flex;gap:0;margin-bottom:28px}
+    .rule-step{flex:1;background:white;padding:18px 16px;text-align:center;position:relative}
+    .rule-step:not(:last-child)::after{content:'→';position:absolute;right:-10px;top:50%;transform:translateY(-50%);color:var(--gm);font-size:1.1rem;z-index:1}
+    .rule-step:first-child{border-radius:11px 0 0 11px}
+    .rule-step:last-child{border-radius:0 11px 11px 0}
+    .rs-num{width:28px;height:28px;border-radius:50%;background:var(--gd);color:white;font-size:0.8rem;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 8px}
+    .rs-title{font-size:0.88rem;font-weight:600;color:var(--gd);margin-bottom:4px}
+    .rs-desc{font-size:0.76rem;color:var(--tm);line-height:1.45}
+
+    /* GEAR TABLE */
+    .gear-table{width:100%;border-collapse:collapse;background:white;border-radius:11px;overflow:hidden;box-shadow:var(--sh);margin-bottom:28px;font-size:0.84rem}
+    .gear-table th{background:var(--gd);color:white;padding:10px 14px;text-align:left;font-weight:600;font-size:0.78rem;letter-spacing:0.5px}
+    .gear-table td{padding:10px 14px;border-bottom:1px solid rgba(45,106,79,0.08);color:var(--tx);vertical-align:middle}
+    .gear-table tr:last-child td{border-bottom:none}
+    .gear-table tr:hover td{background:var(--gl)}
+    .g-badge{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:var(--gd);color:white;font-weight:700;font-size:0.82rem}
+
+    /* TIPS */
+    .tips{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px}
+    .tip{background:white;border-radius:10px;padding:14px 16px;display:flex;gap:10px;align-items:flex-start}
+    .tip-icon{font-size:1.1rem;flex-shrink:0;line-height:1.3}
+    .tip p{font-size:0.82rem;color:var(--tm);line-height:1.5}
+    .tip strong{color:var(--tx)}
+
+    /* DIVIDER */
+    hr{border:none;border-top:1px solid rgba(45,106,79,0.12);margin:48px 0}
+
+    /* CTA */
+    .cta{background:var(--gd);border-radius:var(--r);padding:28px 32px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:48px}
+    .cta h3{font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:white;margin-bottom:4px}
+    .cta p{font-size:0.82rem;color:rgba(255,255,255,0.65)}
+    .btn-wa{background:#25D366;color:white;padding:11px 22px;border-radius:50px;font-size:0.84rem;font-weight:500;display:inline-flex;align-items:center;gap:6px}
+    .btn-back{background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.25);color:white;padding:11px 22px;border-radius:50px;font-size:0.84rem}
+
+    .waf{position:fixed;bottom:22px;right:22px;width:50px;height:50px;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(37,211,102,0.4);z-index:99}
+    .waf svg{width:22px;fill:white}
+
+    @media(max-width:700px){
+      nav{padding:14px 16px}
+      .nav-links{display:none;flex-direction:column;position:absolute;top:100%;left:0;right:0;background:rgba(248,244,233,0.98);padding:16px;gap:14px;box-shadow:0 8px 24px rgba(0,0,0,0.1)}
+      .ham{display:flex}
+      .pg{padding:84px 16px 60px}
+      .controls{grid-template-columns:1fr}
+      .img-grid{grid-template-columns:1fr}
+      .rule-steps{flex-direction:column}
+      .rule-step:not(:last-child)::after{content:'↓';right:auto;left:50%;top:auto;bottom:-12px;transform:translateX(-50%)}
+      .rule-step:first-child{border-radius:11px 11px 0 0}
+      .rule-step:last-child{border-radius:0 0 11px 11px}
+      .tips{grid-template-columns:1fr}
+      .cta{padding:20px}
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">Sen's Homestay</a>
+  <div class="nav-links" id="navLinks">
+    <a href="rooms.html">Rooms</a>
+    <a href="motorbike.html">Motorbike</a>
+    <a href="tours.html">Tours</a>
+    <a href="food.html">Food</a>
+    <a href="services.html">Services</a>
+    <a href="itinerary.html">Plan Trip</a>
+    <a href="bus-ticket.html">Bus Tickets</a>
+
+    <a href="https://wa.me/84822946888" class="nav-cta" target="_blank">💬 WhatsApp</a>
+  </div>
+  <div class="ham" onclick="document.getElementById('navLinks').classList.toggle('open')">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<div class="pg">
+
+  <a href="motorbike.html" class="back">← Back to Motorbike Rental</a>
+
+  <div class="pg-header">
+    <div class="eyebrow">Rider's Guide · Semi-Automatic</div>
+    <h1>How to ride a<br><em>semi-auto bike</em></h1>
+    <p class="subtitle">No hand clutch — easier than a manual, safer on mountain roads.</p>
+    <div class="tags">
+      <span class="tag">🏍️ Wave Alpha · Future 125 · Yamaha PG-1</span>
+      <span class="tag">5-step guide</span>
+    </div>
+  </div>
+
+  <!-- ─── STEP 1 ─── -->
+  <div class="step">
+    <div class="step-label">
+      <div class="step-num">1</div>
+      <div>
+        <h2>Know Your Controls</h2>
+        <p>Before you start — understand what each hand and foot does</p>
+      </div>
+    </div>
+
+    <div class="img-block">
+      <img loading="lazy" src="images/how-to-ride/controls-overview.jpg" alt="Bike controls overview">
+      <div class="img-cap">The 4 controls — left hand, right hand, left foot, right foot</div>
+    </div>
+
+    <div class="controls">
+      <div class="ctrl danger">
+        <h4>🤚 Left Hand — DO NOTHING</h4>
+        <p>No lever on this side. Not a brake, not a clutch. Keep it relaxed on the grip.</p>
+      </div>
+      <div class="ctrl">
+        <h4>✋ Right Hand — Throttle + Brake</h4>
+        <p><strong>Twist back</strong> = gas. <strong>Squeeze lever</strong> = front brake.</p>
+      </div>
+      <div class="ctrl">
+        <h4>🦶 Left Foot — Gear Shifter</h4>
+        <p><strong>Lift toe up</strong> = shift UP (N→1→2→3→4)<br><strong>Press heel down</strong> = shift DOWN</p>
+      </div>
+      <div class="ctrl">
+        <h4>🦵 Right Foot — Rear Brake</h4>
+        <p>Press <strong>down</strong> to slow. Your primary brake — use it more than the front.</p>
+      </div>
+    </div>
+
+    <div class="img-grid">
+      <div class="img-block" style="margin-bottom:0">
+        <img loading="lazy" src="images/how-to-ride/left-foot-gear.jpg" alt="Left foot gear shifter">
+        <div class="img-cap">Left foot: lift toe = shift up · press heel = shift down</div>
+      </div>
+      <div class="img-block" style="margin-bottom:0">
+        <img loading="lazy" src="images/how-to-ride/right-foot-gear.jpg" alt="Right foot rear brake">
+        <div class="img-cap">Right foot: press down to apply rear brake</div>
+      </div>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- ─── STEP 2 ─── -->
+  <div class="step">
+    <div class="step-label">
+      <div class="step-num">2</div>
+      <div>
+        <h2>The Golden Rule</h2>
+        <p>Master this 3-step rhythm — every gear change, every time</p>
+      </div>
+    </div>
+
+    <div class="warn">
+      <div class="warn-icon">⚠️</div>
+      <div>
+        <h4>If you don't release the gas while shifting…</h4>
+        <p>The bike will jerk forward violently. Always release the throttle completely before clicking the gear lever.</p>
+      </div>
+    </div>
+
+    <div class="rule-steps">
+      <div class="rule-step">
+        <div class="rs-num">1</div>
+        <div class="rs-title">Release</div>
+        <div class="rs-desc">Let go of throttle completely. Zero gas.</div>
+      </div>
+      <div class="rule-step">
+        <div class="rs-num">2</div>
+        <div class="rs-title">Shift</div>
+        <div class="rs-desc">Click gear lever with left foot. One click.</div>
+      </div>
+      <div class="rule-step">
+        <div class="rs-num">3</div>
+        <div class="rs-title">Throttle</div>
+        <div class="rs-desc">Gently twist gas again to continue.</div>
+      </div>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- ─── STEP 3 ─── -->
+  <div class="step">
+    <div class="step-label">
+      <div class="step-num">3</div>
+      <div>
+        <h2>Which Gear?</h2>
+        <p>Match your gear to your speed</p>
+      </div>
+    </div>
+
+    <table class="gear-table">
+      <tr><th>Gear</th><th>Speed</th><th>When to use</th></tr>
+      <tr><td><span class="g-badge">N</span></td><td>0 km/h</td><td>Starting, waiting at traffic lights</td></tr>
+      <tr><td><span class="g-badge">1</span></td><td>0–15 km/h</td><td>Moving off, very slow / tight turns</td></tr>
+      <tr><td><span class="g-badge">2</span></td><td>15–30 km/h</td><td>Town roads, slow traffic</td></tr>
+      <tr><td><span class="g-badge">3</span></td><td>30–50 km/h</td><td>Open roads, light traffic</td></tr>
+      <tr><td><span class="g-badge">4</span></td><td>50+ km/h</td><td>Highways, long straights</td></tr>
+    </table>
+
+    <div class="warn">
+      <div class="warn-icon">💡</div>
+      <div>
+        <h4>Listen to the engine</h4>
+        <p>If the engine sounds strained or is revving very high — shift up. If it feels sluggish or struggles uphill — shift down.</p>
+      </div>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- ─── STEP 4 ─── -->
+  <div class="step">
+    <div class="step-label">
+      <div class="step-num">4</div>
+      <div>
+        <h2>Braking &amp; Downhills</h2>
+        <p>The most important safety skill in the mountains</p>
+      </div>
+    </div>
+
+    <div class="tips">
+      <div class="tip">
+        <div class="tip-icon">🦵</div>
+        <p><strong>Right foot first.</strong> Always apply the rear brake first and gradually. It's gentler and more stable than the front.</p>
+      </div>
+      <div class="tip">
+        <div class="tip-icon">✋</div>
+        <p><strong>Front brake second.</strong> Squeeze gently at the same time. Never grab suddenly — it can lock the wheel.</p>
+      </div>
+      <div class="tip">
+        <div class="tip-icon">⛰️</div>
+        <p><strong>Long downhills.</strong> Shift down to a lower gear. Let the engine help brake — don't ride the brakes the whole way.</p>
+      </div>
+      <div class="tip">
+        <div class="tip-icon">🌧️</div>
+        <p><strong>Wet roads.</strong> Brake earlier, more gently. The road surface in Cao Bang can be slippery after rain.</p>
+      </div>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- ─── STEP 5 ─── -->
+  <div class="step">
+    <div class="step-label">
+      <div class="step-num">5</div>
+      <div>
+        <h2>Practice First</h2>
+        <p>10 minutes in the yard before heading to the mountains</p>
+      </div>
+    </div>
+
+    <div class="tips">
+      <div class="tip">
+        <div class="tip-icon">1️⃣</div>
+        <p>Start in neutral. Feel the bike's weight. Get comfortable sitting.</p>
+      </div>
+      <div class="tip">
+        <div class="tip-icon">2️⃣</div>
+        <p>Practice the 3-step rhythm at walking pace — release, shift, throttle.</p>
+      </div>
+      <div class="tip">
+        <div class="tip-icon">3️⃣</div>
+        <p>Try smooth stops using both brakes together. No sudden grabs.</p>
+      </div>
+      <div class="tip">
+        <div class="tip-icon">4️⃣</div>
+        <p>Go up through all 4 gears in a straight line, then back down. Repeat until it feels natural.</p>
+      </div>
+    </div>
+
+    <div class="warn">
+      <div class="warn-icon">💬</div>
+      <div>
+        <h4>Sen is here to help</h4>
+        <p>Not sure about something? Ask Sen before you leave — she'll walk you through it in the yard. No rush.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta">
+    <div>
+      <h3>Ready to rent a bike?</h3>
+      <p>Semi-auto, automatic, and manual bikes available from 180,000đ/day.</p>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <a href="https://wa.me/84822946888?text=Hi%20Sen!%20I%27d%20like%20to%20rent%20a%20bike." class="btn-wa" target="_blank">
+        <svg viewBox="0 0 24 24" fill="white" width="14"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        Book via WhatsApp
+      </a>
+      <a href="motorbike.html" class="btn-back">See All Bikes →</a>
+    </div>
+  </div>
+
+</div>
+
+<footer style="background:#0f2419;color:rgba(255,255,255,0.4);text-align:center;padding:18px;font-size:0.76rem;font-family:'DM Sans',sans-serif">
+  <p>© 2025 Sen's Homestay · Cao Bang &nbsp;·&nbsp; <a href="https://wa.me/84822946888" style="color:#52B788;text-decoration:none">WhatsApp</a> &nbsp;·&nbsp; Made with ❤️ in Cao Bang</p>
+</footer>
+
+<a href="https://wa.me/84822946888" class="waf" target="_blank">
+  <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</a>
+
+</body>
+</html>

@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sen's Homestay · Cao Bang, Vietnam</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --green-dark:  #2D6A4F;
+      --green-mid:   #52B788;
+      --green-light: #D8F3DC;
+      --orange:      #E76F51;
+      --orange-dark: #C25B3F;
+      --cream:       #F8F4E9;
+      --brown:       #5C3D2E;
+      --white:       #FFFFFF;
+      --text:        #1a1a1a;
+      --text-muted:  #666;
+      --radius:      14px;
+      --shadow:      0 4px 24px rgba(0,0,0,0.10);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--text); overflow-x: hidden; }
+    img { display: block; width: 100%; object-fit: cover; }
+    a { text-decoration: none; color: inherit; }
+
+    /* NAVBAR */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 999;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 48px;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(45,106,79,0.12);
+      transition: box-shadow 0.3s;
+    }
+    nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.10); }
+    .nav-logo { font-family: 'Playfair Display', serif; font-size: 1rem; color: var(--green-dark); font-weight: 700; letter-spacing: -0.5px; white-space: nowrap; }
+    .nav-logo span { color: var(--orange); }
+    .nav-links { display: flex; gap: 32px; align-items: center; }
+    .nav-links a { font-size: 0.9rem; font-weight: 500; color: var(--brown); transition: color 0.2s; }
+    .nav-links a:hover { color: var(--green-dark); }
+    .nav-cta { background: var(--orange); color: white !important; padding: 10px 22px; border-radius: 50px; font-weight: 500; font-size: 0.88rem; transition: background 0.2s, transform 0.2s; }
+    .nav-cta:hover { background: var(--orange-dark); transform: translateY(-1px); }
+    .nav-hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; }
+    .nav-hamburger span { width: 24px; height: 2px; background: var(--green-dark); border-radius: 2px; }
+
+    /* HERO */
+    #hero {
+      position: relative; height: 100vh; min-height: 600px;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+    .hero-img {
+      position: absolute; inset: 0;
+      background: url('images/hero/hero-main.jpg') center/cover no-repeat;
+      background-color: #2D6A4F;
+      transform: scale(1.05);
+      transition: transform 8s ease;
+    }
+    #hero.loaded .hero-img { transform: scale(1); }
+    .hero-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(180deg, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.25) 50%, rgba(0,0,0,0.55) 100%);
+    }
+    .hero-content {
+      position: relative; z-index: 2;
+      text-align: center; color: white;
+      padding: 0 24px;
+      animation: fadeUp 1s ease both;
+    }
+    .hero-badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.3);
+      backdrop-filter: blur(8px);
+      color: white; font-size: 0.78rem; letter-spacing: 2px;
+      text-transform: uppercase; padding: 7px 18px; border-radius: 50px;
+      margin-bottom: 24px;
+    }
+    .hero-title { font-family: 'Playfair Display', serif; font-size: clamp(2.6rem, 6vw, 5rem); line-height: 1.12; font-weight: 700; margin-bottom: 18px; text-shadow: 0 2px 24px rgba(0,0,0,0.55), 0 1px 4px rgba(0,0,0,0.4); }
+    .hero-title em { color: #a8e6c3; font-style: italic; }
+    .hero-sub { font-size: clamp(1rem, 2vw, 1.2rem); font-weight: 400; opacity: 1; margin-bottom: 36px; letter-spacing: 0.5px; text-shadow: 0 1px 12px rgba(0,0,0,0.6); }
+    .hero-btns { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+    .btn-primary { background: var(--orange); color: white; padding: 15px 32px; border-radius: 50px; font-weight: 500; font-size: 1rem; display: inline-flex; align-items: center; gap: 8px; transition: background 0.2s, transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 20px rgba(231,111,81,0.4); }
+    .btn-primary:hover { background: var(--orange-dark); transform: translateY(-2px); box-shadow: 0 8px 28px rgba(231,111,81,0.45); }
+    .btn-outline { background: rgba(255,255,255,0.12); border: 1.5px solid rgba(255,255,255,0.5); color: white; padding: 15px 32px; border-radius: 50px; font-weight: 500; font-size: 1rem; backdrop-filter: blur(6px); transition: background 0.2s, transform 0.2s; }
+    .btn-outline:hover { background: rgba(255,255,255,0.22); transform: translateY(-2px); }
+    .hero-scroll { position: absolute; bottom: 32px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 8px; color: rgba(255,255,255,0.7); font-size: 0.75rem; letter-spacing: 1px; text-transform: uppercase; animation: bounce 2s infinite; }
+    .hero-scroll svg { width: 20px; opacity: 0.7; }
+
+    /* WHY */
+    #why { background: white; padding: 48px 48px; }
+    .section-label { text-align: center; font-size: 0.75rem; letter-spacing: 3px; text-transform: uppercase; color: var(--green-mid); font-weight: 500; margin-bottom: 12px; }
+    .section-title { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 3vw, 2.6rem); color: var(--green-dark); text-align: center; margin-bottom: 52px; line-height: 1.2; }
+    .why-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px; max-width: 1100px; margin: 0 auto; }
+    .why-card { text-align: center; padding: 20px 16px; border-radius: var(--radius); background: var(--cream); border: 1px solid rgba(82,183,136,0.15); transition: transform 0.2s, box-shadow 0.2s; }
+    .why-card:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
+    .why-icon { width: 56px; height: 56px; background: var(--green-light); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 18px; font-size: 1.5rem; }
+    .why-card h3 { font-family: 'Playfair Display', serif; font-size: 1.05rem; color: var(--green-dark); margin-bottom: 8px; }
+    .why-card p { font-size: 0.88rem; color: var(--text-muted); line-height: 1.6; }
+
+    /* SERVICES */
+    #services { background: var(--cream); padding: 80px 48px; }
+    .services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; max-width: 1100px; margin: 0 auto 32px; }
+    .service-card { background: white; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); transition: transform 0.25s, box-shadow 0.25s; }
+    .service-card:hover { transform: translateY(-6px); box-shadow: 0 12px 40px rgba(0,0,0,0.13); }
+    .service-img {
+      height: 360px;
+      background: var(--green-light);
+      position: relative; overflow: hidden;
+    }
+    .service-img img { height: 100%; transition: transform 0.4s; }
+    .service-card:hover .service-img img { transform: scale(1.05); }
+    .service-body { padding: 24px; }
+    .service-tag { display: inline-block; background: var(--green-light); color: var(--green-dark); font-size: 0.72rem; font-weight: 500; letter-spacing: 1.5px; text-transform: uppercase; padding: 4px 12px; border-radius: 50px; margin-bottom: 12px; }
+    .service-body h3 { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--green-dark); margin-bottom: 8px; }
+    .service-price { color: var(--orange); font-weight: 500; font-size: 1rem; margin-bottom: 10px; }
+    .service-body p { font-size: 0.88rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 20px; }
+    .btn-service { display: inline-flex; align-items: center; gap: 8px; background: var(--green-dark); color: white; padding: 11px 22px; border-radius: 50px; font-size: 0.88rem; font-weight: 500; transition: background 0.2s, transform 0.2s; }
+    .btn-service:hover { background: #1e4d38; transform: translateY(-1px); }
+    .services-note { text-align: center; font-size: 0.9rem; color: var(--text-muted); max-width: 1100px; margin: 0 auto; padding: 18px 24px; background: white; border-radius: var(--radius); border-left: 3px solid var(--green-mid); }
+    .services-note a { color: var(--orange); font-weight: 500; }
+    .services-note a:hover { text-decoration: underline; }
+
+    /* HIGHLIGHT */
+    #highlight { background: var(--green-dark); padding: 80px 48px; color: white; }
+    .highlight-inner { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+    .highlight-img-wrap { border-radius: 20px; overflow: hidden; height: 420px; position: relative; background: rgba(255,255,255,0.1); }
+    .highlight-img-wrap img { height: 100%; }
+    .highlight-badge { position: absolute; top: 18px; left: 18px; background: var(--orange); color: white; font-size: 0.75rem; font-weight: 500; letter-spacing: 1px; text-transform: uppercase; padding: 6px 14px; border-radius: 50px; }
+    .highlight-content .section-label { text-align: left; color: var(--green-mid); }
+    .highlight-content .section-title { text-align: left; color: white; margin-bottom: 20px; }
+    .highlight-content p { color: rgba(255,255,255,0.78); line-height: 1.8; margin-bottom: 28px; font-size: 0.95rem; }
+    .highlight-stops { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 28px; }
+    .stop-tag { background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2); color: white; font-size: 0.82rem; padding: 6px 14px; border-radius: 50px; }
+    .highlight-price { font-size: 1.5rem; font-weight: 700; color: var(--orange); margin-bottom: 24px; }
+    .highlight-price span { font-size: 0.88rem; font-weight: 400; color: rgba(255,255,255,0.6); }
+    .btn-highlight { background: var(--orange); color: white; padding: 14px 30px; border-radius: 50px; font-weight: 500; display: inline-flex; align-items: center; gap: 8px; transition: background 0.2s, transform 0.2s; box-shadow: 0 4px 18px rgba(231,111,81,0.4); }
+    .btn-highlight:hover { background: var(--orange-dark); transform: translateY(-2px); }
+
+    /* GALLERY */
+    #gallery { background: white; padding: 80px 48px; }
+    .gallery-header { text-align: center; margin-bottom: 44px; }
+    .gallery-header .g-label { font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase; color: var(--green-mid); margin-bottom: 10px; display: block; }
+    .gallery-header h2 { font-family: 'Cormorant Garamond', serif; font-size: clamp(1.8rem, 3vw, 2.6rem); color: var(--green-dark); margin-bottom: 8px; }
+    .gallery-header p { font-size: 0.9rem; color: var(--text-muted); max-width: 420px; margin: 0 auto; line-height: 1.65; }
+    .masonry { columns: 4; column-gap: 14px; max-width: 1200px; margin: 0 auto; }
+    .masonry-item { break-inside: avoid; margin-bottom: 14px; border-radius: 12px; overflow: hidden; cursor: pointer; }
+    .masonry-item img { width: 100%; height: auto; display: block; transition: transform 0.4s ease; }
+    .masonry-item:hover img { transform: scale(1.04); }
+    .masonry-ph { background: var(--green-light); display: flex; align-items: center; justify-content: center; font-size: 0.72rem; color: var(--green-dark); padding: 16px; text-align: center; font-family: monospace; word-break: break-all; }
+    .masonry-item:nth-child(4n+1) .masonry-ph { height: 240px; }
+    .masonry-item:nth-child(4n+2) .masonry-ph { height: 180px; }
+    .masonry-item:nth-child(4n+3) .masonry-ph { height: 200px; }
+    .masonry-item:nth-child(4n)   .masonry-ph { height: 160px; }
+
+    /* REVIEWS */
+    #reviews { background: var(--cream); padding: 80px 48px; }
+    .reviews-rating { text-align: center; margin-bottom: 48px; }
+    .reviews-rating .stars { font-size: 2rem; letter-spacing: 4px; color: #F4A926; }
+    .reviews-rating p { color: var(--text-muted); font-size: 0.9rem; margin-top: 6px; }
+    .reviews-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; max-width: 1100px; margin: 0 auto; }
+    .review-card { background: white; border-radius: var(--radius); padding: 28px; box-shadow: 0 2px 16px rgba(0,0,0,0.06); border-top: 3px solid var(--green-mid); }
+    .review-stars { color: #F4A926; font-size: 0.9rem; margin-bottom: 12px; }
+    .review-text { font-family: 'Playfair Display', serif; font-style: italic; font-size: 1rem; color: var(--brown); line-height: 1.7; margin-bottom: 18px; }
+    .review-author { display: flex; align-items: center; gap: 12px; }
+    .review-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--green-light); display: flex; align-items: center; justify-content: center; font-weight: 700; color: var(--green-dark); font-size: 1rem; }
+    .review-name { font-weight: 500; font-size: 0.9rem; }
+    .review-country { font-size: 0.8rem; color: var(--text-muted); }
+
+    /* CONTACT */
+    #contact { background: var(--green-dark); padding: 80px 48px; text-align: center; color: white; }
+    #contact .section-label { color: var(--green-mid); }
+    #contact .section-title { color: white; margin-bottom: 14px; }
+    #contact p { color: rgba(255,255,255,0.72); margin-bottom: 40px; font-size: 1rem; }
+    .contact-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin-bottom: 48px; }
+    .btn-wa { background: #25D366; color: white; padding: 16px 36px; border-radius: 50px; font-weight: 500; font-size: 1rem; display: inline-flex; align-items: center; gap: 10px; box-shadow: 0 4px 20px rgba(37,211,102,0.35); transition: filter 0.2s, transform 0.2s; }
+    .btn-wa:hover { filter: brightness(1.08); transform: translateY(-2px); }
+    .btn-directions { background: transparent; border: 1.5px solid rgba(255,255,255,0.45); color: white; padding: 16px 36px; border-radius: 50px; font-weight: 500; font-size: 1rem; display: inline-flex; align-items: center; gap: 10px; transition: background 0.2s, transform 0.2s; }
+    .btn-directions:hover { background: rgba(255,255,255,0.12); transform: translateY(-2px); }
+    .contact-info { display: flex; justify-content: center; gap: 48px; flex-wrap: wrap; border-top: 1px solid rgba(255,255,255,0.12); padding-top: 36px; }
+    .contact-info-item { text-align: center; }
+    .contact-info-item .label { font-size: 0.75rem; letter-spacing: 1.5px; text-transform: uppercase; color: var(--green-mid); margin-bottom: 6px; }
+    .contact-info-item .value { font-size: 1rem; color: white; }
+
+    footer { background: #1a3d2a; color: rgba(255,255,255,0.5); text-align: center; padding: 24px; font-size: 0.82rem; }
+    footer a { color: var(--green-mid); }
+
+    .wa-float { position: fixed; bottom: 28px; right: 28px; width: 58px; height: 58px; background: #25D366; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 20px rgba(37,211,102,0.45); z-index: 998; transition: transform 0.2s, box-shadow 0.2s; }
+    .wa-float:hover { transform: scale(1.1); box-shadow: 0 8px 28px rgba(37,211,102,0.55); }
+    .wa-float svg { width: 30px; fill: white; }
+    .wa-tooltip { position: absolute; right: 68px; background: var(--brown); color: white; font-size: 0.8rem; white-space: nowrap; padding: 7px 14px; border-radius: 8px; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+    .wa-float:hover .wa-tooltip { opacity: 1; }
+
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes bounce { 0%, 100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(8px); } }
+    .fade-in { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+    @media (max-width: 900px) {
+      nav { padding: 16px 24px; }
+      .nav-links { display: none; flex-direction: column; position: absolute; top: 100%; left: 0; right: 0; background: white; padding: 24px; gap: 20px; box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
+      .nav-links.open { display: flex; }
+      .nav-hamburger { display: flex; }
+      #why, #services, #gallery, #reviews, #contact, #highlight { padding: 60px 24px; }
+      .why-grid { grid-template-columns: 1fr 1fr; }
+      .services-grid { grid-template-columns: 1fr; }
+      .homestay-services-grid { grid-template-columns: 1fr !important; }
+      .highlight-inner { grid-template-columns: 1fr; gap: 32px; }
+      .highlight-img-wrap { height: 280px; }
+      .masonry { columns: 2; }
+      .gallery-item img, .gallery-placeholder { height: 180px; }
+      .gallery-item-large img, .gallery-item-large .gallery-placeholder { height: 180px; }
+      .reviews-grid { grid-template-columns: 1fr; }
+      .contact-info { gap: 28px; }
+    }
+    @media (max-width: 540px) {
+      .why-grid { grid-template-columns: 1fr; }
+      .gallery-grid { grid-template-columns: 1fr; }
+      .hero-title { font-size: 2.2rem; }
+    }
+  </style>
+</head>
+<body>
+
+<nav id="navbar">
+  <a href="index.html" class="nav-logo">Sen's Homestay</a>
+  <div class="nav-links" id="navLinks">
+    <a href="rooms.html">Rooms</a>
+    <a href="motorbike.html">Motorbike</a>
+    <a href="tours.html">Tours</a>
+    <a href="food.html">Food</a>
+    <a href="services.html">Services</a>
+    <a href="itinerary.html">Plan Trip</a>
+    <a href="bus-ticket.html">Bus Tickets</a>
+
+    <a href="https://wa.me/84822946888?text=Hi%20Sen!%20I%27d%20like%20to%20book%20a%20room." class="nav-cta" target="_blank">💬 WhatsApp</a>
+  </div>
+  <div class="nav-hamburger" id="hamburger" onclick="toggleNav()">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-img"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <div class="hero-badge">📍 Cao Bang · Vietnam</div>
+    <h1 class="hero-title">Your Highland Home<br>in <em>Cao Bang</em></h1>
+    <p class="hero-sub">Stay · Ride · Explore — with a local you can trust</p>
+    <div class="hero-btns">
+      <a href="https://wa.me/84822946888?text=Hi%20Sen!%20I%27d%20like%20to%20book%20a%20room." class="btn-primary" target="_blank">
+        💬 Book via WhatsApp
+      </a>
+      <a href="#services" class="btn-outline">Explore Services</a>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <span>Scroll</span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section id="services">
+  <p class="section-label fade-in">What we offer</p>
+  <h2 class="section-title fade-in">Stay, ride & explore</h2>
+  <div class="services-grid">
+
+    <!-- Rooms -->
+    <div class="service-card fade-in">
+      <div class="service-img">
+        <img loading="lazy" src="images/rooms/room-01-main.jpg" alt="Sen's Homestay Room"
+             onerror="this.parentElement.innerHTML='<div class=\'gallery-placeholder\'>📷 images/rooms/room-01-main.jpg</div>'">
+      </div>
+      <div class="service-body">
+        <span class="service-tag">🛏️ Accommodation</span>
+        <h3>Cozy Rooms</h3>
+        <div class="service-price">From 3xx.000 VND / night</div>
+        <p>6 room types with mountain views, free breakfast included. Perfect for solo travelers, couples & groups.</p>
+        <a href="rooms.html" class="btn-service">View Rooms →</a>
+      </div>
+    </div>
+
+    <!-- Motorbike -->
+    <div class="service-card fade-in">
+      <div class="service-img">
+        <img loading="lazy" src="images/bikes/bike-rental-hero.jpg" alt="Motorbike Rental Cao Bang"
+             onerror="this.parentElement.innerHTML='<div class=\'gallery-placeholder\'>📷 images/bikes/bike-rental-hero.jpg</div>'">
+      </div>
+      <div class="service-body">
+        <span class="service-tag">🏍️ Motorbike Rental</span>
+        <h3>Rent a Bike</h3>
+        <div class="service-price">From 180.000 VND / day</div>
+        <p>8 bikes available — semi-auto, manual & scooter. Helmet, lock & rain poncho included. Conquer the Cao Bang loop.</p>
+        <a href="motorbike.html" class="btn-service">See All Bikes →</a>
+      </div>
+    </div>
+
+    <!-- Tours — ảnh thung lũng -->
+    <div class="service-card fade-in">
+      <div class="service-img">
+        <img loading="lazy" src="images/tours/tour-hero.jpeg" alt="Tours Cao Bang"
+             onerror="this.parentElement.innerHTML='<div class=\'gallery-placeholder\'>📷 images/tours/tour-hero.jpg</div>'">
+      </div>
+      <div class="service-body">
+        <span class="service-tag">🗺️ Guided Tours</span>
+        <h3>Explore with Sen</h3>
+        <div class="service-price">From 1.500.000 VND / person</div>
+        <p>1-day to 4-day tours by motorbike or car. Ban Gioc, Nguom Ngao, Phja Oac & more. English-speaking guide.</p>
+        <a href="tours.html" class="btn-service">View All Tours →</a>
+      </div>
+    </div>
+
+  </div>
+  <!-- BUS TICKETS FULL CARD -->
+  <div class="fade-in" style="max-width:1100px;margin:32px auto 0;">
+    <div style="background:white;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.09);border:1px solid rgba(45,106,79,0.1);">
+      <!-- Header -->
+      <div style="background:var(--green-dark,#2D6A4F);padding:18px 28px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;">
+        <div style="display:flex;align-items:center;gap:14px;">
+          <span style="font-size:1.8rem;">🎫</span>
+          <div>
+            <div style="font-family:'Playfair Display',serif;font-size:1.15rem;color:white;font-weight:700;">Bus Tickets from Cao Bang</div>
+            <div style="font-size:0.78rem;color:rgba(255,255,255,0.72);margin-top:3px;">Picked up at the homestay · No booking fee · Sen handles it for you</div>
+          </div>
+        </div>
+        <a href="bus-ticket.html" style="display:inline-flex;align-items:center;gap:7px;background:var(--orange,#E76F51);color:white;padding:10px 20px;border-radius:50px;font-size:0.82rem;font-weight:600;white-space:nowrap;text-decoration:none;flex-shrink:0;">
+          Book a seat →
+        </a>
+      </div>
+      <!-- Destination grid -->
+      <div id="busTicketGrid" style="padding:22px 28px;">
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;">
+
+          <!-- Ha Noi -->
+          <div style="background:#f8f4e9;border-radius:12px;padding:14px 16px;">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+              <span style="font-size:1.3rem;">🏙️</span>
+              <div>
+                <div style="font-size:0.88rem;font-weight:600;color:#1a1a1a;">Ha Noi</div>
+                <div style="font-size:0.68rem;color:#888;">~6 hrs</div>
+              </div>
+            </div>
+            <div style="font-size:0.7rem;color:#555;line-height:1.7;">
+              <span style="display:inline-block;background:rgba(45,106,79,0.1);color:#2D6A4F;border-radius:4px;padding:1px 6px;margin-bottom:3px;font-weight:500;">Limousine</span><br>
+              7am · 9am · 10am · 11am · 12pm · 2pm · 3pm · 4pm<br>
+              <span style="display:inline-block;background:rgba(92,61,46,0.1);color:#5C3D2E;border-radius:4px;padding:1px 6px;margin-top:4px;margin-bottom:3px;font-weight:500;">Sleeper bus</span><br>
+              9am · 12pm · 8:30pm
+            </div>
+          </div>
+
+          <!-- Ha Giang -->
+          <div style="background:#f8f4e9;border-radius:12px;padding:14px 16px;">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+              <span style="font-size:1.3rem;">🌿</span>
+              <div>
+                <div style="font-size:0.88rem;font-weight:600;color:#1a1a1a;">Ha Giang</div>
+                <div style="font-size:0.68rem;color:#888;">~8 hrs</div>
+              </div>
+            </div>
+            <div style="font-size:0.7rem;color:#555;line-height:1.7;">
+              <span style="display:inline-block;background:rgba(45,106,79,0.1);color:#2D6A4F;border-radius:4px;padding:1px 6px;margin-bottom:3px;font-weight:500;">Limousine</span><br>
+              8am · 4pm
+            </div>
+          </div>
+
+          <!-- Bac Ninh -->
+          <div style="background:#f8f4e9;border-radius:12px;padding:14px 16px;">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+              <span style="font-size:1.3rem;">🏭</span>
+              <div>
+                <div style="font-size:0.88rem;font-weight:600;color:#1a1a1a;">Bac Ninh</div>
+                <div style="font-size:0.68rem;color:#888;">~6 hrs · no transit</div>
+              </div>
+            </div>
+            <div style="font-size:0.7rem;color:#555;line-height:1.7;">
+              <span style="display:inline-block;background:rgba(92,61,46,0.1);color:#5C3D2E;border-radius:4px;padding:1px 6px;margin-bottom:3px;font-weight:500;">Sleeper bus</span><br>
+              8:30pm
+            </div>
+          </div>
+
+          <!-- Ninh Binh -->
+          <div style="background:#f8f4e9;border-radius:12px;padding:14px 16px;">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+              <span style="font-size:1.3rem;">⛩️</span>
+              <div>
+                <div style="font-size:0.88rem;font-weight:600;color:#1a1a1a;">Ninh Binh</div>
+                <div style="font-size:0.68rem;color:#888;">~9 hrs · no transit</div>
+              </div>
+            </div>
+            <div style="font-size:0.7rem;color:#555;line-height:1.7;">
+              <span style="display:inline-block;background:rgba(92,61,46,0.1);color:#5C3D2E;border-radius:4px;padding:1px 6px;margin-bottom:3px;font-weight:500;">Sleeper bus</span><br>
+              7pm
+            </div>
+          </div>
+
+          <!-- Cat Ba -->
+          <div style="background:#f8f4e9;border-radius:12px;padding:14px 16px;">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+              <span style="font-size:1.3rem;">🏝️</span>
+              <div>
+                <div style="font-size:0.88rem;font-weight:600;color:#1a1a1a;">Cat Ba Island</div>
+                <div style="font-size:0.68rem;color:#888;">~10 hrs · no transit</div>
+              </div>
+            </div>
+            <div style="font-size:0.7rem;color:#555;line-height:1.7;">
+              <span style="display:inline-block;background:rgba(92,61,46,0.1);color:#5C3D2E;border-radius:4px;padding:1px 6px;margin-bottom:3px;font-weight:500;">Sleeper bus</span><br>
+              8:30pm
+            </div>
+          </div>
+
+          <!-- Ha Long -->
+          <div style="background:#f8f4e9;border-radius:12px;padding:14px 16px;">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+              <span style="font-size:1.3rem;">⛵</span>
+              <div>
+                <div style="font-size:0.88rem;font-weight:600;color:#1a1a1a;">Ha Long</div>
+                <div style="font-size:0.68rem;color:#888;">~9 hrs · no transit</div>
+              </div>
+            </div>
+            <div style="font-size:0.7rem;color:#555;line-height:1.7;">
+              <span style="display:inline-block;background:rgba(92,61,46,0.1);color:#5C3D2E;border-radius:4px;padding:1px 6px;margin-bottom:3px;font-weight:500;">Sleeper bus</span><br>
+              8:30pm
+            </div>
+          </div>
+
+          <!-- Quang Ninh -->
+          <div style="background:#f8f4e9;border-radius:12px;padding:14px 16px;">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+              <span style="font-size:1.3rem;">🌅</span>
+              <div>
+                <div style="font-size:0.88rem;font-weight:600;color:#1a1a1a;">Quang Ninh</div>
+                <div style="font-size:0.68rem;color:#888;">no transit</div>
+              </div>
+            </div>
+            <div style="font-size:0.7rem;color:#555;line-height:1.7;">
+              <span style="display:inline-block;background:rgba(92,61,46,0.1);color:#5C3D2E;border-radius:4px;padding:1px 6px;margin-bottom:3px;font-weight:500;">Sleeper bus</span><br>
+              8am · 8pm
+            </div>
+          </div>
+
+          <!-- Hai Phong -->
+          <div style="background:#f8f4e9;border-radius:12px;padding:14px 16px;">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+              <span style="font-size:1.3rem;">⚓</span>
+              <div>
+                <div style="font-size:0.88rem;font-weight:600;color:#1a1a1a;">Hai Phong</div>
+                <div style="font-size:0.68rem;color:#888;">~9 hrs · no transit</div>
+              </div>
+            </div>
+            <div style="font-size:0.7rem;color:#555;line-height:1.7;">
+              <span style="display:inline-block;background:rgba(92,61,46,0.1);color:#5C3D2E;border-radius:4px;padding:1px 6px;margin-bottom:3px;font-weight:500;">Sleeper bus</span><br>
+              8:30pm
+            </div>
+          </div>
+
+          <!-- Ba Be -->
+          <div style="background:#f8f4e9;border-radius:12px;padding:14px 16px;">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+              <span style="font-size:1.3rem;">🌊</span>
+              <div>
+                <div style="font-size:0.88rem;font-weight:600;color:#1a1a1a;">Ba Be Lake</div>
+                <div style="font-size:0.68rem;color:#888;">~3 hrs</div>
+              </div>
+            </div>
+            <div style="font-size:0.7rem;color:#555;line-height:1.7;">
+              <span style="display:inline-block;background:rgba(45,106,79,0.1);color:#2D6A4F;border-radius:4px;padding:1px 6px;margin-bottom:3px;font-weight:500;">Limousine</span><br>
+              12pm
+            </div>
+          </div>
+
+        </div>
+        <!-- Footer row -->
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-top:16px;padding-top:14px;border-top:1px solid rgba(45,106,79,0.1);">
+          <p style="font-size:0.78rem;color:#888;margin:0;">Pick-up at Sen's Homestay · Times may vary — Sen will confirm · No booking fee</p>
+          <a href="bus-ticket.html" style="display:inline-flex;align-items:center;gap:7px;background:var(--green-dark,#2D6A4F);color:white;padding:10px 20px;border-radius:50px;font-size:0.82rem;font-weight:500;text-decoration:none;white-space:nowrap;flex-shrink:0;"
+             onmouseover="this.style.background='#1e4d38'" onmouseout="this.style.background='#2D6A4F'">
+            Select date & book →
+          </a>
+        </div>
+      </div>
+      </div>
+      <!-- Show more button - Only on mobile -->
+      <div id="busShowMore" style="padding:16px 28px;text-align:center;border-top:1px solid rgba(45,106,79,0.1);display:none;">
+        <button onclick="toggleBusTickets()" style="background:rgba(45,106,79,0.08);color:var(--green-dark,#2D6A4F);border:1.5px solid var(--green-dark,#2D6A4F);padding:11px 28px;border-radius:50px;font-size:0.88rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all 0.2s;">
+          View all 9 destinations →
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PUBLIC BUS GUIDE CARD — hero-image style -->
+  <div class="fade-in" style="max-width:1100px;margin:16px auto 0;">
+    <a href="bus/ban-gioc-bus-guide.html" style="display:block;position:relative;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.09);border:1px solid rgba(45,106,79,0.1);min-height:240px;background:#1F4A37 url('bus/bus-hero.jpg') center/cover no-repeat;text-decoration:none;color:white;transition:transform 0.25s, box-shadow 0.25s;"
+       onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 12px 40px rgba(0,0,0,0.18)'"
+       onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 4px 24px rgba(0,0,0,0.09)'">
+
+      <!-- Gradient overlay for readability -->
+      <div style="position:absolute;inset:0;background:linear-gradient(110deg, rgba(20,17,13,0.82) 0%, rgba(31,74,55,0.65) 50%, rgba(20,17,13,0.4) 100%);"></div>
+
+      <!-- Content -->
+      <div style="position:relative;padding:32px 36px;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;min-height:240px;">
+        <div style="flex:1;min-width:240px;max-width:560px;">
+          <span style="display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.22);backdrop-filter:blur(8px);color:white;font-size:0.66rem;font-weight:500;letter-spacing:2px;text-transform:uppercase;padding:5px 13px;border-radius:50px;margin-bottom:14px;">
+            <span style="width:5px;height:5px;border-radius:50%;background:#E76F51;box-shadow:0 0 0 3px rgba(231,111,81,0.3);"></span>
+            Free guide · Public transport
+          </span>
+          <h3 style="font-family:'Playfair Display',serif;font-size:clamp(1.4rem,2.6vw,1.85rem);color:white;font-weight:700;line-height:1.1;margin-bottom:8px;letter-spacing:-0.02em;text-shadow:0 2px 18px rgba(0,0,0,0.6);">
+            Take the public bus to <em style="color:#F0D6AE;font-weight:500;">Ban Gioc Waterfall</em>
+          </h3>
+          <p style="font-size:0.92rem;color:rgba(255,255,255,0.85);line-height:1.6;max-width:480px;text-shadow:0 1px 10px rgba(0,0,0,0.5);margin-bottom:18px;">
+            One bus, no transfers, ~80,000₫ each way. It stops right in front of Sen's gate — we'll show you how to flag it down.
+          </p>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <span style="background:rgba(0,0,0,0.35);border:1px solid rgba(255,255,255,0.18);color:white;font-size:0.72rem;font-weight:500;padding:5px 12px;border-radius:50px;backdrop-filter:blur(8px);">~80,000₫</span>
+            <span style="background:rgba(0,0,0,0.35);border:1px solid rgba(255,255,255,0.18);color:white;font-size:0.72rem;font-weight:500;padding:5px 12px;border-radius:50px;backdrop-filter:blur(8px);">~2 hrs each way</span>
+            <span style="background:rgba(0,0,0,0.35);border:1px solid rgba(255,255,255,0.18);color:white;font-size:0.72rem;font-weight:500;padding:5px 12px;border-radius:50px;backdrop-filter:blur(8px);">4 easy steps</span>
+          </div>
+        </div>
+
+        <!-- CTA pill — Button-in-Button -->
+        <span style="display:inline-flex;align-items:center;background:var(--orange,#E76F51);color:white;padding:10px 10px 10px 22px;border-radius:50px;font-size:0.88rem;font-weight:600;white-space:nowrap;flex-shrink:0;box-shadow:0 8px 24px rgba(231,111,81,0.45);">
+          Read the guide
+          <span style="width:30px;height:30px;margin-left:12px;border-radius:50%;background:rgba(0,0,0,0.18);display:inline-flex;align-items:center;justify-content:center;">
+            <svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:white;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </span>
+        </span>
+      </div>
+    </a>
+  </div>
+
+  <!-- HOMESTAY SERVICES: BREAKFAST & LAUNDRY -->
+  <div class="fade-in homestay-services-row" style="max-width:1100px;margin:16px auto 0;">
+    <div class="homestay-services-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+
+      <!-- Breakfast & Coffee -->
+      <div style="background:white;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.09);border:1px solid rgba(45,106,79,0.1);display:flex;flex-direction:column;">
+        <div style="position:relative;height:160px;background:#3d2817;overflow:hidden;">
+          <img loading="lazy" src="images/food/breakfast.jpg" alt="Breakfast at Sen's"
+               style="width:100%;height:100%;object-fit:cover;opacity:0.88;"
+               onerror="this.style.display='none'">
+          <div style="position:absolute;inset:0;background:linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.15) 60%, transparent 100%);"></div>
+          <div style="position:absolute;top:14px;left:16px;display:flex;gap:6px;">
+            <span style="background:rgba(255,255,255,0.95);color:var(--green-dark);font-size:0.62rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:4px 11px;border-radius:50px;">☕ At the homestay</span>
+          </div>
+          <div style="position:absolute;bottom:16px;left:18px;right:18px;">
+            <h3 style="font-family:'Playfair Display',serif;font-size:1.35rem;color:white;font-weight:700;line-height:1.2;">Breakfast & Coffee</h3>
+            <p style="font-size:0.76rem;color:rgba(255,255,255,0.85);margin-top:3px;">Fresh, hot, homemade — every morning at Sen's</p>
+          </div>
+        </div>
+        <div style="padding:18px 22px;flex:1;display:flex;flex-direction:column;">
+          <ul style="list-style:none;padding:0;margin:0 0 14px;display:flex;flex-direction:column;gap:7px;font-size:0.82rem;color:#444;line-height:1.5;">
+            <li style="display:flex;gap:8px;"><span style="flex-shrink:0;">🥣</span><span>Vietnamese-style pho, banh cuon, or sticky rice</span></li>
+            <li style="display:flex;gap:8px;"><span style="flex-shrink:0;">🍞</span><span>Western options: eggs, toast, fresh fruit, yoghurt</span></li>
+            <li style="display:flex;gap:8px;"><span style="flex-shrink:0;">☕</span><span>Cao Bang specialty coffee — freshly brewed</span></li>
+            <li style="display:flex;gap:8px;"><span style="flex-shrink:0;">🌿</span><span>Local herbal teas and fresh juices</span></li>
+          </ul>
+          <div style="margin-top:auto;padding-top:12px;border-top:1px dashed rgba(45,106,79,0.15);display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;">
+            <div>
+              <div style="font-family:'Playfair Display',serif;font-size:1.05rem;color:var(--green-dark);font-weight:700;">From 25.000đ <span style="font-size:0.7rem;color:var(--text-muted);font-weight:400;">≈ $1</span></div>
+              <div style="font-size:0.7rem;color:var(--text-muted);">per item · served 6:30 — 9:30 am</div>
+            </div>
+            <a href="services.html#breakfast" style="display:inline-flex;align-items:center;gap:5px;background:var(--green-light);color:var(--green-dark);font-size:0.72rem;font-weight:500;padding:7px 14px;border-radius:50px;">
+              Pre-order →
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Laundry Service -->
+      <div style="background:white;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.09);border:1px solid rgba(45,106,79,0.1);display:flex;flex-direction:column;">
+        <div style="position:relative;height:160px;background:#1e3a2a;overflow:hidden;">
+          <img loading="lazy" src="images/services/laundry.jpg" alt="Laundry service at Sen's"
+               style="width:100%;height:100%;object-fit:cover;opacity:0.85;"
+               onerror="this.parentElement.style.background='linear-gradient(135deg, #2D6A4F 0%, #52B788 100%)'">
+          <div style="position:absolute;inset:0;background:linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.15) 60%, transparent 100%);"></div>
+          <div style="position:absolute;top:14px;left:16px;display:flex;gap:6px;">
+            <span style="background:rgba(255,255,255,0.95);color:var(--green-dark);font-size:0.62rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:4px 11px;border-radius:50px;">🧺 Same-day service</span>
+          </div>
+          <div style="position:absolute;bottom:16px;left:18px;right:18px;">
+            <h3 style="font-family:'Playfair Display',serif;font-size:1.35rem;color:white;font-weight:700;line-height:1.2;">Laundry Service</h3>
+            <p style="font-size:0.76rem;color:rgba(255,255,255,0.85);margin-top:3px;">Drop it off in the morning, wear it again tomorrow</p>
+          </div>
+        </div>
+        <div style="padding:18px 22px;flex:1;display:flex;flex-direction:column;">
+          <ul style="list-style:none;padding:0;margin:0 0 14px;display:flex;flex-direction:column;gap:7px;font-size:0.82rem;color:#444;line-height:1.5;">
+            <li style="display:flex;gap:8px;"><span style="flex-shrink:0;">🧼</span><span>Wash, dry, and fold — handled in-house</span></li>
+            <li style="display:flex;gap:8px;"><span style="flex-shrink:0;">⏱️</span><span>Same-day if dropped off before 9 am</span></li>
+            <li style="display:flex;gap:8px;"><span style="flex-shrink:0;">🌬️</span><span>Sun-dried when weather permits — softer fabric</span></li>
+            <li style="display:flex;gap:8px;"><span style="flex-shrink:0;">👕</span><span>Delicates handled separately — just let Sen know</span></li>
+          </ul>
+          <div style="margin-top:auto;padding-top:12px;border-top:1px dashed rgba(45,106,79,0.15);display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;">
+            <div>
+              <div style="font-family:'Playfair Display',serif;font-size:1.05rem;color:var(--green-dark);font-weight:700;">30.000đ <span style="font-size:0.7rem;color:var(--text-muted);font-weight:400;">/ kg · ≈ $1.20</span></div>
+              <div style="font-size:0.7rem;color:var(--text-muted);">white shirts: 8.000đ each · pick-up at reception</div>
+            </div>
+            <a href="services.html#laundry" style="display:inline-flex;align-items:center;gap:5px;background:var(--green-light);color:var(--green-dark);font-size:0.72rem;font-weight:500;padding:7px 14px;border-radius:50px;">
+              Pre-order →
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ROUTE MAP CARD -->
+  <div class="fade-in" style="max-width:1100px;margin:28px auto 0;">
+    <div style="background:white;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.09);">
+      <div style="position:relative;height:200px;background:#111;overflow:hidden;">
+        <img loading="lazy" src="images/map_hero.jpg" alt="Cao Bang Route Map"
+             style="width:100%;height:100%;object-fit:cover;opacity:1;"
+             onerror="this.style.display='none'">
+        <div style="position:absolute;inset:0;background:linear-gradient(to right, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.15) 55%, transparent 100%);"></div>
+        <div style="position:absolute;top:0;left:0;bottom:0;display:flex;flex-direction:column;justify-content:center;padding:28px 32px;">
+          <span style="font-size:0.68rem;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.6);margin-bottom:8px;">Interactive · Plan your trip</span>
+          <h3 style="font-family:'Playfair Display',serif;font-size:1.7rem;color:white;font-weight:700;line-height:1.15;margin-bottom:6px;">Cao Bang<br>Route Map</h3>
+          <p style="font-size:0.82rem;color:rgba(255,255,255,0.65);line-height:1.5;max-width:320px;">Build your own itinerary — pick destinations, plan by day, send to Sen for a quote.</p>
+        </div>
+        <div style="position:absolute;top:16px;right:16px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);color:white;font-size:0.68rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:5px 14px;border-radius:50px;">🗺️ Map</div>
+      </div>
+      <div style="padding:16px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <span style="background:var(--green-light);color:var(--green-dark);font-size:0.75rem;padding:5px 12px;border-radius:50px;">📍 Ban Gioc</span>
+          <span style="background:var(--green-light);color:var(--green-dark);font-size:0.75rem;padding:5px 12px;border-radius:50px;">👁️ Eye Mountain</span>
+          <span style="background:var(--green-light);color:var(--green-dark);font-size:0.75rem;padding:5px 12px;border-radius:50px;">🪨 Nguom Ngao</span>
+          <span style="background:var(--green-light);color:var(--green-dark);font-size:0.75rem;padding:5px 12px;border-radius:50px;">🏔️ Ba Quang</span>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <a href="map.html" style="display:inline-flex;align-items:center;gap:6px;background:rgba(45,106,79,0.12);border:1.5px solid var(--green-dark);color:var(--green-dark);font-family:'DM Sans',sans-serif;font-size:0.82rem;font-weight:500;padding:10px 18px;border-radius:50px;white-space:nowrap;">View Map</a>
+          <a href="itinerary.html" style="display:inline-flex;align-items:center;gap:6px;background:var(--green-dark);color:white;font-family:'DM Sans',sans-serif;font-size:0.85rem;font-weight:500;padding:11px 24px;border-radius:50px;white-space:nowrap;flex-shrink:0;" onmouseover="this.style.background='#1e4d38'" onmouseout="this.style.background='var(--green-dark)'">Plan Your Trip →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOD GUIDE CARD -->
+  <div class="fade-in" style="max-width:1100px;margin:16px auto 0;">
+    <div style="background:white;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.09);">
+      <!-- Hero image strip -->
+      <div style="position:relative;height:200px;background:#1a2e1a;overflow:hidden;">
+        <img loading="lazy" src="images/food/hero.jpg" alt="Food Guide Cao Bang"
+             style="width:100%;height:100%;object-fit:cover;opacity:0.85;"
+             onerror="this.style.display='none'">
+        <div style="position:absolute;inset:0;background:linear-gradient(to right, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.15) 60%, transparent 100%);"></div>
+        <div style="position:absolute;top:0;left:0;bottom:0;display:flex;flex-direction:column;justify-content:center;padding:28px 32px;">
+          <span style="font-size:0.68rem;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.65);margin-bottom:8px;">Sen's personal picks</span>
+          <h3 style="font-family:'Playfair Display',serif;font-size:1.7rem;color:white;font-weight:700;line-height:1.15;margin-bottom:6px;">Where to Eat<br>in Cao Bang</h3>
+          <p style="font-size:0.82rem;color:rgba(255,255,255,0.7);line-height:1.5;max-width:280px;">19 hand-picked restaurants — local street food to Italian pizza.</p>
+        </div>
+        <div style="position:absolute;top:16px;right:16px;background:var(--orange);color:white;font-size:0.68rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:5px 14px;border-radius:50px;">Food Guide</div>
+      </div>
+      <!-- Bottom action row -->
+      <div style="padding:16px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <span style="background:var(--green-light);color:var(--green-dark);font-size:0.75rem;padding:5px 12px;border-radius:50px;">🍜 Local</span>
+          <span style="background:var(--green-light);color:var(--green-dark);font-size:0.75rem;padding:5px 12px;border-radius:50px;">🍕 Western</span>
+          <span style="background:var(--green-light);color:var(--green-dark);font-size:0.75rem;padding:5px 12px;border-radius:50px;">☕ Café</span>
+          <span style="background:var(--green-light);color:var(--green-dark);font-size:0.75rem;padding:5px 12px;border-radius:50px;">🌱 Vegan</span>
+        </div>
+        <a href="food.html" style="display:inline-flex;align-items:center;gap:6px;background:var(--orange);color:white;font-family:'DM Sans',sans-serif;font-size:0.85rem;font-weight:500;padding:11px 24px;border-radius:50px;white-space:nowrap;flex-shrink:0;" onmouseover="this.style.background='#C25B3F'" onmouseout="this.style.background='#E76F51'">See Food Guide →</a>
+      </div>
+    </div>
+  </div>
+</section>
+<section id="highlight">
+  <div class="highlight-inner">
+    <div class="highlight-img-wrap fade-in">
+      <img loading="lazy" src="images/tours/tour-ban-gioc.jpg" alt="Ban Gioc Waterfall & Angel Eye Mountain Tour"
+           onerror="this.style.display='none'">
+      <div class="highlight-badge">⭐ Bestseller</div>
+    </div>
+    <div class="highlight-content fade-in">
+      <p class="section-label">Featured Tour</p>
+      <h2 class="section-title">
+        Ban Gioc Waterfall & Angel Eye Mountain<br>
+        <span style="font-size: 0.8em; font-weight: 400;">Full Day Tour</span>
+      </h2>
+      <p>Explore the natural masterpieces of Cao Bang (~195km). Discover traditional craft at the Blacksmith Village, marvel at the majestic Ban Gioc Waterfall, and witness the unique beauty of the Angel Eye Mountain.</p>
+      <div class="highlight-stops">
+        <span class="stop-tag">🌊 Ban Gioc Waterfall</span>
+        <span class="stop-tag">⚒️ Blacksmith Village</span>
+        <span class="stop-tag">⛰️ Angel Eye Mountain</span>
+        <span class="stop-tag">🔭 Thoongot Viewpoint</span>
+      </div>
+      <div class="highlight-price">1.550.000đ <span>/ Full Day</span></div>
+      <a href="https://wa.me/84822946888?text=Hi%20Sen!%20I%27d%20like%20to%20book%20the%20Ban%20Gioc%20-%20Angel%20Eye%20Mountain%20tour." class="btn-highlight" target="_blank">
+        💬 Book Now
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section id="gallery">
+  <div class="gallery-header fade-in">
+    <span class="g-label">Photo gallery</span>
+    <h2>Life at Sen's</h2>
+    <p>Moments captured at the homestay and on the road through Cao Bang.</p>
+  </div>
+  <div class="masonry fade-in" id="galleryGrid"></div>
+</section>
+
+<!-- REVIEWS -->
+<section id="reviews">
+  <p class="section-label fade-in">Guest reviews</p>
+  <h2 class="section-title fade-in">What travelers say</h2>
+  <div class="reviews-rating fade-in">
+    <div class="stars">★★★★★</div>
+    <p>4.9 / 5 · Based on Google & Booking reviews</p>
+  </div>
+  <div class="reviews-grid">
+    <div class="review-card fade-in">
+      <div class="review-stars">★★★★★</div>
+      <p class="review-text">"Sen helped us plan everything — the Ban Gioc tour, renting bikes, even where to eat. Best decision of our Vietnam trip!"</p>
+      <div class="review-author"><div class="review-avatar">J</div><div><div class="review-name">James & Laura</div><div class="review-country">🇦🇺 Australia</div></div></div>
+    </div>
+    <div class="review-card fade-in">
+      <div class="review-stars">★★★★★</div>
+      <p class="review-text">"Such a hidden gem! The room had an amazing mountain view, breakfast was delicious, and Sen is incredibly helpful. Highly recommend."</p>
+      <div class="review-author"><div class="review-avatar">M</div><div><div class="review-name">Marie</div><div class="review-country">🇫🇷 France</div></div></div>
+    </div>
+    <div class="review-card fade-in">
+      <div class="review-stars">★★★★★</div>
+      <p class="review-text">"Rented a motorbike and did the Cao Bang loop for 3 days. Sen gave us a perfect route map and was always available on WhatsApp. Amazing!"</p>
+      <div class="review-author"><div class="review-avatar">T</div><div><div class="review-name">Tom</div><div class="review-country">🇩🇪 Germany</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <p class="section-label">Get in touch</p>
+  <h2 class="section-title">Ready to explore<br>Cao Bang?</h2>
+  <p>Message Sen directly — rooms, tours, bikes, or just questions.<br>We reply within 1 hour.</p>
+  <div class="contact-btns">
+    <a href="https://wa.me/84822946888?text=Hi%20Sen!%20I%27d%20like%20to%20know%20more%20about%20your%20homestay." class="btn-wa" target="_blank">
+      <svg viewBox="0 0 24 24" fill="white" width="20"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      WhatsApp Sen
+    </a>
+    <a href="https://maps.app.goo.gl/PQXqThDmfQtj135CA" class="btn-directions" target="_blank">📍 Get Directions</a>
+  </div>
+  <div class="contact-info">
+    <div class="contact-info-item"><div class="label">Location</div><div class="value">Cao Bang City, Vietnam</div></div>
+    <div class="contact-info-item"><div class="label">Check-in</div><div class="value">14:00 — 22:00</div></div>
+    <div class="contact-info-item"><div class="label">Check-out</div><div class="value">Before 12:00</div></div>
+    <div class="contact-info-item"><div class="label">Reply time</div><div class="value">Within 1 hour</div></div>
+  </div>
+  <!-- LOCATION MAP -->
+  <div style="max-width:1100px;margin:48px auto 0;border-radius:16px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,0.12);border:1px solid rgba(45,106,79,0.1);">
+    <div style="background:white;padding:14px 22px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;border-bottom:1px solid rgba(45,106,79,0.1);">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span style="font-size:1.3rem;">📍</span>
+        <div>
+          <div style="font-family:'Playfair Display',serif;font-size:1rem;color:var(--green-dark);font-weight:700;">Find us on the map</div>
+          <div style="font-size:0.75rem;color:var(--text-muted);">Sen's Homestay · Cao Bang City, Vietnam</div>
+        </div>
+      </div>
+      <a href="https://maps.app.goo.gl/PQXqThDmfQtj135CA" target="_blank"
+         style="display:inline-flex;align-items:center;gap:6px;background:var(--green-light);color:var(--green-dark);font-size:0.78rem;font-weight:500;padding:8px 16px;border-radius:50px;text-decoration:none;">
+        Open in Google Maps →
+      </a>
+    </div>
+    <iframe
+      src="https://maps.google.com/maps?q=Sen%27s+Homestay+Cao+Bang+City&output=embed"
+      width="100%" height="380" style="border:0;display:block;" allowfullscreen="" loading="lazy"
+      referrerpolicy="no-referrer-when-downgrade" title="Sen's Homestay location"></iframe>
+  </div>
+</section>
+
+<footer>
+  <p>© 2025 Sen's Homestay · Cao Bang, Vietnam &nbsp;·&nbsp;
+     <a href="https://wa.me/84822946888" target="_blank">WhatsApp</a> &nbsp;·&nbsp;
+     Made with ❤️ in Cao Bang</p>
+</footer>
+
+<a href="https://wa.me/84822946888?text=Hi%20Sen!" class="wa-float" target="_blank" title="Chat with Sen">
+  <div class="wa-tooltip">Chat with Sen</div>
+  <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</a>
+
+<script>
+  window.addEventListener('scroll', () => {
+    document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 40);
+  });
+  function toggleNav() {
+    document.getElementById('navLinks').classList.toggle('open');
+  }
+
+  function toggleBusTickets() {
+    const grid = document.getElementById('busTicketGrid');
+    const btn = document.getElementById('busShowMore').querySelector('button');
+    const isHidden = grid.style.display === 'none';
+    grid.style.display = isHidden ? 'block' : 'none';
+    btn.textContent = isHidden ? '↑ Collapse' : 'View all 9 destinations →';
+  }
+
+  // Show/hide bus ticket grid toggle button on mobile
+  function updateBusTicketView() {
+    const grid = document.getElementById('busTicketGrid');
+    const btn = document.getElementById('busShowMore');
+    if (window.innerWidth < 900) {
+      grid.style.display = 'none';
+      btn.style.display = 'block';
+    } else {
+      grid.style.display = 'block';
+      btn.style.display = 'none';
+    }
+  }
+  updateBusTicketView();
+  window.addEventListener('resize', updateBusTicketView);
+  window.addEventListener('load', () => {
+    document.getElementById('hero').classList.add('loaded');
+  });
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+  // GALLERY MASONRY (same mechanism as tours.html memorial)
+  const galleryGrid = document.getElementById('galleryGrid');
+  const GALLERY_COUNT = 13;
+  for (let i = 1; i <= GALLERY_COUNT; i++) {
+    const num = String(i).padStart(2, '0');
+    const item = document.createElement('div');
+    item.className = 'masonry-item';
+    item.innerHTML = `
+      <img loading="lazy" src="images/gallery-${num}.jpg" alt="Sen's Homestay photo ${i}"
+           onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="masonry-ph" style="display:none">images/gallery-${num}.jpg</div>`;
+    galleryGrid.appendChild(item);
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Bus Tickets from Cao Bang · Sen's Homestay</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --gd:#2D6A4F; --gm:#52B788; --gl:#D8F3DC;
+  --or:#E76F51; --od:#C25B3F; --cr:#F8F4E9;
+  --brown:#5C3D2E; --tx:#1a1a1a; --tm:#666;
+  --line:rgba(45,106,79,0.13);
+  --r:14px; --sh:0 4px 24px rgba(0,0,0,0.09);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--cr);color:var(--tx);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+a{text-decoration:none;color:inherit}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:14px 40px;background:rgba(248,244,233,0.93);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.nav-logo{font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:var(--gd);font-weight:700;white-space:nowrap}
+.nav-logo span{color:var(--or)}
+.nav-links{display:flex;gap:24px;align-items:center}
+.nav-links a{font-size:0.85rem;font-weight:500;color:var(--brown)}
+.nav-links a:hover,.nav-links a.active{color:var(--gd)}
+.nav-cta{background:var(--or);color:white!important;padding:8px 18px;border-radius:50px;font-size:0.82rem}
+.ham{display:none;flex-direction:column;gap:5px;cursor:pointer}
+.ham span{width:22px;height:2px;background:var(--gd);border-radius:2px}
+
+/* PAGE HEADER */
+.pg-head{padding:100px 40px 36px;max-width:860px;margin:0 auto}
+.eyebrow{font-size:0.68rem;letter-spacing:3px;text-transform:uppercase;color:var(--or);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.eyebrow::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--or);flex-shrink:0}
+.pg-head h1{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,4vw,3rem);color:var(--gd);line-height:1.05;margin-bottom:12px}
+.pg-head h1 em{font-style:italic;color:var(--or)}
+.pg-head p{font-size:0.95rem;color:var(--tm);line-height:1.7;max-width:520px}
+
+/* BOOKING WRAP */
+.booking-wrap{max-width:860px;margin:0 auto;padding:0 40px 80px}
+
+/* STEP BLOCKS */
+.step-block{background:white;border-radius:var(--r);border:1px solid var(--line);box-shadow:var(--sh);overflow:hidden;margin-bottom:16px;transition:opacity 0.25s}
+.step-head{padding:16px 22px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px}
+.step-num{width:28px;height:28px;border-radius:50%;background:var(--gd);color:white;font-size:0.78rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.step-title{font-family:'Cormorant Garamond',serif;font-size:1.15rem;color:var(--gd);font-weight:700}
+.step-sub{font-size:0.72rem;color:var(--tm);margin-top:1px}
+.step-body{padding:18px 22px}
+.step-block.locked{opacity:0.4;pointer-events:none}
+
+/* DESTINATION GRID */
+.dest-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:10px}
+.dest-card{border:2px solid var(--line);border-radius:12px;padding:14px 16px;cursor:pointer;transition:all 0.18s;user-select:none;background:#fdfcf8;position:relative}
+.dest-card:hover{border-color:var(--gm);background:var(--gl)}
+.dest-card.selected{border-color:var(--gd);background:var(--gl)}
+.dest-card.selected::after{content:'✓';position:absolute;top:10px;right:12px;width:20px;height:20px;border-radius:50%;background:var(--gd);color:white;font-size:0.68rem;font-weight:700;display:flex;align-items:center;justify-content:center}
+.dest-icon{font-size:1.4rem;margin-bottom:5px;line-height:1}
+.dest-name{font-size:0.9rem;font-weight:600;color:var(--tx);margin-bottom:2px}
+.dest-dur{font-size:0.68rem;color:var(--tm);margin-bottom:7px}
+.dest-times{font-size:0.68rem;color:var(--tm);line-height:1.65}
+.type-badge{display:inline-block;font-size:0.62rem;font-weight:600;padding:1px 7px;border-radius:4px;margin-bottom:2px}
+.badge-limo{background:rgba(45,106,79,0.1);color:var(--gd)}
+.badge-sleep{background:rgba(92,61,46,0.1);color:var(--brown)}
+
+/* TIME SECTION LABEL */
+.time-section-label{grid-column:1/-1;font-size:0.7rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding-bottom:2px;margin-bottom:-2px;border-bottom:1px solid var(--line)}
+.time-section-label.lbl-limo{color:var(--gd)}
+.time-section-label.lbl-sleep{color:var(--brown);margin-top:10px}
+
+/* TIME GRID */
+.time-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px}
+.time-pill{border:2px solid var(--line);border-radius:10px;padding:11px 12px;cursor:pointer;transition:all 0.15s;text-align:center;background:#fdfcf8;user-select:none}
+.time-pill:hover{border-color:var(--gm);background:var(--gl)}
+.time-pill.selected{border-color:var(--gd);background:var(--gd);color:white}
+.tp-time{font-size:0.92rem;font-weight:700}
+.tp-type{font-size:0.61rem;margin-top:2px;opacity:0.6}
+.time-pill.selected .tp-type{opacity:0.85}
+
+/* FORM */
+.field-group{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.field-label{font-size:0.78rem;font-weight:500;color:var(--brown)}
+.field-input{padding:11px 14px;border:1.5px solid var(--line);border-radius:10px;font-family:inherit;font-size:0.88rem;color:var(--tx);background:#fdfcf8;outline:none;transition:border-color 0.15s}
+.field-input:focus{border-color:var(--gm)}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+/* SUMMARY */
+.summary-box{background:var(--gl);border:1px solid rgba(45,106,79,0.18);border-radius:12px;padding:16px 18px;margin-bottom:16px;min-height:56px}
+.s-row{display:flex;gap:8px;font-size:0.83rem;line-height:1.8}
+.s-label{color:var(--tm);font-size:0.72rem;min-width:110px;flex-shrink:0;padding-top:2px}
+.s-val{font-weight:600;color:var(--gd)}
+.s-empty{color:var(--tm);font-style:italic;font-size:0.82rem}
+
+/* SEND BTN */
+.send-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:15px;border-radius:50px;background:#25D366;color:white;font-size:0.95rem;font-weight:600;transition:all 0.2s;cursor:pointer;border:none;font-family:inherit}
+.send-btn:hover:not(:disabled){background:#1fba58;transform:translateY(-2px);box-shadow:0 8px 24px rgba(37,211,102,0.35)}
+.send-btn:disabled{background:#c0c0c0;cursor:not-allowed}
+.send-btn svg{width:20px;fill:white;flex-shrink:0}
+
+/* INFO STRIP */
+.info-strip{display:flex;align-items:flex-start;gap:10px;background:rgba(231,111,81,0.07);border:1px solid rgba(231,111,81,0.2);border-radius:10px;padding:12px 14px;font-size:0.78rem;color:var(--brown);line-height:1.55;margin-top:12px}
+
+/* FOOTER */
+footer{background:#0f2419;color:rgba(255,255,255,0.4);text-align:center;padding:18px;font-size:0.76rem}
+footer a{color:var(--gm)}
+.waf{position:fixed;bottom:22px;right:22px;width:50px;height:50px;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(37,211,102,0.4);z-index:99}
+.waf svg{width:22px;fill:white}
+
+@media(max-width:700px){
+  nav{padding:12px 16px}
+  .nav-links{display:none;flex-direction:column;position:absolute;top:100%;left:0;right:0;background:rgba(248,244,233,0.98);padding:16px;gap:14px;box-shadow:0 8px 24px rgba(0,0,0,0.1)}
+  .nav-links.open{display:flex}
+  .ham{display:flex}
+  .pg-head{padding:84px 16px 24px}
+  .booking-wrap{padding:0 16px 60px}
+  .field-row{grid-template-columns:1fr}
+  .dest-grid{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">Sen's Homestay</a>
+  <div class="nav-links" id="navLinks">
+    <a href="rooms.html">Rooms</a>
+    <a href="motorbike.html">Motorbike</a>
+    <a href="tours.html">Tours</a>
+    <a href="food.html">Food</a>
+    <a href="services.html">Services</a>
+    <a href="itinerary.html">Plan Trip</a>
+    <a href="bus-ticket.html" class="active">Bus Tickets</a>
+
+    <a href="https://wa.me/84822946888" class="nav-cta" target="_blank">💬 WhatsApp</a>
+  </div>
+  <div class="ham" onclick="document.getElementById('navLinks').classList.toggle('open')">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<div class="pg-head">
+  <div class="eyebrow">Leaving Cao Bang</div>
+  <h1>Bus tickets <em>out of</em><br>Cao Bang</h1>
+  <p>Sen books your ticket at no extra charge. Pick-up right at the homestay — no need to find the bus station. Choose your destination, pick a time, then send Sen a message.</p>
+</div>
+
+<div class="booking-wrap">
+
+  <!-- STEP 1 -->
+  <div class="step-block" id="step1">
+    <div class="step-head">
+      <div class="step-num">1</div>
+      <div>
+        <div class="step-title">Choose your destination</div>
+        <div class="step-sub">All buses depart from Sen's Homestay</div>
+      </div>
+    </div>
+    <div class="step-body">
+      <div class="dest-grid" id="destGrid"></div>
+    </div>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="step-block locked" id="step2">
+    <div class="step-head">
+      <div class="step-num">2</div>
+      <div>
+        <div class="step-title">Choose departure time</div>
+        <div class="step-sub">Times may shift slightly — Sen will confirm when booking</div>
+      </div>
+    </div>
+    <div class="step-body">
+      <div class="time-grid" id="timeGrid"></div>
+    </div>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="step-block locked" id="step3">
+    <div class="step-head">
+      <div class="step-num">3</div>
+      <div>
+        <div class="step-title">Travel date & passengers</div>
+        <div class="step-sub">So Sen can check seat availability</div>
+      </div>
+    </div>
+    <div class="step-body">
+      <div class="field-row">
+        <div class="field-group">
+          <label class="field-label">Travel date</label>
+          <input class="field-input" type="date" id="travelDate" oninput="updateSummary()">
+        </div>
+        <div class="field-group">
+          <label class="field-label">Number of seats</label>
+          <input class="field-input" type="number" id="paxCount" min="1" max="20" value="1" oninput="updateSummary()">
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Additional notes (optional)</label>
+        <input class="field-input" id="noteField" placeholder="e.g. lower bunk preferred, large luggage, etc." oninput="updateSummary()">
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 4 -->
+  <div class="step-block locked" id="step4">
+    <div class="step-head">
+      <div class="step-num">4</div>
+      <div>
+        <div class="step-title">Confirm & send to Sen</div>
+        <div class="step-sub">Sen replies via WhatsApp within a few minutes</div>
+      </div>
+    </div>
+    <div class="step-body">
+      <div class="summary-box" id="summaryBox">
+        <span class="s-empty">Complete the steps above to see your booking summary…</span>
+      </div>
+      <button class="send-btn" id="sendBtn" disabled onclick="sendWhatsApp()">
+        <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        Message Sen to book →
+      </button>
+      <div class="info-strip">
+        <span style="font-size:1rem;flex-shrink:0;margin-top:1px">ℹ️</span>
+        <span>Sen will confirm availability and share the ticket price via WhatsApp. No booking fee. Pick-up is right at the homestay.</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <p>© 2025 Sen's Homestay · Cao Bang &nbsp;·&nbsp; <a href="https://wa.me/84822946888">WhatsApp</a></p>
+</footer>
+
+<a href="https://wa.me/84822946888" class="waf" target="_blank">
+  <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</a>
+
+<script>
+const DESTINATIONS = [
+  {
+    id:'hanoi', icon:'🏙️', name:'Ha Noi', duration:'~6 hrs',
+    times:[
+      {t:'7:00 am',  type:'Limousine'},
+      {t:'9:00 am',  type:'Limousine'},
+      {t:'10:00 am', type:'Limousine'},
+      {t:'11:00 am', type:'Limousine'},
+      {t:'12:00 pm', type:'Limousine'},
+      {t:'2:00 pm',  type:'Limousine'},
+      {t:'3:00 pm',  type:'Limousine'},
+      {t:'4:00 pm',  type:'Limousine'},
+      {t:'9:00 am',  type:'Sleeper bus'},
+      {t:'12:00 pm', type:'Sleeper bus'},
+      {t:'8:30 pm',  type:'Sleeper bus'},
+    ]
+  },
+  {
+    id:'hagiang', icon:'🌿', name:'Ha Giang', duration:'~8 hrs',
+    times:[
+      {t:'8:00 am', type:'Limousine'},
+      {t:'4:00 pm', type:'Limousine'},
+    ]
+  },
+  {
+    id:'bacninh', icon:'🏭', name:'Bac Ninh', duration:'~6 hrs · no transit',
+    times:[{t:'8:30 pm', type:'Sleeper bus'}]
+  },
+  {
+    id:'ninhbinh', icon:'⛩️', name:'Ninh Binh', duration:'~9 hrs · no transit',
+    times:[{t:'7:00 pm', type:'Sleeper bus'}]
+  },
+  {
+    id:'catba', icon:'🏝️', name:'Cat Ba Island', duration:'~10 hrs · no transit',
+    times:[{t:'8:30 pm', type:'Sleeper bus'}]
+  },
+  {
+    id:'halong', icon:'⛵', name:'Ha Long', duration:'~9 hrs · no transit',
+    times:[{t:'8:30 pm', type:'Sleeper bus'}]
+  },
+  {
+    id:'quangninh', icon:'🌅', name:'Quang Ninh', duration:'no transit',
+    times:[
+      {t:'8:00 am', type:'Sleeper bus'},
+      {t:'8:00 pm', type:'Sleeper bus'},
+    ]
+  },
+  {
+    id:'haiphong', icon:'⚓', name:'Hai Phong', duration:'~9 hrs · no transit',
+    times:[{t:'8:30 pm', type:'Sleeper bus'}]
+  },
+  {
+    id:'babe', icon:'🌊', name:'Ba Be Lake', duration:'~3 hrs',
+    times:[{t:'12:00 pm', type:'Limousine'}]
+  },
+];
+
+let selectedDest = null;
+let selectedTime = null;
+let selectedType = null;
+
+function buildDestGrid(){
+  const grid = document.getElementById('destGrid');
+  DESTINATIONS.forEach(d => {
+    const limos  = d.times.filter(t => t.type === 'Limousine');
+    const sleeps = d.times.filter(t => t.type === 'Sleeper bus');
+    let html = '';
+    if(limos.length)  html += `<span class="type-badge badge-limo">Limousine</span><br>${limos.map(t=>t.t).join(' · ')}<br>`;
+    if(sleeps.length) html += `<span class="type-badge badge-sleep">Sleeper bus</span><br>${sleeps.map(t=>t.t).join(' · ')}`;
+    const card = document.createElement('div');
+    card.className = 'dest-card';
+    card.id = 'dest-' + d.id;
+    card.innerHTML = `<div class="dest-icon">${d.icon}</div><div class="dest-name">${d.name}</div><div class="dest-dur">${d.duration}</div><div class="dest-times">${html}</div>`;
+    card.onclick = () => selectDest(d.id);
+    grid.appendChild(card);
+  });
+}
+
+function selectDest(id){
+  document.querySelectorAll('.dest-card').forEach(c => c.classList.remove('selected'));
+  document.getElementById('dest-' + id).classList.add('selected');
+  selectedDest = id;
+  selectedTime = null;
+  selectedType = null;
+  buildTimeGrid(id);
+  document.getElementById('step2').classList.remove('locked');
+  setTimeout(() => document.getElementById('step2').scrollIntoView({behavior:'smooth', block:'start'}), 120);
+  updateSummary();
+}
+
+function buildTimeGrid(destId){
+  const dest = DESTINATIONS.find(d => d.id === destId);
+  const grid = document.getElementById('timeGrid');
+  grid.innerHTML = '';
+
+  const limos  = dest.times.filter(t => t.type === 'Limousine');
+  const sleeps = dest.times.filter(t => t.type === 'Sleeper bus');
+
+  if(limos.length){
+    const lbl = document.createElement('div');
+    lbl.className = 'time-section-label lbl-limo';
+    lbl.textContent = 'Limousine';
+    grid.appendChild(lbl);
+    limos.forEach(t => addPill(grid, t));
+  }
+  if(sleeps.length){
+    const lbl = document.createElement('div');
+    lbl.className = 'time-section-label lbl-sleep';
+    lbl.textContent = 'Sleeper bus';
+    grid.appendChild(lbl);
+    sleeps.forEach(t => addPill(grid, t));
+  }
+}
+
+function addPill(grid, t){
+  const pill = document.createElement('div');
+  pill.className = 'time-pill';
+  pill.innerHTML = `<div class="tp-time">${t.t}</div><div class="tp-type">${t.type}</div>`;
+  pill.onclick = () => {
+    document.querySelectorAll('.time-pill').forEach(p => p.classList.remove('selected'));
+    pill.classList.add('selected');
+    selectedTime = t.t;
+    selectedType = t.type;
+    document.getElementById('step3').classList.remove('locked');
+    document.getElementById('step4').classList.remove('locked');
+    setTimeout(() => document.getElementById('step3').scrollIntoView({behavior:'smooth', block:'start'}), 120);
+    updateSummary();
+  };
+  grid.appendChild(pill);
+}
+
+function updateSummary(){
+  const box = document.getElementById('summaryBox');
+  const btn = document.getElementById('sendBtn');
+  if(!selectedDest || !selectedTime){
+    box.innerHTML = '<span class="s-empty">Complete the steps above to see your booking summary…</span>';
+    btn.disabled = true;
+    return;
+  }
+  const dest = DESTINATIONS.find(d => d.id === selectedDest);
+  const dateVal = document.getElementById('travelDate').value;
+  const pax  = parseInt(document.getElementById('paxCount').value) || 1;
+  const note = document.getElementById('noteField').value;
+  const fmtDate = dateVal
+    ? new Date(dateVal + 'T00:00:00').toLocaleDateString('en-GB',{weekday:'long',day:'2-digit',month:'long',year:'numeric'})
+    : '<em style="color:var(--tm);font-weight:400">not selected yet</em>';
+
+  box.innerHTML = `
+    <div class="s-row"><span class="s-label">Destination</span><span class="s-val">${dest.icon} ${dest.name}</span></div>
+    <div class="s-row"><span class="s-label">Journey</span><span class="s-val">${dest.duration}</span></div>
+    <div class="s-row"><span class="s-label">Departure</span><span class="s-val">${selectedTime} &nbsp;·&nbsp; ${selectedType}</span></div>
+    <div class="s-row"><span class="s-label">Date</span><span class="s-val">${fmtDate}</span></div>
+    <div class="s-row"><span class="s-label">Seats</span><span class="s-val">${pax} passenger${pax!==1?'s':''}</span></div>
+    ${note?`<div class="s-row"><span class="s-label">Notes</span><span class="s-val">${note}</span></div>`:''}
+  `;
+  btn.disabled = !dateVal;
+}
+
+function sendWhatsApp(){
+  const dest = DESTINATIONS.find(d => d.id === selectedDest);
+  const dateVal = document.getElementById('travelDate').value;
+  const pax  = parseInt(document.getElementById('paxCount').value) || 1;
+  const note = document.getElementById('noteField').value;
+  const fmtDate = dateVal
+    ? new Date(dateVal + 'T00:00:00').toLocaleDateString('en-GB',{weekday:'long',day:'2-digit',month:'long',year:'numeric'})
+    : '';
+  let msg = `Hi Sen! I'd like to book a bus ticket from Cao Bang:\n\n`;
+  msg += `🎯 Destination: ${dest.name} (${dest.duration})\n`;
+  msg += `🚌 Bus type: ${selectedType}\n`;
+  msg += `🕐 Departure: ${selectedTime}\n`;
+  msg += `📅 Date: ${fmtDate}\n`;
+  msg += `👥 Seats: ${pax} passenger${pax!==1?'s':''}\n`;
+  if(note) msg += `📝 Notes: ${note}\n`;
+  msg += `\nPick-up at your homestay. Could you confirm availability and price? Thank you!`;
+  window.open(`https://wa.me/84822946888?text=${encodeURIComponent(msg)}`, '_blank');
+}
+
+buildDestGrid();
+</script>
+</body>
+</html>

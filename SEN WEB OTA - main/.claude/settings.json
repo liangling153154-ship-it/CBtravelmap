@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm -v)",
+      "Bash(git --version)",
+      "Bash(npx --yes skills add https://github.com/Leonxlnx/taste-skill)",
+      "Bash(curl -sSf \"https://unpkg.com/leaflet@1.9.4/dist/leaflet.js\" -o /tmp/leaflet.js)",
+      "Bash(openssl dgst *)",
+      "Bash(openssl base64 *)",
+      "Bash(curl -sSf \"https://unpkg.com/leaflet@1.9.4/dist/leaflet.css\" -o /tmp/leaflet.css)",
+      "Bash(sed -i '1455,1470d' welcome.html)",
+      "Bash(sed -n '1450,1465p' welcome.html)",
+      "Bash(gh auth *)",
+      "Bash(git config *)"
+    ]
+  }
+}

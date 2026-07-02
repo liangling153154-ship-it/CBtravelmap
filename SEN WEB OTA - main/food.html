@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Food Guide · Sen's Homestay · Cao Bang</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --green-dark:  #2D6A4F;
+      --green-mid:   #52B788;
+      --green-light: #D8F3DC;
+      --orange:      #E76F51;
+      --orange-dark: #C25B3F;
+      --cream:       #F8F4E9;
+      --brown:       #5C3D2E;
+      --text:        #1a1a1a;
+      --text-muted:  #666;
+      --radius:      14px;
+      --shadow:      0 4px 24px rgba(0,0,0,0.09);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--text); overflow-x: hidden; }
+    img { display: block; width: 100%; object-fit: cover; }
+    a { text-decoration: none; color: inherit; }
+
+    /* NAV */
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 999; display: flex; align-items: center; justify-content: space-between; padding: 18px 48px; background: rgba(255,255,255,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(45,106,79,0.12); transition: box-shadow 0.3s; }
+    nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.10); }
+    .nav-logo { font-family: 'Cormorant Garamond', serif; font-size: 1.15rem; color: var(--green-dark); font-weight: 700; white-space: nowrap; }
+    .nav-logo span { color: var(--orange); }
+    .nav-links { display: flex; gap: 32px; align-items: center; }
+    .nav-links a { font-size: 0.9rem; font-weight: 500; color: var(--brown); transition: color 0.2s; }
+    .nav-links a:hover, .nav-links a.active { color: var(--green-dark); }
+    .nav-cta { background: var(--orange); color: white !important; padding: 10px 22px; border-radius: 50px; font-size: 0.88rem; transition: background 0.2s, transform 0.2s; }
+    .nav-cta:hover { background: var(--orange-dark); transform: translateY(-1px); }
+    .nav-hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; }
+    .nav-hamburger span { width: 24px; height: 2px; background: var(--green-dark); border-radius: 2px; }
+
+    /* HERO */
+    .hero { height: 72vh; min-height: 480px; position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+    .hero-bg { position: absolute; inset: 0; background: #1a2e1a; }
+    .hero-bg img { width: 100%; height: 100%; object-fit: cover; }
+    .hero-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.6) 100%); }
+    .hero-content { position: relative; z-index: 2; padding: 0 24px; }
+    .hero-label { font-size: 0.72rem; letter-spacing: 4px; text-transform: uppercase; color: rgba(255,255,255,0.6); margin-bottom: 14px; display: block; }
+    .hero h1 { font-family: 'Cormorant Garamond', serif; font-size: clamp(2.8rem, 6vw, 4.8rem); color: white; line-height: 1.05; margin-bottom: 16px; font-weight: 700; }
+    .hero h1 em { color: #a8d5b8; font-style: italic; }
+    .hero-sub { color: rgba(255,255,255,0.7); font-size: 1rem; max-width: 460px; margin: 0 auto; line-height: 1.7; }
+
+    /* FILTER */
+    .filter-section { background: white; padding: 24px 48px; border-bottom: 1px solid rgba(0,0,0,0.07); }
+    .filter-inner { max-width: 1100px; margin: 0 auto; display: flex; gap: 32px; align-items: center; flex-wrap: wrap; }
+    .filter-group { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+    .filter-group-label { font-size: 0.72rem; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); font-weight: 500; margin-right: 4px; }
+    .filter-btn { background: var(--cream); border: 1.5px solid rgba(45,106,79,0.2); color: var(--green-dark); font-family: 'DM Sans', sans-serif; font-size: 0.8rem; font-weight: 500; padding: 6px 16px; border-radius: 50px; cursor: pointer; transition: all 0.2s; }
+    .filter-btn:hover { background: var(--green-light); border-color: var(--green-dark); }
+    .filter-btn.active { background: var(--green-dark); color: white; border-color: var(--green-dark); }
+    .filter-divider { width: 1px; height: 28px; background: rgba(0,0,0,0.1); }
+
+    /* MEAL PLANNER */
+    #planner { background: var(--green-dark); padding: 48px; }
+    .planner-inner { max-width: 1100px; margin: 0 auto; }
+    .planner-label { font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase; color: var(--green-mid); margin-bottom: 10px; display: block; }
+    .planner-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(1.5rem, 2.5vw, 2rem); color: white; margin-bottom: 24px; }
+    .planner-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+    .planner-card { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); border-radius: var(--radius); padding: 16px 18px; cursor: pointer; transition: all 0.2s; }
+    .planner-card:hover { background: rgba(255,255,255,0.14); transform: translateY(-2px); }
+    .planner-time { font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; color: var(--green-mid); margin-bottom: 6px; }
+    .planner-card h4 { font-size: 0.88rem; color: white; font-weight: 500; margin-bottom: 6px; }
+    .planner-card p { font-size: 0.76rem; color: rgba(255,255,255,0.5); line-height: 1.5; }
+
+    /* GRID */
+    #restaurants { padding: 56px 48px; }
+    .restaurants-inner { max-width: 1100px; margin: 0 auto; }
+    .results-count { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 28px; }
+    .food-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 28px; }
+
+    /* FOOD CARD */
+    .food-card { background: white; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); display: flex; flex-direction: column; transition: transform 0.25s, box-shadow 0.25s; }
+    .food-card:hover { transform: translateY(-5px); box-shadow: 0 16px 40px rgba(0,0,0,0.12); }
+    .food-card.hidden { display: none; }
+
+    /* SLIDER */
+    .food-slider { position: relative; height: 340px; background: var(--green-light); overflow: hidden; }
+    .slider-track { display: flex; height: 100%; transition: transform 0.4s ease; will-change: transform; }
+    .slider-slide { min-width: 100%; width: 100%; height: 100%; flex-shrink: 0; position: relative; overflow: hidden; }
+    .slider-slide img { position: absolute; inset: 0; height: 100%; width: 100%; object-fit: cover; transition: transform 0.4s; }
+    .food-card:hover .slider-slide img { transform: scale(1.04); }
+    .slider-slide .img-ph { height: 100%; display: flex; align-items: center; justify-content: center; font-family: monospace; font-size: 0.72rem; color: var(--text-muted); padding: 16px; text-align: center; background: var(--green-light); }
+    .slider-btn { position: absolute; top: 50%; transform: translateY(-50%); width: 34px; height: 34px; border-radius: 50%; background: rgba(255,255,255,0.88); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1rem; z-index: 3; transition: opacity 0.2s, background 0.2s; box-shadow: 0 2px 8px rgba(0,0,0,0.15); opacity: 0; }
+    .food-slider:hover .slider-btn { opacity: 1; }
+    .slider-btn.prev { left: 10px; }
+    .slider-btn.next { right: 10px; }
+    .slider-btn:hover { background: white; }
+    .slider-dots { position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); display: flex; gap: 6px; z-index: 3; }
+    .dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.5); cursor: pointer; transition: background 0.2s, transform 0.2s; }
+    .dot.active { background: white; transform: scale(1.3); }
+
+    .food-badges { position: absolute; top: 12px; left: 12px; display: flex; flex-direction: column; gap: 5px; z-index: 2; }
+    .badge { font-size: 0.65rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 4px 10px; border-radius: 50px; display: inline-block; }
+    .badge-here { background: var(--green-dark); color: white; }
+    .food-card.card-home { border: 2px solid var(--green-dark); }
+    .badge-veg { background: #52B788; color: white; }
+    .meal-tags { position: absolute; bottom: 10px; right: 10px; display: flex; gap: 4px; z-index: 2; flex-wrap: wrap; justify-content: flex-end; max-width: 60%; }
+    .meal-tag { background: rgba(0,0,0,0.55); backdrop-filter: blur(4px); color: white; font-size: 0.65rem; padding: 3px 8px; border-radius: 50px; }
+
+    /* Card body */
+    .food-body { padding: 18px 18px 14px; flex: 1; display: flex; flex-direction: column; }
+    .food-restaurant { font-size: 0.68rem; letter-spacing: 2px; text-transform: uppercase; color: var(--green-mid); font-weight: 600; margin-bottom: 4px; }
+    .food-dish { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; color: var(--green-dark); margin-bottom: 2px; line-height: 1.2; }
+    .food-dish-en { font-size: 0.78rem; color: var(--text-muted); font-style: italic; margin-bottom: 10px; }
+    .food-tagline { font-size: 0.83rem; color: var(--text); line-height: 1.55; margin-bottom: 8px; }
+    .food-unique { font-size: 0.78rem; color: var(--brown); background: rgba(92,61,46,0.07); border-left: 2px solid var(--orange); padding: 7px 10px; border-radius: 0 6px 6px 0; margin-bottom: 14px; line-height: 1.5; }
+
+    /* Card footer */
+    .food-footer { display: flex; align-items: center; justify-content: space-between; margin-top: auto; padding-top: 12px; border-top: 1px solid rgba(0,0,0,0.06); }
+    .food-price { font-size: 0.82rem; font-weight: 600; color: var(--green-dark); }
+    .btn-maps { display: inline-flex; align-items: center; gap: 6px; background: var(--green-dark); color: white; font-family: 'DM Sans', sans-serif; font-size: 0.78rem; font-weight: 500; padding: 8px 16px; border-radius: 50px; transition: background 0.2s, transform 0.2s; }
+    .btn-maps:hover { background: #1e4d38; transform: translateY(-1px); }
+
+    /* CTA */
+    #cta { background: linear-gradient(135deg, #1a3d2a, var(--green-dark)); padding: 64px 48px; text-align: center; }
+    .cta-label { font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase; color: var(--green-mid); margin-bottom: 12px; display: block; }
+    #cta h2 { font-family: 'Cormorant Garamond', serif; font-size: clamp(1.8rem, 3vw, 2.6rem); color: white; margin-bottom: 12px; }
+    #cta p { color: rgba(255,255,255,0.65); margin-bottom: 28px; font-size: 0.92rem; line-height: 1.65; max-width: 420px; margin-left: auto; margin-right: auto; }
+    .cta-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .btn-wa { background: #25D366; color: white; padding: 13px 28px; border-radius: 50px; font-weight: 500; font-size: 0.92rem; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 20px rgba(37,211,102,0.35); transition: filter 0.2s, transform 0.2s; }
+    .btn-wa:hover { filter: brightness(1.08); transform: translateY(-2px); }
+    .btn-outline { background: transparent; border: 1.5px solid rgba(255,255,255,0.35); color: white; padding: 13px 28px; border-radius: 50px; font-size: 0.92rem; display: inline-flex; align-items: center; gap: 8px; transition: background 0.2s, transform 0.2s; }
+    .btn-outline:hover { background: rgba(255,255,255,0.1); transform: translateY(-2px); }
+
+    footer { background: #0f2419; color: rgba(255,255,255,0.4); text-align: center; padding: 22px; font-size: 0.8rem; }
+    footer a { color: var(--green-mid); }
+    .wa-float { position: fixed; bottom: 28px; right: 28px; width: 56px; height: 56px; background: #25D366; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 20px rgba(37,211,102,0.45); z-index: 998; transition: transform 0.2s; }
+    .wa-float:hover { transform: scale(1.1); }
+    .wa-float svg { width: 28px; fill: white; }
+
+    .fade-in { opacity: 0; transform: translateY(20px); transition: opacity 0.5s ease, transform 0.5s ease; }
+    .fade-in.visible { opacity: 1; transform: none; }
+
+    @media (max-width: 960px) {
+      nav { padding: 16px 24px; }
+      .nav-links { display: none; flex-direction: column; position: absolute; top: 100%; left: 0; right: 0; background: white; padding: 24px; gap: 20px; box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
+      .nav-links.open { display: flex; }
+      .nav-hamburger { display: flex; }
+      .filter-section, #restaurants, #planner, #cta { padding: 24px; }
+      .food-grid { grid-template-columns: 1fr; }
+      .planner-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 600px) {
+      .planner-grid { grid-template-columns: 1fr; }
+      .filter-inner { gap: 16px; }
+      .food-slider { height: 280px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav id="navbar">
+  <a href="index.html" class="nav-logo">Sen's Homestay</a>
+  <div class="nav-links" id="navLinks">
+    <a href="rooms.html">Rooms</a>
+    <a href="motorbike.html">Motorbike</a>
+    <a href="tours.html">Tours</a>
+    <a href="food.html" class="active">Food</a>
+    <a href="services.html">Services</a>
+    <a href="itinerary.html">Plan Trip</a>
+    <a href="bus-ticket.html">Bus Tickets</a>
+
+    <a href="https://wa.me/84822946888" class="nav-cta" target="_blank">💬 WhatsApp</a>
+  </div>
+  <div class="nav-hamburger" onclick="toggleNav()"><span></span><span></span><span></span></div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-bg">
+    <img loading="lazy" src="images/food/hero.jpg" alt="Food Guide Cao Bang"
+         onerror="this.style.display='none'">
+  </div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <span class="hero-label">Curated by Sen · Cao Bang</span>
+    <h1>Eat like<br><em>a local</em></h1>
+    <p class="hero-sub">Hand-picked restaurants by the owners of Sen's Homestay — from street snacks to local specialties.</p>
+  </div>
+</div>
+
+<!-- FILTER -->
+<div class="filter-section">
+  <div class="filter-inner">
+    <div class="filter-group">
+      <span class="filter-group-label">Meal</span>
+      <button class="filter-btn active" onclick="filterFood('meal','all',this)">All</button>
+      <button class="filter-btn" onclick="filterFood('meal','breakfast',this)">☀️ Breakfast</button>
+      <button class="filter-btn" onclick="filterFood('meal','lunch',this)">🌤️ Lunch</button>
+      <button class="filter-btn" onclick="filterFood('meal','dinner',this)">🌙 Dinner</button>
+      <button class="filter-btn" onclick="filterFood('meal','snack',this)">🍡 Snack</button>
+    </div>
+    <div class="filter-divider"></div>
+    <div class="filter-group">
+      <span class="filter-group-label">Type</span>
+      <button class="filter-btn active" onclick="filterFood('type','all',this)">All</button>
+      <button class="filter-btn" onclick="filterFood('type','local',this)">🇻🇳 Local</button>
+      <button class="filter-btn" onclick="filterFood('type','western',this)">🍕 Western</button>
+      <button class="filter-btn" onclick="filterFood('type','snack',this)">🥢 Street Food</button>
+      <button class="filter-btn" onclick="filterFood('type','vegetarian',this)">🌱 Vegetarian</button>
+      <button class="filter-btn" onclick="filterFood('type','fastfood',this)">🍗 Fast Food</button>
+      <button class="filter-btn" onclick="filterFood('type','dessert',this)">🍮 Dessert</button>
+      <button class="filter-btn" onclick="filterFood('type','cafe',this)">☕ Café</button>
+    </div>
+  </div>
+</div>
+
+<!-- MEAL PLANNER -->
+<section id="planner">
+  <div class="planner-inner">
+    <span class="planner-label">Not sure where to go?</span>
+    <h2 class="planner-title">Sen recommends</h2>
+    <div class="planner-grid">
+      <div class="planner-card" onclick="filterFood('meal','breakfast',document.querySelector('[onclick*=breakfast]'))">
+        <div class="planner-time">☀️ Breakfast</div>
+        <h4>Start your morning right</h4>
+        <p>Phở Vịt Quay or Bánh Cuốn — both are classics for a reason</p>
+      </div>
+      <div class="planner-card" onclick="filterFood('meal','lunch',document.querySelector('[onclick*=lunch]'))">
+        <div class="planner-time">🌤️ Lunch</div>
+        <h4>Fuel up before exploring</h4>
+        <p>Bún Chả or Vịt Quay Giòn — hearty, fast, and delicious</p>
+      </div>
+      <div class="planner-card" onclick="filterFood('meal','snack',document.querySelector('[onclick*=snack]'))">
+        <div class="planner-time">🍡 Afternoon Snack</div>
+        <h4>Walk the streets</h4>
+        <p>Áp Chao or Bánh Tráng — cheap, crunchy, and purely local</p>
+      </div>
+      <div class="planner-card" onclick="filterFood('type','western',document.querySelector('[onclick*=western]'))">
+        <div class="planner-time">🍕 Need a break?</div>
+        <h4>Take a night off local food</h4>
+        <p>Pedro's Pizza — authentic Italian, highly recommended by travelers</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RESTAURANTS GRID -->
+<section id="restaurants">
+  <div class="restaurants-inner">
+    <p class="results-count" id="resultsCount">Showing 9 restaurants</p>
+    <div class="food-grid" id="foodGrid"></div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="cta">
+  <span class="cta-label">Still hungry for more?</span>
+  <h2>Ask Sen directly</h2>
+  <p>Sen knows every hidden gem in Cao Bang. Message her for real-time recommendations based on where you are and what you feel like eating.</p>
+  <div class="cta-btns">
+    <a href="https://wa.me/84822946888?text=Hi%20Sen!%20Can%20you%20recommend%20somewhere%20to%20eat?" class="btn-wa" target="_blank">
+      <svg viewBox="0 0 24 24" fill="white" width="18"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      Ask Sen
+    </a>
+    <a href="tours.html" class="btn-outline">🗺️ View Tours</a>
+  </div>
+</section>
+
+<footer>
+  <p>© 2025 Sen's Homestay · Cao Bang &nbsp;·&nbsp; <a href="https://wa.me/84822946888" target="_blank">WhatsApp</a> &nbsp;·&nbsp; Made with ❤️ in Cao Bang</p>
+</footer>
+
+<a href="https://wa.me/84822946888" class="wa-float" target="_blank">
+  <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</a>
+
+<script>
+  // NAV
+  window.addEventListener('scroll', () => document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 40));
+  function toggleNav() { document.getElementById('navLinks').classList.toggle('open'); }
+
+  // FADE IN
+  const obs = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }), { threshold: 0.07 });
+
+  // ── RESTAURANT DATA ──────────────────────────────────────────
+  // To add a new restaurant, copy the block below and fill in the fields.
+  // Then paste it at the end of the restaurants array (before the closing ].
+  //
+  // TEMPLATE:
+  // {
+  //   id: 'ten-nha-hang',
+  //   name: 'Tên Nhà Hàng',
+  //   dish: 'Tên Món Chính',
+  //   dish_en: 'English Dish Name',
+  //   tagline: 'One sentence: what is this dish?',
+  //   unique: 'What makes it special or different from elsewhere',
+  //   price: 'From XX.000đ',
+  //   meals: ['breakfast','lunch','dinner'],   // breakfast / lunch / dinner / snack
+  //   type: 'local',                           // local / western / snack / vegetarian
+  //   sen_pick: false,
+  //   vegetarian: false,
+  //   maps: 'https://maps.app.goo.gl/xxxxx',
+  //   img: 'images/food/ten-nha-hang.jpg',
+  // },
+
+  const restaurants = [
+    {
+      id: 'sens-homestay-breakfast',
+      name: "Sen's Homestay",
+      dish: 'Breakfast & Coffee',
+      dish_en: 'Breakfast & Coffee — Right Here',
+      tagline: 'Start your day without going anywhere — breakfast and coffee served right at the homestay, so you\'re fueled and ready to hit the road.',
+      unique: 'You\'re already here. Fresh coffee, homemade breakfast, and Sen\'s local tips before you set off — the easiest morning you\'ll have in Cao Bang.',
+      price: 'See menu',
+      meals: ['breakfast'],
+      type: 'cafe',
+      sen_pick: true,
+      vegetarian: true,
+      maps: 'https://maps.app.goo.gl/your-homestay-link',
+      imgs: ['images/food/sens-breakfast/1.jpg','images/food/sens-breakfast/2.jpg','images/food/sens-breakfast/3.jpg','images/food/sens-breakfast/4.jpg'],
+    },
+    {
+      id: 'pho-vit-quay-ngay',
+      name: 'Phở Vịt Quay',
+      dish: 'Phở Vịt Quay',
+      dish_en: 'Roast Duck Pho · Breakfast & Lunch',
+      tagline: 'Rice noodle soup in rich broth, topped with crispy roast duck — the crown jewel of Cao Bang cuisine.',
+      unique: 'The duck is marinated with Mac Mat forest leaves and roasted until the skin shatters — a taste found only in Cao Bang.',
+      price: 'From 40.000đ',
+      meals: ['breakfast', 'lunch'],
+      type: 'local',
+      sen_pick: true,
+      vegetarian: false,
+      maps: 'https://maps.app.goo.gl/AmFJ7yFy3fHrmFNc7',
+      imgs: ['images/food/pho-vit-quay/1.jpg','images/food/pho-vit-quay/2.jpg','images/food/pho-vit-quay/3.jpg'],
+    },
+    {
+      id: 'pho-vit-quay-toi',
+      name: 'Phở Vịt Quay (Evening)',
+      dish: 'Phở Vịt Quay',
+      dish_en: 'Roast Duck Pho · Dinner only',
+      tagline: 'Same iconic Cao Bang roast duck pho — this spot opens in the evening for those who missed it at breakfast.',
+      unique: 'A different location that serves only at night — fresher duck straight from the evening roast, less crowded than the morning queues.',
+      price: 'From 40.000đ',
+      meals: ['dinner'],
+      type: 'local',
+      sen_pick: false,
+      vegetarian: false,
+      maps: 'https://maps.app.goo.gl/uaWm8fFdpRFge5zb6',
+      imgs: ['images/food/pho-vit-quay/1.jpg','images/food/pho-vit-quay/2.jpg'],
+    },
+    {
+      id: 'banh-cuon-phong-uyen',
+      name: 'Bánh Cuốn Phong Uyên',
+      dish: 'Bánh Cuốn',
+      dish_en: 'Steamed Rice Rolls in Bone Broth',
+      tagline: 'Silky rice rolls filled with minced pork and mushrooms, served in a warm, clear pork bone broth with a soft-poached egg.',
+      unique: 'Unlike the Hanoi version served with fish sauce, Cao Bang rice rolls come in a hot bone broth — warming, light, and unique to this region.',
+      price: '~35.000đ',
+      meals: ['breakfast', 'lunch', 'dinner'],
+      type: 'local',
+      sen_pick: true,
+      vegetarian: false,
+      maps: 'https://maps.app.goo.gl/MeTDqWwXvL1vTvSVA',
+      imgs: ['images/food/banh-cuon/1.jpg','images/food/banh-cuon/2.jpg','images/food/banh-cuon/3.jpg'],
+    },
+    {
+      id: 'ap-chao-co-hac',
+      name: 'Áp Chao Cô Hạc',
+      dish: 'Áp Chao',
+      dish_en: 'Crispy Fried Dumplings',
+      tagline: 'Deep-fried rice dumplings with a shatter-crisp crust and juicy marinated pork filling — served with sweet & sour dipping sauce.',
+      unique: 'A Cao Bang street food icon. Locals eat these on cool afternoons — you\'ll rarely find them outside of this province.',
+      price: '7.000đ/piece',
+      meals: ['snack', 'dinner'],
+      type: 'snack',
+      sen_pick: false,
+      vegetarian: false,
+      maps: 'https://maps.app.goo.gl/gbaghegtzEAn1Aah6',
+      imgs: ['images/food/ap-chao/1.jpg','images/food/ap-chao/2.jpg'],
+    },
+    {
+      id: 'nem-nuong-co-lo',
+      name: 'Nem Nướng Cô Lô',
+      dish: 'Nem Nướng Nha Trang',
+      dish_en: 'Grilled Pork Rolls',
+      tagline: 'Charcoal-grilled pork wrapped in rice paper with fresh herbs and green mango, dipped in a warm savory shrimp sauce.',
+      unique: 'You roll your own at the table — an interactive dining experience. The dipping sauce made from shrimp and minced pork is the highlight.',
+      price: '40.000đ',
+      meals: ['lunch', 'dinner'],
+      type: 'local',
+      sen_pick: false,
+      vegetarian: false,
+      maps: 'https://maps.app.goo.gl/qvcCdVDPVsR4epGe9',
+      imgs: ['images/food/nem-nuong/1.jpg','images/food/nem-nuong/2.jpg'],
+    },
+    {
+      id: 'bun-cha-ha-thanh',
+      name: 'Bún Chả Hà Thành',
+      dish: 'Bún Chả',
+      dish_en: 'Grilled Pork Noodles',
+      tagline: 'Charcoal-grilled pork patties in a warm tangy dipping broth, served with cold rice vermicelli and fresh herbs.',
+      unique: 'A Hanoi classic done right — the smoky BBQ aroma from real charcoal grilling is what sets this apart from most places.',
+      price: '45.000đ',
+      meals: ['breakfast', 'lunch'],
+      type: 'local',
+      sen_pick: false,
+      vegetarian: false,
+      maps: 'https://maps.app.goo.gl/PE3RL2QB63dm3PE29',
+      imgs: ['images/food/bun-cha/1.jpg','images/food/bun-cha/2.jpg'],
+    },
+    {
+      id: 'vit-quay-gion-o-thoa',
+      name: 'Vịt Quay Giòn O Thoa',
+      dish: 'Vịt Quay Giòn',
+      dish_en: 'Crispy Roasted Duck',
+      tagline: 'Roasted duck and pork belly with shattering crispy skin, served over fragrant rice or noodles with fresh greens and soup.',
+      unique: 'They also serve Char Siu (Hong Kong-style BBQ pork) — a rare find in Cao Bang, and genuinely excellent.',
+      price: 'From 40.000đ',
+      meals: ['lunch', 'dinner'],
+      type: 'local',
+      sen_pick: true,
+      vegetarian: false,
+      maps: 'https://maps.app.goo.gl/rfJYvmaUDfKJ9LTy8',
+      imgs: ['images/food/vit-quay-gion/1.jpg','images/food/vit-quay-gion/2.jpg','images/food/vit-quay-gion/3.jpg'],
+    },
+    {
+      id: 'banh-mi-thu-thang',
+      name: 'Bánh Mì Thu Thắng',
+      dish: 'Bánh Mì Chảo',
+      dish_en: 'Sizzling Pan & Baguette',
+      tagline: 'A hot cast iron skillet arrives at your table bubbling with eggs, grilled pork, and rich minced meat sauce — dip warm baguettes in.',
+      unique: 'Part Vietnamese, part French — the combination of a sizzling iron pan and airy baguettes creates a uniquely Cao Bang breakfast experience.',
+      price: 'From 45.000đ',
+      meals: ['lunch', 'dinner'],
+      type: 'local',
+      sen_pick: false,
+      vegetarian: false,
+      maps: 'https://maps.app.goo.gl/J8HEs3XWh91UfQFp6',
+      imgs: ['images/food/banh-mi-chao/1.jpg','images/food/banh-mi-chao/2.jpg'],
+    },
+    {
+      id: 'tiem-banh-trang',
+      name: 'Tiệm Bánh Tráng',
+      dish: 'Bánh Tráng',
+      dish_en: 'Rice Paper Creations',
+      tagline: 'Grilled rice paper "street pizza", rice paper salad, or rolled rice paper — all bursting with herbs, green mango, chili, and crunch.',
+      unique: 'Three different ways to eat rice paper, all at one spot. The Vietnamese Street Pizza (bánh tráng nướng) is a must-try afternoon snack.',
+      price: '~40.000đ',
+      meals: ['snack'],
+      type: 'snack',
+      sen_pick: false,
+      vegetarian: true,
+      maps: 'https://maps.app.goo.gl/Gr6YpBkR3HLWq4Mq5',
+      imgs: ['images/food/banh-trang/1.jpg','images/food/banh-trang/2.jpg'],
+    },
+    {
+      id: 'pedros-pizza',
+      name: "Pedro's Pizza",
+      dish: 'Italian Pizza',
+      dish_en: 'Authentic Italian Pizza',
+      tagline: 'Hand-rolled, baked-to-order thin-crust pizzas using traditional Italian recipes and imported ingredients — a hidden gem in Cao Bang.',
+      unique: 'A family-run spot that takes their pizza seriously. Great for vegetarians — they offer a full range of veggie-only pizzas and crepes.',
+      price: 'From 150.000đ',
+      meals: ['lunch', 'dinner'],
+      type: 'western',
+      sen_pick: false,
+      vegetarian: true,
+      maps: 'https://maps.app.goo.gl/bEwd77hNN9HogEDU8',
+      imgs: ['images/food/pedros-pizza/1.jpg','images/food/pedros-pizza/2.jpg'],
+    },
+    {
+      id: 'lela-vegan',
+      name: 'Lela Vegan',
+      dish: 'Món Chay Đa Dạng',
+      dish_en: 'Diverse Vegan Dishes',
+      tagline: 'Famous vegan restaurant in Cao Bang offering a creative and health-conscious menu in a modern, welcoming atmosphere.',
+      unique: 'The most popular dedicated vegan bistro in the city — a rare find in northern Vietnam. Great for plant-based travelers who want more than just plain tofu.',
+      price: 'From 40.000đ',
+      meals: ['lunch', 'dinner'],
+      type: 'vegetarian',
+      sen_pick: true,
+      vegetarian: true,
+      maps: 'https://maps.app.goo.gl/ffGQ2KDsymptXf6x5',
+      imgs: ['images/food/lela-vegan/1.jpg','images/food/lela-vegan/2.jpg'],
+    },
+    {
+      id: 'do-nuong-duong-gio-tai',
+      name: 'Đồ Nướng Dương Gió Tai',
+      dish: 'Đồ nướng & Lẩu',
+      dish_en: 'BBQ & Hotpot',
+      tagline: 'Authentic Chinese-style BBQ skewers paired with refreshing beer — grilled live in front of you.',
+      unique: 'Distinctive Chinese spices with a self-service skewer selection and live grilling. Rare in Cao Bang.',
+      price: 'From 50.000đ',
+      meals: ['dinner'],
+      type: 'local',
+      sen_pick: true,
+      vegetarian: false,
+      maps: 'https://maps.app.goo.gl/HMHDy85BgT2LGMeEA',
+      imgs: ['images/food/duong-gio-tai/1.jpg','images/food/duong-gio-tai/2.jpg'],
+    },
+    {
+      id: 'handak-korean-chicken',
+      name: 'Handak Korean Chicken',
+      dish: 'Gà rán & Món Hàn',
+      dish_en: 'Korean Fried Chicken & Fast Food',
+      tagline: 'Crispy Korean-style fried chicken with various sauces, plus pizza and fast food favorites.',
+      unique: 'The only Korean fried chicken spot in Cao Bang — a fun change of pace when you want something familiar but local.',
+      price: 'From 50.000đ',
+      meals: ['lunch', 'dinner'],
+      type: 'fastfood',
+      sen_pick: true,
+      vegetarian: false,
+      maps: 'https://maps.app.goo.gl/HZ4gnWVmdD6ZRikZ7',
+      imgs: ['images/food/handak/1.jpg','images/food/handak/2.jpg'],
+    },
+    {
+      id: 'tao-pho-lanh',
+      name: 'Tào Phớ Lành',
+      dish: 'Tào phớ',
+      dish_en: 'Tofu Pudding',
+      tagline: 'Silky smooth handmade tofu pudding with toppings like longan, lotus seeds, and caramel — open from late afternoon.',
+      unique: 'Famous for the creamiest tofu pudding in the city. A beloved local dessert that costs almost nothing.',
+      price: 'From 8.000đ',
+      meals: ['snack'],
+      type: 'dessert',
+      sen_pick: true,
+      vegetarian: true,
+      maps: 'https://maps.app.goo.gl/aCKapfavtxCNrim57',
+      imgs: ['images/food/tao-pho-lanh/1.jpg','images/food/tao-pho-lanh/2.jpg'],
+    },
+    {
+      id: 'che-pho-cao-bang',
+      name: 'Chè Phố',
+      dish: 'Chè & Sữa chua',
+      dish_en: 'Sweet Soup & Yogurt',
+      tagline: 'Thai sweet soups, creamy avocado ice cream, and refreshing fruit yogurts on the Cao Bang walking street.',
+      unique: 'One of the most diverse dessert menus in the city — great for a group where everyone wants something different.',
+      price: 'From 20.000đ',
+      meals: ['snack'],
+      type: 'dessert',
+      sen_pick: true,
+      vegetarian: true,
+      maps: 'https://maps.app.goo.gl/s2ab9RysFCkZ6V5X8',
+      imgs: ['images/food/che-pho/1.jpg','images/food/che-pho/2.jpg'],
+    },
+    {
+      id: 'pho-chua-quyen',
+      name: 'Phở Chua Quyên',
+      dish: 'Phở chua',
+      dish_en: 'Sour Pho',
+      tagline: 'Cold rice noodle salad with roasted duck, crispy fried potatoes, and a tangy sweet-sour sauce.',
+      unique: 'A Cao Bang specialty you won\'t find anywhere else in Vietnam — the Mac Mat leaves and crispy potatoes make it completely unique.',
+      price: 'From 35.000đ',
+      meals: ['breakfast', 'lunch'],
+      type: 'local',
+      sen_pick: true,
+      vegetarian: false,
+      maps: 'https://maps.app.goo.gl/Bv9JXW63mBWqjyrBA',
+      imgs: ['images/food/pho-chua/1.jpg','images/food/pho-chua/2.jpg'],
+    },
+    {
+      id: 'fenice-caffe',
+      name: 'Fenice Caffè',
+      dish: 'Cà phê & Bánh ngọt',
+      dish_en: 'Coffee & Pastry',
+      tagline: 'Premium machine-brewed coffee with authentic Italian-style desserts — the best Tiramisu in Cao Bang.',
+      unique: 'Professional Cappuccino and espresso in a city where instant coffee is still the norm. A genuine treat.',
+      price: 'From 30.000đ',
+      meals: ['breakfast', 'snack'],
+      type: 'cafe',
+      sen_pick: true,
+      vegetarian: true,
+      maps: 'https://maps.app.goo.gl/z8JzJAkx1Ur937ZY8',
+      imgs: ['images/food/fenice-caffe/1.jpg','images/food/fenice-caffe/2.jpg'],
+    },
+    {
+      id: 'with-us-coffee',
+      name: 'With Us Coffee',
+      dish: 'Matcha & Bánh mì',
+      dish_en: 'Matcha & Banh Mi',
+      tagline: 'Premium Matcha drinks and diverse beverages served alongside crispy, authentic local-style Banh Mi.',
+      unique: 'A rare combination of great Matcha and proper Banh Mi under one roof — perfect for a quick breakfast.',
+      price: 'From 20.000đ',
+      meals: ['breakfast', 'lunch', 'snack'],
+      type: 'cafe',
+      sen_pick: true,
+      vegetarian: false,
+      maps: 'https://maps.app.goo.gl/Gv7oB79cdrhw2vGU8',
+      imgs: ['images/food/with-us-coffee/1.jpg','images/food/with-us-coffee/2.jpg'],
+    },
+    {
+      id: 'yen-ngon-nhu-me-nau',
+      name: 'Yên - Ngon như mẹ nấu',
+      dish: 'Cơm mâm & Lẩu',
+      dish_en: 'Family Meals & Hotpot',
+      tagline: 'Authentic home-cooked Vietnamese dishes and signature hotpots served in a sophisticated vintage setting.',
+      unique: 'Best choice for groups or a proper sit-down dinner — the family meal sets (cơm mâm) feel exactly like eating at a Vietnamese home.',
+      price: 'From 150.000đ',
+      meals: ['lunch', 'dinner'],
+      type: 'local',
+      sen_pick: true,
+      vegetarian: false,
+      maps: 'https://maps.app.goo.gl/Hq7DbK77aLzs8pvUA',
+      imgs: ['images/food/yen-com-me-nau/1.jpg','images/food/yen-com-me-nau/2.jpg'],
+    },
+  ];
+
+  // ── SLIDER ───────────────────────────────────────────────────
+  const sliderState = {};
+
+  function buildSlider(el, id, imgs) {
+    const track = document.createElement('div');
+    track.className = 'slider-track';
+    track.id = 'strack-' + id;
+
+    imgs.forEach((src, i) => {
+      const slide = document.createElement('div');
+      slide.className = 'slider-slide';
+      slide.innerHTML = `
+        <img loading="lazy" src="${src}" alt="photo ${i+1}"
+             onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="img-ph" style="display:none">${src}</div>`;
+      track.appendChild(slide);
+    });
+    el.appendChild(track);
+
+    if (imgs.length > 1) {
+      const prev = document.createElement('button');
+      prev.className = 'slider-btn prev'; prev.textContent = '‹';
+      prev.onclick = () => slideFood(id, -1);
+      el.appendChild(prev);
+
+      const next = document.createElement('button');
+      next.className = 'slider-btn next'; next.textContent = '›';
+      next.onclick = () => slideFood(id, 1);
+      el.appendChild(next);
+
+      const dots = document.createElement('div');
+      dots.className = 'slider-dots'; dots.id = 'sdots-' + id;
+      imgs.forEach((_, i) => {
+        const d = document.createElement('div');
+        d.className = 'dot' + (i === 0 ? ' active' : '');
+        d.onclick = () => goToFoodSlide(id, i);
+        dots.appendChild(d);
+      });
+      el.appendChild(dots);
+    }
+
+    // touch swipe
+    let tx = 0;
+    el.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
+    el.addEventListener('touchend', e => {
+      const diff = tx - e.changedTouches[0].clientX;
+      if (Math.abs(diff) > 40) slideFood(id, diff > 0 ? 1 : -1);
+    });
+
+    sliderState[id] = { current: 0, total: imgs.length };
+  }
+
+  function updateFoodSlider(id) {
+    const s = sliderState[id];
+    const track = document.getElementById('strack-' + id);
+    if (track) track.style.transform = `translateX(-${s.current * 100}%)`;
+    const dotsEl = document.getElementById('sdots-' + id);
+    if (dotsEl) dotsEl.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === s.current));
+  }
+  function slideFood(id, dir) {
+    const s = sliderState[id];
+    s.current = (s.current + dir + s.total) % s.total;
+    updateFoodSlider(id);
+  }
+  function goToFoodSlide(id, idx) {
+    sliderState[id].current = idx;
+    updateFoodSlider(id);
+  }
+
+  // ── RENDER ───────────────────────────────────────────────────
+  const DEFAULT_IMG = 'images/food/hero.jpg'; // fallback nếu thiếu ảnh
+
+  function renderCards(list) {
+    const grid = document.getElementById('foodGrid');
+    grid.innerHTML = '';
+    document.getElementById('resultsCount').textContent =
+      `Showing ${list.length} restaurant${list.length !== 1 ? 's' : ''}`;
+
+    list.forEach(r => {
+      const mealLabels = { breakfast:'☀️ Breakfast', lunch:'🌤️ Lunch', dinner:'🌙 Dinner', snack:'🍡 Snack' };
+      const mealTags = r.meals.map(m => `<span class="meal-tag">${mealLabels[m]}</span>`).join('');
+      const badges = [
+        r.id === 'sens-homestay-breakfast' ? '<span class="badge badge-here">📍 Right Here</span>' : '',
+        r.sen_pick   ? '<span class="badge badge-sen">⭐ Sen\'s Pick</span>' : '',
+        r.vegetarian ? '<span class="badge badge-veg">🌱 Veg-friendly</span>' : '',
+      ].filter(Boolean).join('');
+
+      const isHome = r.id === 'sens-homestay-breakfast';
+
+      // Map id to actual folder name on disk
+      const folderMap = {
+        'sens-homestay-breakfast':      'sens-breakfast',
+        'pho-vit-quay-ngay':        'pho-vit-quay',
+        'pho-vit-quay-toi':         'pho-vit-quay-toi',
+        'banh-cuon-phong-uyen':     'banh-cuon',
+        'ap-chao-co-hac':           'ap-chao',
+        'nem-nuong-co-lo':          'nem-nuong',
+        'bun-cha-ha-thanh':         'bun-cha',
+        'vit-quay-gion-o-thoa':     'vit-quay-gion',
+        'banh-mi-thu-thang':        'banh-mi-chao',
+        'tiem-banh-trang':          'banh-trang',
+        'pedros-pizza':             'pedros-pizza',
+        'lela-vegan':               'lela-vegan',
+        'do-nuong-duong-gio-tai':   'duong-gio-tai',
+        'handak-korean-chicken':    'handak',
+        'tao-pho-lanh':             'tao-pho-lanh',
+        'che-pho-cao-bang':         'che-pho',
+        'pho-chua-quyen':           'pho-chua',
+        'fenice-caffe':             'fenice-caffe',
+        'with-us-coffee':           'with-us-coffee',
+        'yen-ngon-nhu-me-nau':      'yen-com-me-nau',
+      };
+      const folder = `images/food/${folderMap[r.id] || r.id}`;
+      const imgs = [1,2,3,4].map(n => `${folder}/${n}.jpg`);
+
+      const card = document.createElement('div');
+      card.className = `food-card${isHome ? ' card-home' : ''} fade-in`;
+      card.dataset.meals = r.meals.join(' ');
+      card.dataset.type = r.type;
+
+      // ── Slider (built as DOM, never overwritten) ──
+      const sliderEl = document.createElement('div');
+      sliderEl.className = 'food-slider';
+
+      if (badges) {
+        const badgeWrap = document.createElement('div');
+        badgeWrap.className = 'food-badges';
+        badgeWrap.innerHTML = badges;
+        sliderEl.appendChild(badgeWrap);
+      }
+      const mealWrap = document.createElement('div');
+      mealWrap.className = 'meal-tags';
+      mealWrap.innerHTML = mealTags;
+      sliderEl.appendChild(mealWrap);
+
+      buildSlider(sliderEl, r.id, imgs);
+      card.appendChild(sliderEl);
+
+      // ── Body (separate DOM node, never touches slider) ──
+      const body = document.createElement('div');
+      body.className = 'food-body';
+      body.innerHTML = `
+        <div class="food-restaurant">${r.name}</div>
+        <div class="food-dish">${r.dish}</div>
+        <div class="food-dish-en">${r.dish_en}</div>
+        <p class="food-tagline">${r.tagline}</p>
+        <div class="food-unique">✦ ${r.unique}</div>
+        <div class="food-footer">
+          <span class="food-price">${r.price}</span>
+          <a href="${r.maps}" class="btn-maps" target="_blank">📍 Google Maps</a>
+        </div>`;
+      card.appendChild(body);
+
+      grid.appendChild(card);
+      obs.observe(card);
+    });
+  }
+
+  // ── FILTER ───────────────────────────────────────────────────
+  let activeMeal = 'all';
+  let activeType = 'all';
+
+  function filterFood(dimension, value, btn) {
+    if (dimension === 'meal') {
+      activeMeal = value;
+      document.querySelectorAll('.filter-group:first-child .filter-btn').forEach(b => b.classList.remove('active'));
+    } else {
+      activeType = value;
+      document.querySelectorAll('.filter-group:last-child .filter-btn').forEach(b => b.classList.remove('active'));
+    }
+    if (btn) btn.classList.add('active');
+
+    const filtered = restaurants.filter(r => {
+      const mealOk = activeMeal === 'all' || r.meals.includes(activeMeal);
+      const typeOk = activeType === 'all' || r.type === activeType;
+      return mealOk && typeOk;
+    });
+    renderCards(filtered);
+  }
+
+  // Initial render
+  renderCards(restaurants);
+
+  // Fade in static elements
+  document.querySelectorAll('.fade-in').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>

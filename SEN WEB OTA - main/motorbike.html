@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Motorbike Rental · Sen's Homestay · Cao Bang</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --green-dark:#2D6A4F; --green-mid:#52B788; --green-light:#D8F3DC;
+      --orange:#E76F51; --orange-dark:#C25B3F; --cream:#F8F4E9;
+      --brown:#5C3D2E; --text:#1a1a1a; --text-muted:#666;
+      --radius:14px; --shadow:0 4px 24px rgba(0,0,0,0.10);
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html{scroll-behavior:smooth;}
+    body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);overflow-x:hidden;}
+    img{display:block;width:100%;object-fit:cover;}
+    a{text-decoration:none;color:inherit;}
+
+    nav{position:fixed;top:0;left:0;right:0;z-index:999;display:flex;align-items:center;justify-content:space-between;padding:18px 48px;background:rgba(255,255,255,0.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(45,106,79,0.12);transition:box-shadow 0.3s;}
+    nav.scrolled{box-shadow:0 2px 20px rgba(0,0,0,0.10);}
+    .nav-logo{font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--green-dark);font-weight:700;}
+    .nav-logo span{color:var(--orange);}
+    .nav-links{display:flex;gap:32px;align-items:center;}
+    .nav-links a{font-size:0.9rem;font-weight:500;color:var(--brown);transition:color 0.2s;}
+    .nav-links a:hover,.nav-links a.active{color:var(--green-dark);}
+    .nav-cta{background:var(--orange);color:white!important;padding:10px 22px;border-radius:50px;font-weight:500;font-size:0.88rem;transition:background 0.2s,transform 0.2s;}
+    .nav-cta:hover{background:var(--orange-dark);transform:translateY(-1px);}
+    .nav-hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;}
+    .nav-hamburger span{width:24px;height:2px;background:var(--green-dark);border-radius:2px;}
+
+    .page-hero{padding:140px 48px 72px;background:linear-gradient(135deg,var(--green-dark) 0%,#1e4d38 100%);text-align:center;color:white;position:relative;overflow:hidden;}
+    .page-hero::before{content:'';position:absolute;inset:0;opacity:0.07;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='800'%3E%3Cpath d='M400 50 Q500 150 600 200 T800 300 T700 450 T500 550 T300 600 T100 500 T50 300 T200 150 T400 50Z' fill='none' stroke='white' stroke-width='1.5'/%3E%3Cpath d='M400 100 Q480 180 570 220 T750 320 T660 460 T480 550 T290 590 T120 490 T80 300 T210 170 T400 100Z' fill='none' stroke='white' stroke-width='1.5'/%3E%3Cpath d='M400 160 Q460 220 530 250 T690 350 T610 470 T450 550 T280 575 T150 470 T120 310 T240 200 T400 160Z' fill='none' stroke='white' stroke-width='1.5'/%3E%3Cpath d='M400 220 Q440 260 490 280 T620 370 T560 475 T420 540 T280 558 T175 455 T158 325 T265 230 T400 220Z' fill='none' stroke='white' stroke-width='1.5'/%3E%3Cpath d='M400 280 Q425 305 455 318 T550 390 T508 478 T395 525 T282 535 T205 440 T196 345 T288 265 T400 280Z' fill='none' stroke='white' stroke-width='1.5'/%3E%3Cpath d='M0 400 Q100 350 200 380 T400 320 T600 380 T800 350 T900 400' fill='none' stroke='white' stroke-width='1'/%3E%3Cpath d='M0 450 Q120 400 250 430 T450 370 T650 430 T800 400' fill='none' stroke='white' stroke-width='1'/%3E%3Cpath d='M0 500 Q150 460 280 490 T500 440 T700 490 T850 460' fill='none' stroke='white' stroke-width='1'/%3E%3C/svg%3E");background-size:cover;background-position:center;}
+    .page-hero::after{content:'';position:absolute;bottom:-2px;left:0;right:0;height:60px;background:linear-gradient(to bottom,transparent,rgba(0,0,0,0.08));}
+    .page-hero .section-label{color:var(--green-mid);margin-bottom:12px;}
+    .page-hero h1{font-family:'Playfair Display',serif;font-size:clamp(2rem,4vw,3.2rem);margin-bottom:16px;line-height:1.2;}
+    .page-hero p{color:rgba(255,255,255,0.75);font-size:1.05rem;max-width:560px;margin:0 auto 28px;line-height:1.7;}
+    .hero-tags{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;}
+    .hero-tag{background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);color:white;font-size:0.82rem;padding:6px 16px;border-radius:50px;}
+
+    .section-label{font-size:0.75rem;letter-spacing:3px;text-transform:uppercase;color:var(--green-mid);font-weight:500;margin-bottom:12px;}
+    .section-title{font-family:'Playfair Display',serif;font-size:clamp(1.6rem,3vw,2.2rem);color:var(--green-dark);margin-bottom:40px;}
+
+    .filter-bar{background:white;padding:20px 48px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;border-bottom:1px solid rgba(0,0,0,0.07);box-shadow:0 2px 12px rgba(0,0,0,0.06);}
+    .filter-label{font-size:0.82rem;font-weight:500;color:var(--text-muted);margin-right:4px;}
+    .filter-btn{padding:8px 18px;border-radius:50px;border:1.5px solid rgba(45,106,79,0.25);background:white;color:var(--green-dark);font-family:'DM Sans',sans-serif;font-size:0.85rem;font-weight:500;cursor:pointer;transition:all 0.2s;}
+    .filter-btn:hover{border-color:var(--green-dark);background:var(--green-light);}
+    .filter-btn.active{background:var(--green-dark);color:white;border-color:var(--green-dark);}
+
+    #bikes-section{padding:60px 48px;max-width:1200px;margin:0 auto;}
+    .bikes-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:28px;}
+
+    .bike-card{background:white;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);transition:transform 0.25s,box-shadow 0.25s;display:flex;flex-direction:column;}
+    .bike-card:hover{transform:translateY(-6px);box-shadow:0 16px 48px rgba(0,0,0,0.13);}
+    .bike-card.hidden{display:none;}
+    .bike-img{height:220px;background:var(--green-light);position:relative;overflow:hidden;}
+    .bike-img img{height:100%;transition:transform 0.4s;}
+    .bike-card:hover .bike-img img{transform:scale(1.05);}
+    .bike-img-placeholder{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--green-dark);font-size:0.82rem;font-weight:500;}
+    .bike-emoji{font-size:3.5rem;}
+    .type-badge{position:absolute;top:14px;left:14px;font-size:0.7rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;padding:5px 12px;border-radius:50px;}
+    .badge-auto{background:#E3F2FD;color:#1565C0;}
+    .badge-semi{background:#FFF8E1;color:#F57F17;}
+    .badge-manual{background:#FCE4EC;color:#C62828;}
+    .price-badge{position:absolute;top:14px;right:14px;background:var(--orange);color:white;font-size:0.82rem;font-weight:700;padding:5px 12px;border-radius:50px;}
+    .bestseller-badge{position:absolute;bottom:14px;left:14px;background:var(--orange);color:white;font-size:0.7rem;font-weight:700;padding:4px 10px;border-radius:50px;letter-spacing:1px;}
+
+    .bike-body{padding:22px;flex:1;display:flex;flex-direction:column;}
+    .bike-body h3{font-family:'Playfair Display',serif;font-size:1.25rem;color:var(--green-dark);margin-bottom:4px;}
+    .bike-tagline{font-size:0.85rem;color:var(--text-muted);font-style:italic;margin-bottom:14px;}
+    .bike-specs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
+    .spec-tag{background:var(--cream);border:1px solid rgba(45,106,79,0.15);color:var(--brown);font-size:0.75rem;padding:4px 10px;border-radius:50px;}
+
+    .bike-details-content{font-size:0.85rem;color:var(--text-muted);line-height:1.7;margin-bottom:14px;max-height:0;overflow:hidden;transition:max-height 0.45s ease,opacity 0.3s;opacity:0;}
+    .bike-details-content.open{max-height:500px;opacity:1;}
+    .bike-details-content ul{padding-left:16px;}
+    .bike-details-content li{margin-bottom:4px;}
+    .bike-details-content h4{font-size:0.78rem;text-transform:uppercase;letter-spacing:1px;color:var(--green-dark);margin:10px 0 5px;font-weight:600;}
+    .detail-pros-cons{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;}
+    .detail-col.pros h4{color:var(--green-dark);}
+    .detail-col.cons h4{color:var(--orange-dark);}
+
+    .bike-actions{display:flex;gap:10px;margin-top:auto;padding-top:16px;border-top:1px solid rgba(0,0,0,0.06);}
+    .btn-toggle{flex:1;background:var(--cream);border:1.5px solid rgba(45,106,79,0.2);color:var(--green-dark);font-family:'DM Sans',sans-serif;font-size:0.85rem;font-weight:500;padding:10px;border-radius:50px;cursor:pointer;transition:all 0.2s;}
+    .btn-toggle:hover{background:var(--green-light);border-color:var(--green-dark);}
+    .btn-book{flex:1;background:var(--orange);color:white;font-family:'DM Sans',sans-serif;font-size:0.85rem;font-weight:500;padding:10px;border-radius:50px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:background 0.2s,transform 0.2s;text-decoration:none;}
+    .btn-book:hover{background:var(--orange-dark);transform:translateY(-1px);}
+
+    /* HOW TO RIDE BANNER */
+    .how-to-banner{background:white;max-width:1200px;margin:0 auto;padding:0 48px 48px;}
+    .how-to-inner{background:linear-gradient(135deg,var(--green-dark),#1e4d38);border-radius:var(--radius);padding:32px 40px;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;}
+    .how-to-text h3{font-family:'Playfair Display',serif;color:white;font-size:1.3rem;margin-bottom:6px;}
+    .how-to-text p{color:rgba(255,255,255,0.72);font-size:0.9rem;}
+    .btn-how-to{background:white;color:var(--green-dark);padding:12px 28px;border-radius:50px;font-weight:600;font-size:0.9rem;white-space:nowrap;transition:transform 0.2s,box-shadow 0.2s;box-shadow:0 4px 14px rgba(0,0,0,0.15);}
+    .btn-how-to:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,0.2);}
+
+    #includes{background:white;padding:64px 48px;}
+    .includes-inner{max-width:1100px;margin:0 auto;}
+    .includes-inner .section-label,.includes-inner .section-title{text-align:center;}
+    .includes-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;}
+    .include-item{text-align:center;padding:28px 16px;background:var(--cream);border-radius:var(--radius);border:1px solid rgba(82,183,136,0.15);}
+    .include-icon{font-size:2rem;margin-bottom:10px;}
+    .include-item h4{font-size:0.95rem;font-weight:600;color:var(--green-dark);margin-bottom:6px;}
+    .include-item p{font-size:0.82rem;color:var(--text-muted);line-height:1.5;}
+
+    #conditions{background:var(--green-dark);padding:64px 48px;color:white;}
+    .conditions-inner{max-width:960px;margin:0 auto;}
+    .conditions-inner .section-label{color:var(--green-mid);text-align:center;}
+    .conditions-title{font-family:'Playfair Display',serif;font-size:clamp(1.6rem,3vw,2.2rem);color:white;text-align:center;margin-bottom:36px;}
+    .cond-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+    .cond-item{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:18px 20px;display:flex;gap:14px;align-items:flex-start;}
+    .cond-icon{font-size:1.4rem;flex-shrink:0;margin-top:2px;}
+    .cond-item h4{font-size:0.9rem;font-weight:600;color:white;margin-bottom:4px;}
+    .cond-item p{font-size:0.82rem;color:rgba(255,255,255,0.65);line-height:1.5;}
+
+    #tips{background:white;padding:72px 48px;}
+    .tips-inner{max-width:960px;margin:0 auto;}
+    .tips-inner .section-label,.tips-title{text-align:center;}
+    .tips-title{font-family:'Playfair Display',serif;font-size:clamp(1.6rem,3vw,2.2rem);color:var(--green-dark);margin-bottom:36px;}
+    .tips-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+    .tip-item{display:flex;gap:14px;padding:18px 20px;border-radius:var(--radius);background:var(--cream);border:1px solid rgba(82,183,136,0.15);align-items:flex-start;}
+    .tip-item.critical{background:rgba(231,111,81,0.07);border-color:rgba(231,111,81,0.3);}
+    .tip-icon{font-size:1.5rem;flex-shrink:0;}
+    .tip-item h4{font-size:0.88rem;font-weight:600;color:var(--green-dark);margin-bottom:4px;}
+    .tip-item.critical h4{color:var(--orange-dark);}
+    .tip-item p{font-size:0.82rem;color:var(--text-muted);line-height:1.5;}
+
+    #cta{background:var(--green-dark);padding:72px 48px;text-align:center;color:white;}
+    #cta .section-label{color:var(--green-mid);}
+    #cta h2{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,3vw,2.4rem);color:white;margin-bottom:14px;}
+    #cta p{color:rgba(255,255,255,0.72);margin-bottom:32px;font-size:0.95rem;}
+    .cta-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;}
+    .btn-wa{background:#25D366;color:white;padding:15px 32px;border-radius:50px;font-weight:500;font-size:1rem;display:inline-flex;align-items:center;gap:10px;box-shadow:0 4px 20px rgba(37,211,102,0.35);transition:filter 0.2s,transform 0.2s;}
+    .btn-wa:hover{filter:brightness(1.08);transform:translateY(-2px);}
+    .btn-outline-white{background:transparent;border:1.5px solid rgba(255,255,255,0.45);color:white;padding:15px 32px;border-radius:50px;font-weight:500;font-size:1rem;display:inline-flex;align-items:center;gap:10px;transition:background 0.2s,transform 0.2s;}
+    .btn-outline-white:hover{background:rgba(255,255,255,0.12);transform:translateY(-2px);}
+
+    footer{background:#1a3d2a;color:rgba(255,255,255,0.5);text-align:center;padding:24px;font-size:0.82rem;}
+    footer a{color:var(--green-mid);}
+
+    .wa-float{position:fixed;bottom:28px;right:28px;width:58px;height:58px;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(37,211,102,0.45);z-index:998;transition:transform 0.2s,box-shadow 0.2s;}
+    .wa-float:hover{transform:scale(1.1);box-shadow:0 8px 28px rgba(37,211,102,0.55);}
+    .wa-float svg{width:30px;fill:white;}
+    .wa-tooltip{position:absolute;right:68px;background:var(--brown);color:white;font-size:0.8rem;white-space:nowrap;padding:7px 14px;border-radius:8px;opacity:0;pointer-events:none;transition:opacity 0.2s;}
+    .wa-float:hover .wa-tooltip{opacity:1;}
+
+    .fade-in{opacity:0;transform:translateY(24px);transition:opacity 0.6s ease,transform 0.6s ease;}
+    .fade-in.visible{opacity:1;transform:translateY(0);}
+
+    @media(max-width:900px){
+      nav{padding:16px 24px;}
+      .nav-links{display:none;flex-direction:column;position:absolute;top:100%;left:0;right:0;background:white;padding:24px;gap:20px;box-shadow:0 8px 24px rgba(0,0,0,0.1);}
+      .nav-links.open{display:flex;}
+      .nav-hamburger{display:flex;}
+      .page-hero{padding:120px 24px 60px;}
+      .filter-bar{padding:16px 24px;top:65px;}
+      #bikes-section,.how-to-banner{padding:40px 24px;}
+      .bikes-grid{grid-template-columns:1fr;}
+      #includes,#conditions,#tips,#cta{padding:48px 24px;}
+      .includes-grid{grid-template-columns:1fr 1fr;}
+      .cond-grid,.tips-grid{grid-template-columns:1fr;}
+      .detail-pros-cons{grid-template-columns:1fr;}
+      .how-to-inner{flex-direction:column;text-align:center;}
+    }
+    @media(max-width:540px){.includes-grid{grid-template-columns:1fr;}}
+  </style>
+</head>
+<body>
+
+<nav id="navbar">
+<a href="index.html" class="nav-logo">Sen's Homestay</a>
+  <div class="nav-links" id="navLinks">
+    <a href="rooms.html">Rooms</a>
+    <a href="motorbike.html" class="active">Motorbike</a>
+    <a href="tours.html">Tours</a>
+    <a href="food.html">Food</a>
+    <a href="services.html">Services</a>
+    <a href="itinerary.html">Plan Trip</a>
+    <a href="bus-ticket.html">Bus Tickets</a>
+
+    <a href="https://wa.me/84822946888?text=Hi%20Sen!%20I%27d%20like%20to%20rent%20a%20motorbike." class="nav-cta" target="_blank">💬 WhatsApp</a>
+  </div>
+  <div class="nav-hamburger" id="hamburger" onclick="toggleNav()"><span></span><span></span><span></span></div>
+</nav>
+
+<div class="page-hero">
+  <p class="section-label">Motorbike Rental · Cao Bang</p>
+  <h1>Choose Your Ride</h1>
+  <p>Ride through mountain roads, quiet villages, and breathtaking landscapes — at your own pace.</p>
+  <div class="hero-tags">
+    <span class="hero-tag">⛑️ Helmet Included</span>
+    <span class="hero-tag">🌧️ Rain Poncho Included</span>
+    <span class="hero-tag">🚗 Free Delivery</span>
+    <span class="hero-tag">📞 24/7 Support</span>
+    <span class="hero-tag">🌙 Free Evening Pick-up</span>
+  </div>
+</div>
+
+<div class="filter-bar">
+  <span class="filter-label">Filter:</span>
+  <button class="filter-btn active" onclick="filterBikes('all',this)">All Bikes (9)</button>
+  <button class="filter-btn" onclick="filterBikes('auto',this)">🔵 Fully Automatic</button>
+  <button class="filter-btn" onclick="filterBikes('semi',this)">🟡 Semi-Automatic</button>
+  <button class="filter-btn" onclick="filterBikes('manual',this)">🔴 Manual</button>
+</div>
+
+<section id="bikes-section">
+  <div class="bikes-grid">
+
+    <!-- 1. Wave Alpha ⭐ -->
+    <div class="bike-card fade-in" data-type="semi">
+      <div class="bike-img">
+        <img loading="lazy" src="images/bikes/wave-alpha.jpg" alt="Honda Wave Alpha"
+             onerror="this.parentElement.innerHTML='<div class=\'bike-img-placeholder\'><div class=\'bike-emoji\'>🏍️</div><span>images/bikes/wave-alpha.jpg</span></div>'">
+        <span class="type-badge badge-semi">Semi-Auto</span>
+        <span class="price-badge">180.000đ/ day</span>
+        <span class="bestseller-badge">⭐ BESTSELLER</span>
+      </div>
+      <div class="bike-body">
+        <h3>Honda Wave Alpha</h3>
+        <p class="bike-tagline">Simple · Reliable · Economic</p>
+        <div class="bike-specs">
+          <span class="spec-tag">110cc</span>
+          <span class="spec-tag">No clutch</span>
+          <span class="spec-tag">Lightweight</span>
+        </div>
+        <div class="bike-details-content" id="d-wave">
+          <h4>About</h4>
+          <p>Semi-automatic with no clutch — just release throttle and shift with your left foot. Easy to ride and very economical.</p>
+          <div class="detail-pros-cons">
+            <div class="detail-col pros"><h4>✅ Advantages</h4><ul><li>No clutch — easy to control</li><li>Fuel-efficient for long trips</li><li>Lightweight and reliable</li></ul></div>
+            <div class="detail-col cons"><h4>⚠️ Consider</h4><ul><li>Requires basic gear shifting</li><li>Not ideal for two adults</li><li>Compact for taller riders</li></ul></div>
+          </div>
+          <h4>Best for</h4><p>Solo travelers with light luggage. Budget-conscious riders.</p>
+        </div>
+        <div class="bike-actions">
+          <button class="btn-toggle" onclick="toggleDetail('d-wave',this)">Details ↓</button>
+          <a href="https://wa.me/84822946888?text=Hi%20Sen!%20I%27d%20like%20to%20rent%20the%20Honda%20Wave%20Alpha." class="btn-book" target="_blank">💬 Book Now</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Honda Future -->
+    <div class="bike-card fade-in" data-type="semi">
+      <div class="bike-img">
+        <img loading="lazy" src="images/bikes/future.png" alt="Honda Future 125cc"
+             onerror="this.parentElement.innerHTML='<div class=\'bike-img-placeholder\'><div class=\'bike-emoji\'>🏍️</div><span>images/bikes/future.png</span></div>'">
+        <span class="type-badge badge-semi">Semi-Auto</span>
+        <span class="price-badge">250.000đ / day</span>
+      </div>
+      <div class="bike-body">
+        <h3>Honda Future 125cc</h3>
+        <p class="bike-tagline">Upgraded Power · Fuel Efficient · Stable</p>
+        <div class="bike-specs">
+          <span class="spec-tag">125cc</span>
+          <span class="spec-tag">No clutch</span>
+          <span class="spec-tag">Under-seat storage</span>
+        </div>
+        <div class="bike-details-content" id="d-future">
+          <h4>About</h4>
+          <p>A premium step up from the Wave Alpha. More power for hills, with the same simple semi-auto mechanics.</p>
+          <div class="detail-pros-cons">
+            <div class="detail-col pros"><h4>✅ Advantages</h4><ul><li>Stronger 125cc engine</li><li>Extremely fuel-efficient</li><li>Under-seat storage</li><li>Sturdier on open roads</li></ul></div>
+            <div class="detail-col cons"><h4>⚠️ Consider</h4><ul><li>Still requires gear shifting</li><li>Slightly heavier than Wave</li></ul></div>
+          </div>
+          <h4>Best for</h4><p>Long-distance trips. Riders wanting fuel economy + performance.</p>
+        </div>
+        <div class="bike-actions">
+          <button class="btn-toggle" onclick="toggleDetail('d-future',this)">Details ↓</button>
+          <a href="https://wa.me/84822946888?text=Hi%20Sen!%20I%27d%20like%20to%20rent%20the%20Honda%20Future%20125cc." class="btn-book" target="_blank">💬 Book Now</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Yamaha PG-1 -->
+    <div class="bike-card fade-in" data-type="semi">
+      <div class="bike-img">
+        <img loading="lazy" src="images/bikes/pg1.jpg" alt="Yamaha PG-1 115cc"
+             onerror="this.parentElement.innerHTML='<div class=\'bike-img-placeholder\'><div class=\'bike-emoji\'>🏍️</div><span>images/bikes/pg1.jpg</span></div>'">
+        <span class="type-badge badge-semi">Semi-Auto</span>
+        <span class="price-badge">300.000đ / day</span>
+      </div>
+      <div class="bike-body">
+        <h3>Yamaha PG-1 115cc</h3>
+        <p class="bike-tagline">Adventure Moped · Rugged · Characterful</p>
+        <div class="bike-specs">
+          <span class="spec-tag">115cc</span>
+          <span class="spec-tag">4-speed, no clutch</span>
+          <span class="spec-tag">190mm clearance</span>
+          <span class="spec-tag">Knobby tires</span>
+        </div>
+        <div class="bike-details-content" id="d-pg1">
+          <h4>About</h4>
+          <p>A unique "scrambler" — mix of moped and dirt bike. High clearance and knobby tires make it surprisingly capable off-road.</p>
+          <div class="detail-pros-cons">
+            <div class="detail-col pros"><h4>✅ Advantages</h4><ul><li>190mm ground clearance</li><li>Engine braking on descents</li><li>Knobby tires grip mud & gravel</li><li>Lightweight and nimble</li></ul></div>
+            <div class="detail-col cons"><h4>⚠️ Consider</h4><ul><li>Requires foot gear shifting</li><li>No under-seat storage</li><li>Less wind protection</li></ul></div>
+          </div>
+          <h4>Best for</h4><p>Adventure-seekers on the Cao Bang loop. Riders wanting a stylish capable mountain bike.</p>
+        </div>
+        <div class="bike-actions">
+          <button class="btn-toggle" onclick="toggleDetail('d-pg1',this)">Details ↓</button>
+          <a href="https://wa.me/84822946888?text=Hi%20Sen!%20I%27d%20like%20to%20rent%20the%20Yamaha%20PG-1." class="btn-book" target="_blank">💬 Book Now</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Honda Vision ⭐ -->
+    <div class="bike-card fade-in" data-type="auto">
+      <div class="bike-img">
+        <img loading="lazy" src="images/bikes/vision.png" alt="Honda Vision 110cc"
+             onerror="this.parentElement.innerHTML='<div class=\'bike-img-placeholder\'><div class=\'bike-emoji\'>🛵</div><span>images/bikes/vision.png</span></div>'">
+        <span class="type-badge badge-auto">Fully Auto</span>
+        <span class="price-badge">250.000đ / day</span>
+        <span class="bestseller-badge">⭐ BESTSELLER</span>
+      </div>
+      <div class="bike-body">
+        <h3>Honda Vision 110cc</h3>
+        <p class="bike-tagline">Simple · Comfortable · Best Value Auto</p>
+        <div class="bike-specs">
+          <span class="spec-tag">110cc</span>
+          <span class="spec-tag">Twist & go</span>
+          <span class="spec-tag">Under-seat storage</span>
+        </div>
+        <div class="bike-details-content" id="d-vision">
+          <h4>About</h4>
+          <p>Fully automatic — no gears, just twist and go. The most practical and economical automatic option for exploring local roads.</p>
+          <div class="detail-pros-cons">
+            <div class="detail-col pros"><h4>✅ Advantages</h4><ul><li>Zero gear shifting — beginner-friendly</li><li>Under-seat storage</li><li>Lightweight, easy in traffic</li><li>Best-value automatic</li></ul></div>
+            <div class="detail-col cons"><h4>⚠️ Consider</h4><ul><li>Less power than Air Blade on steep climbs</li><li>Less efficient with 2 people long trips</li></ul></div>
+          </div>
+          <h4>Best for</h4><p>Beginners and casual riders. Day trips around Cao Bang city.</p>
+        </div>
+        <div class="bike-actions">
+          <button class="btn-toggle" onclick="toggleDetail('d-vision',this)">Details ↓</button>
+          <a href="https://wa.me/84822946888?text=Hi%20Sen!%20I%27d%20like%20to%20rent%20the%20Honda%20Vision%20110cc." class="btn-book" target="_blank">💬 Book Now</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Honda Air Blade ⭐ -->
+    <div class="bike-card fade-in" data-type="auto">
+      <div class="bike-img">
+        <img loading="lazy" src="images/bikes/airblade.jpg" alt="Honda Air Blade 125cc"
+             onerror="this.parentElement.innerHTML='<div class=\'bike-img-placeholder\'><div class=\'bike-emoji\'>🛵</div><span>images/bikes/airblade.jpg</span></div>'">
+        <span class="type-badge badge-auto">Fully Auto</span>
+        <span class="price-badge">300.000đ / day</span>
+        <span class="bestseller-badge">⭐ BESTSELLER</span>
+      </div>
+      <div class="bike-body">
+        <h3>Honda Air Blade 125cc</h3>
+        <p class="bike-tagline">Powerful · Stable · Premium Automatic</p>
+        <div class="bike-specs">
+          <span class="spec-tag">125cc</span>
+          <span class="spec-tag">Twist & go</span>
+          <span class="spec-tag">Sporty frame</span>
+        </div>
+        <div class="bike-details-content" id="d-ab">
+          <h4>About</h4>
+          <p>The premium automatic in the fleet. Stronger engine, better suspension and modern controls — handles hills and long routes with ease.</p>
+          <div class="detail-pros-cons">
+            <div class="detail-col pros"><h4>✅ Advantages</h4><ul><li>Stronger 125cc, better on climbs</li><li>Heavier frame = more stable</li><li>Spacious seat, better suspension</li><li>Modern lighting and controls</li></ul></div>
+            <div class="detail-col cons"><h4>⚠️ Consider</h4><ul><li>Priciest automatic option</li><li>Bulkier for smaller riders</li><li>Slightly higher fuel use</li></ul></div>
+          </div>
+          <h4>Best for</h4><p>Couples. Longer routes where comfort and stability matter.</p>
+        </div>
+        <div class="bike-actions">
+          <button class="btn-toggle" onclick="toggleDetail('d-ab',this)">Details ↓</button>
+          <a href="https://wa.me/84822946888?text=Hi%20Sen!%20I%27d%20like%20to%20rent%20the%20Honda%20Air%20Blade%20125cc." class="btn-book" target="_blank">💬 Book Now</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Honda Air Blade 160cc -->
+    <div class="bike-card fade-in" data-type="auto">
+      <div class="bike-img">
+        <img loading="lazy" src="images/bikes/airblade160.jpg" alt="Honda Air Blade 160cc"
+             onerror="this.parentElement.innerHTML='<div class=\'bike-img-placeholder\'><div class=\'bike-emoji\'>🛵</div><span>images/bikes/airblade160.jpg</span></div>'">
+        <span class="type-badge badge-auto">Fully Auto</span>
+        <span class="price-badge">450.000đ/ day</span>
+        <span class="bestseller-badge">⭐ EXCLUSIVE</span>
+      </div>
+      <div class="bike-body">
+        <h3>Honda Air Blade 160cc</h3>
+        <p class="bike-tagline">Premium · High Power · Exclusive at Sen's</p>
+        <div class="bike-specs">
+          <span class="spec-tag">160cc</span>
+          <span class="spec-tag">Twist & go</span>
+          <span class="spec-tag">Sport suspension</span>
+          <span class="spec-tag">Exclusive</span>
+        </div>
+        <div class="bike-details-content" id="d-ab160">
+          <h4>About</h4>
+          <p>The upgraded, more powerful version of the Air Blade 125cc — the only 160cc automatic in the fleet. Noticeably stronger on long climbs and mountain passes, with a smoother ride at higher speeds.</p>
+          <div class="detail-pros-cons">
+            <div class="detail-col pros"><h4>✅ Advantages</h4><ul><li>Most powerful automatic in the fleet</li><li>Handles steep climbs with ease</li><li>Smooth & stable at highway speeds</li><li>Premium build and comfort</li><li>Exclusive — only at Sen's</li></ul></div>
+            <div class="detail-col cons"><h4>⚠️ Consider</h4><ul><li>Highest automatic price point</li><li>Slightly heavier than the 125cc</li><li>Overkill for short city trips</li></ul></div>
+          </div>
+          <h4>Best for</h4><p>Riders who want the best automatic available. Long-distance mountain routes and multi-day trips.</p>
+        </div>
+        <div class="bike-actions">
+          <button class="btn-toggle" onclick="toggleDetail('d-ab160',this)">Details ↓</button>
+          <a href="https://wa.me/84822946888?text=Hi%20Sen!%20I%27d%20like%20to%20rent%20the%20Honda%20Air%20Blade%20160cc." class="btn-book" target="_blank">💬 Book Now</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7. Honda Winner X -->
+    <div class="bike-card fade-in" data-type="manual">
+      <div class="bike-img">
+        <img loading="lazy" src="images/bikes/winner.png" alt="Honda Winner X 150cc"
+             onerror="this.parentElement.innerHTML='<div class=\'bike-img-placeholder\'><div class=\'bike-emoji\'>🏍️</div><span>images/bikes/winner.png</span></div>'">
+        <span class="type-badge badge-manual">Manual</span>
+        <span class="price-badge">280.000đ/ day</span>
+      </div>
+      <div class="bike-body">
+        <h3>Honda Winner X 150cc</h3>
+        <p class="bike-tagline">Manual Clutch · High Performance · Sporty</p>
+        <div class="bike-specs">
+          <span class="spec-tag">150cc</span>
+          <span class="spec-tag">Manual clutch</span>
+          <span class="spec-tag">Sport suspension</span>
+        </div>
+        <div class="bike-details-content" id="d-winner">
+          <h4>About</h4>
+          <p>A powerful, sporty manual — best performance in the fleet for acceleration and hill-climbing. Requires a full manual clutch.</p>
+          <div class="detail-pros-cons">
+            <div class="detail-col pros"><h4>✅ Advantages</h4><ul><li>Best power for climbing & acceleration</li><li>Better engine braking on descents</li><li>Large tires, excellent stability</li><li>Fuel-efficient for a 150cc</li></ul></div>
+            <div class="detail-col cons"><h4>⚠️ Consider</h4><ul><li>Manual clutch — experienced only</li><li>No under-seat storage</li><li>Sporty seat can feel firm</li></ul></div>
+          </div>
+          <h4>Best for</h4><p>Experienced riders seeking full control on diverse mountain terrain.</p>
+        </div>
+        <div class="bike-actions">
+          <button class="btn-toggle" onclick="toggleDetail('d-winner',this)">Details ↓</button>
+          <a href="https://wa.me/84822946888?text=Hi%20Sen!%20I%27d%20like%20to%20rent%20the%20Honda%20Winner%20X%20150cc." class="btn-book" target="_blank">💬 Book Now</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7. Honda Lead -->
+    <div class="bike-card fade-in" data-type="auto">
+      <div class="bike-img">
+        <img loading="lazy" src="images/bikes/lead.jpg" alt="Honda Lead 110cc"
+             onerror="this.parentElement.innerHTML='<div class=\'bike-img-placeholder\'><div class=\'bike-emoji\'>🛵</div><span>images/bikes/lead.jpg</span></div>'">
+        <span class="type-badge badge-auto">Fully Auto</span>
+        <span class="price-badge">250.000đ / day</span>
+      </div>
+      <div class="bike-body">
+        <h3>Honda Lead 110cc</h3>
+        <p class="bike-tagline">Compact · Comfy · Great for City & Light Touring</p>
+        <div class="bike-specs">
+          <span class="spec-tag">110cc</span>
+          <span class="spec-tag">Twist & go</span>
+          <span class="spec-tag">Large underseat storage</span>
+          <span class="spec-tag">Comfortable seat</span>
+        </div>
+        <div class="bike-details-content" id="d-lead">
+          <h4>About</h4>
+          <p>The Honda Lead is a classic fully automatic scooter — smooth, easy to ride, and practical. Wide seat and generous under-seat storage make it a favourite for day trips and light touring around Cao Bang.</p>
+          <div class="detail-pros-cons">
+            <div class="detail-col pros"><h4>✅ Advantages</h4><ul><li>Easy automatic — no gears</li><li>Very comfortable wide seat</li><li>Large under-seat storage</li><li>Fuel-efficient 110cc engine</li><li>Smooth ride in city traffic</li></ul></div>
+            <div class="detail-col cons"><h4>⚠️ Consider</h4><ul><li>Less power on steep mountain climbs</li><li>Wider body — less nimble on tight bends</li></ul></div>
+          </div>
+          <h4>Best for</h4><p>Beginner riders and casual day trips. Solo or couple around Cao Bang city and nearby attractions.</p>
+        </div>
+        <div class="bike-actions">
+          <button class="btn-toggle" onclick="toggleDetail('d-lead',this)">Details ↓</button>
+          <a href="https://wa.me/84822946888?text=Hi%20Sen!%20I%27d%20like%20to%20rent%20the%20Honda%20Lead%20110cc." class="btn-book" target="_blank">💬 Book Now</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 8. Honda XR -->
+    <div class="bike-card fade-in" data-type="manual">
+      <div class="bike-img">
+        <img loading="lazy" src="images/bikes/xr.jpg" alt="Honda XR 150cc"
+             onerror="this.parentElement.innerHTML='<div class=\'bike-img-placeholder\'><div class=\'bike-emoji\'>🏍️</div><span>images/bikes/xr.jpg</span></div>'">
+        <span class="type-badge badge-manual">Manual</span>
+        <span class="price-badge">550.000đ / day</span>
+      </div>
+      <div class="bike-body">
+        <h3>Honda XR 150cc</h3>
+        <p class="bike-tagline">Dual-Sport · Off-Road King · Maximum Adventure</p>
+        <div class="bike-specs">
+          <span class="spec-tag">150cc</span>
+          <span class="spec-tag">Manual clutch</span>
+          <span class="spec-tag">Long-travel suspension</span>
+          <span class="spec-tag">All-terrain</span>
+        </div>
+        <div class="bike-details-content" id="d-xr">
+          <h4>About</h4>
+          <p>A versatile dual-sport built for paved roads and rough terrain. The ultimate adventure machine for the Cao Bang loop and beyond.</p>
+          <div class="detail-pros-cons">
+            <div class="detail-col pros"><h4>✅ Advantages</h4><ul><li>All-terrain: gravel, mud, uneven roads</li><li>Long-travel suspension eats every bump</li><li>Upright ergonomics reduce fatigue</li><li>Rugged and durable 150cc engine</li></ul></div>
+            <div class="detail-col cons"><h4>⚠️ Consider</h4><ul><li>High seat — harder for shorter riders</li><li>Manual clutch — experienced only</li><li>No under-seat storage</li></ul></div>
+          </div>
+          <h4>Best for</h4><p>Adventure seekers on remote trails. Experienced riders on multi-day loops.</p>
+        </div>
+        <div class="bike-actions">
+          <button class="btn-toggle" onclick="toggleDetail('d-xr',this)">Details ↓</button>
+          <a href="https://wa.me/84822946888?text=Hi%20Sen!%20I%27d%20like%20to%20rent%20the%20Honda%20XR%20150cc." class="btn-book" target="_blank">💬 Book Now</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- HOW TO RIDE BANNER -->
+<div class="how-to-banner fade-in">
+  <div class="how-to-inner">
+    <div class="how-to-text">
+      <h3>🏍️ First time on a semi-automatic?</h3>
+      <p>Read our step-by-step visual guide — with photos of controls, gear positions, and braking tips for mountain roads.</p>
+    </div>
+    <a href="how-to-ride.html" class="btn-how-to">Read the Guide →</a>
+  </div>
+  <div class="how-to-inner" style="margin-top:16px;background:linear-gradient(135deg,#1a3a2a,#2D6A4F);">
+    <div class="how-to-text">
+      <h3 style="color:white;">🗺️ Not sure where to go?</h3>
+      <p style="color:rgba(255,255,255,0.75);">Build your own day-by-day itinerary for Cao Bang — pick the spots, choose how many days, and get a personalized route with distances and stops.</p>
+    </div>
+    <a href="itinerary.html" class="btn-how-to" style="background:white;color:#2D6A4F;border:none;">Plan My Trip →</a>
+  </div>
+</div>
+
+<!-- INCLUDES -->
+<section id="includes">
+  <div class="includes-inner">
+    <p class="section-label fade-in">Every rental includes</p>
+    <h2 class="section-title fade-in">Everything you need to ride</h2>
+    <div class="includes-grid" style="grid-template-columns:repeat(4,1fr);">
+      <div class="include-item fade-in"><div class="include-icon">⛑️</div><h4>Helmet</h4><p>Quality helmet for every rider. Always included, no extra charge.</p></div>
+      <div class="include-item fade-in"><div class="include-icon">🌧️</div><h4>Rain Poncho</h4><p>Cao Bang weather is unpredictable — we've got you covered.</p></div>
+      <div class="include-item fade-in"><div class="include-icon">🚗</div><h4>Free Delivery</h4><p>Free bike delivery and pick-up at your hotel or homestay.</p></div>
+      <div class="include-item fade-in"><div class="include-icon">🌙</div><h4>Free Evening Pick-up</h4><p>Get the bike the evening before your trip — free if available. Ask Sen in advance.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- CONDITIONS -->
+<section id="conditions">
+  <div class="conditions-inner">
+    <p class="section-label fade-in">Rental conditions</p>
+    <h2 class="conditions-title fade-in">Good to know before you ride</h2>
+    <div class="cond-grid">
+      <div class="cond-item fade-in"><div class="cond-icon">🪪</div><div><h4>Valid Driving License</h4><p>A valid driving license is required. A rental agreement will be signed at pick-up.</p></div></div>
+      <div class="cond-item fade-in"><div class="cond-icon">💵</div><div><h4>Deposit</h4><p>Passport, ID card, or credit card may be held as deposit. Returned when the bike is back.</p></div></div>
+      <div class="cond-item fade-in"><div class="cond-icon">⛽</div><div><h4>Fuel Policy</h4><p>Fuel is not included. The bike does <strong style="color:white">not</strong> need to be returned with a full tank.</p></div></div>
+      <div class="cond-item fade-in"><div class="cond-icon">🕗</div><div><h4>Pick-up & Return</h4><p>Early pick-up the evening before may be arranged free of charge (subject to availability). Please inform us in advance.</p></div></div>
+      <div class="cond-item fade-in"><div class="cond-icon">🔧</div><div><h4>Responsibility</h4><p>The renter is responsible for the bike during the rental period. Any damage or loss may incur additional charges.</p></div></div>
+      <div class="cond-item fade-in"><div class="cond-icon">📅</div><div><h4>Multi-day Discount</h4><p>Renting for 3+ days? Ask Sen about a discount — we reward long riders.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- TIPS -->
+<section id="tips">
+  <div class="tips-inner">
+    <p class="section-label fade-in">Before you set off</p>
+    <h2 class="tips-title fade-in">Motorbike Tips & Tricks</h2>
+    <div class="tips-grid">
+      <div class="tip-item critical fade-in"><div class="tip-icon">🔑</div><div><h4>CRITICAL: Always Power Off!</h4><p>Turn the key to "OFF" every time you park or stop for photos. Leaving the ignition on can drain the battery completely — help is very hard to find in remote Cao Bang.</p></div></div>
+      <div class="tip-item critical fade-in"><div class="tip-icon">📡</div><div><h4>CRITICAL: Smart Key Bikes</h4><p>If your bike has a Smart Key, DO NOT press any buttons on the remote. Keep it in your pocket and use the ignition knob to start/stop the bike.</p></div></div>
+      <div class="tip-item fade-in"><div class="tip-icon">⛽</div><div><h4>Top Up Fuel in the City</h4><p>Always fill up before heading out. Fuel stations are scarce on remote mountain roads.</p></div></div>
+      <div class="tip-item fade-in"><div class="tip-icon">📵</div><div><h4>Download Offline Maps</h4><p>Download Google Maps offline before leaving. Mobile signal can be very weak in mountain valleys.</p></div></div>
+      <div class="tip-item fade-in"><div class="tip-icon">🌧️</div><div><h4>Rain & Slippery Roads</h4><p>If it rains, slow down significantly. Mountain roads become very slippery. Always carry your rain poncho — shops are rare on remote roads.</p></div></div>
+      <div class="tip-item fade-in"><div class="tip-icon">📯</div><div><h4>Horn on Blind Curves</h4><p>Gently beep before blind bends to alert oncoming traffic — a common and expected practice on mountain roads here.</p></div></div>
+      <div class="tip-item fade-in"><div class="tip-icon">🐃</div><div><h4>Watch for Animals</h4><p>Buffalo, chickens, and dogs often cross the road unexpectedly. Keep a moderate, steady pace — mountain curves are sharper than they look.</p></div></div>
+      <div class="tip-item fade-in"><div class="tip-icon">🔐</div><div><h4>Lock the Handlebar</h4><p>When parking, turn handlebars left and turn key to "LOCK" for better bike security.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="cta">
+  <p class="section-label">Ready to ride?</p>
+  <h2>Book your bike today</h2>
+  <p>Message Sen on WhatsApp to check availability and reserve your motorbike.<br>We reply within 1 hour.</p>
+  <div class="cta-btns">
+    <a href="https://wa.me/84822946888?text=Hi%20Sen!%20I%27d%20like%20to%20rent%20a%20motorbike." class="btn-wa" target="_blank">
+      <svg viewBox="0 0 24 24" fill="white" width="20"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      WhatsApp Sen
+    </a>
+    <a href="tours.html" class="btn-outline-white">🗺️ View Tours Instead</a>
+  </div>
+</section>
+
+<footer>
+  <p>© 2025 Sen's Homestay · Cao Bang, Vietnam &nbsp;·&nbsp;
+     <a href="https://wa.me/84822946888" target="_blank">WhatsApp</a> &nbsp;·&nbsp;
+     Made with ❤️ in Cao Bang</p>
+</footer>
+
+<a href="https://wa.me/84822946888?text=Hi%20Sen!" class="wa-float" target="_blank">
+  <div class="wa-tooltip">Chat with Sen</div>
+  <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</a>
+
+<script>
+  window.addEventListener('scroll',()=>{ document.getElementById('navbar').classList.toggle('scrolled',window.scrollY>40); });
+  function toggleNav(){ document.getElementById('navLinks').classList.toggle('open'); }
+  const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');}),{threshold:0.1});
+  document.querySelectorAll('.fade-in').forEach(el=>obs.observe(el));
+  function toggleDetail(id,btn){ const el=document.getElementById(id); const open=el.classList.toggle('open'); btn.textContent=open?'Details ↑':'Details ↓'; }
+  function filterBikes(type,btn){ document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); document.querySelectorAll('.bike-card').forEach(c=>{ c.classList.toggle('hidden',type!=='all'&&c.dataset.type!==type); }); }
+</script>
+</body>
+</html>

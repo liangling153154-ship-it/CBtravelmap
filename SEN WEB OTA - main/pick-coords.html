@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Pick Coordinates · Cao Bang Map (Internal Tool)</title>
+<style>
+  :root{ --gd:#2D6A4F; --or:#E76F51; --cr:#F8F4E9; --line:#ddd; }
+  *{box-sizing:border-box;margin:0;padding:0;font-family:system-ui,sans-serif}
+  body{background:var(--cr);padding:20px;color:#1a1a1a}
+  h1{color:var(--gd);margin-bottom:8px;font-size:1.4rem}
+  .subtitle{color:#666;font-size:0.88rem;margin-bottom:16px}
+  .layout{display:grid;grid-template-columns:1fr 360px;gap:16px;max-width:1400px;margin:0 auto}
+  .map-wrap{background:white;border:1px solid var(--line);border-radius:10px;overflow:hidden;position:relative}
+  .map-info{padding:10px 14px;background:#f5f1e6;border-bottom:1px solid var(--line);font-size:0.82rem;color:#555;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+  #cursor-pos{font-family:monospace;color:var(--gd);font-weight:600}
+  .svg-stage{position:relative;background:#eee}
+  svg{display:block;width:100%;height:auto;cursor:crosshair}
+  svg.panning{cursor:grabbing}
+  svg image{pointer-events:none}
+  .zoom-ctrl{position:absolute;top:10px;right:10px;display:flex;flex-direction:column;gap:4px;z-index:10}
+  .zoom-ctrl button{width:36px;height:36px;border-radius:6px;background:white;color:#333;border:1px solid #ccc;font-size:1.1rem;line-height:1;box-shadow:0 2px 6px rgba(0,0,0,0.1);cursor:pointer;padding:0;display:flex;align-items:center;justify-content:center}
+  .zoom-ctrl button:hover{background:var(--cr)}
+  .zoom-ctrl button.small{font-size:0.7rem;font-weight:600}
+  .zoom-level{font-family:monospace;color:#666;font-size:0.78rem}
+  .existing{fill:#888;opacity:0.5}
+  .existing-label{font-size:9px;fill:#444;opacity:0.7;pointer-events:none}
+  .picked{fill:var(--or);stroke:white;stroke-width:2}
+  .picked-label{font-size:11px;fill:#1a1a1a;font-weight:700;pointer-events:none}
+
+  .panel{background:white;border:1px solid var(--line);border-radius:10px;padding:14px;height:fit-content;position:sticky;top:20px}
+  .panel h2{font-size:1rem;color:var(--gd);margin-bottom:10px}
+  .controls{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
+  button{background:var(--gd);color:white;border:none;padding:7px 12px;border-radius:6px;cursor:pointer;font-size:0.8rem}
+  button:hover{background:#1e4d38}
+  button.secondary{background:#888}
+  button.danger{background:var(--or)}
+  .toggle{display:flex;align-items:center;gap:6px;font-size:0.82rem;margin-bottom:10px}
+  .toggle input{cursor:pointer}
+
+  .list{max-height:55vh;overflow-y:auto;border:1px solid var(--line);border-radius:6px;background:#fafafa}
+  .list-empty{padding:14px;text-align:center;color:#999;font-size:0.82rem;font-style:italic}
+  .row{display:grid;grid-template-columns:24px 1fr auto;gap:8px;padding:7px 10px;border-bottom:1px solid #eee;align-items:center;font-size:0.82rem}
+  .row:last-child{border-bottom:none}
+  .row .idx{color:var(--or);font-weight:700;font-family:monospace}
+  .row .coords{font-family:monospace;color:#333}
+  .row input{border:1px solid var(--line);border-radius:4px;padding:3px 6px;font-size:0.78rem;width:100%;background:white}
+  .row .rm{background:none;color:#c00;font-size:1rem;padding:0;border:none;cursor:pointer}
+
+  .output{margin-top:12px}
+  .output label{display:block;font-size:0.75rem;color:#666;margin-bottom:4px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px}
+  textarea{width:100%;padding:8px;border:1px solid var(--line);border-radius:6px;font-family:monospace;font-size:0.74rem;background:#fafafa;resize:vertical;min-height:80px}
+  .hint{font-size:0.74rem;color:#888;margin-top:6px;line-height:1.5}
+</style>
+</head>
+<body>
+
+<h1>🎯 Pick Coordinates · Bản đồ Cao Bằng</h1>
+<p class="subtitle">Công cụ nội bộ — click lên bản đồ để lấy toạ độ <code>sx, sy</code> cho điểm mới trên itinerary.html. Không phải trang dành cho khách.</p>
+
+<div class="layout">
+
+  <div class="map-wrap">
+    <div class="map-info">
+      <span>📐 viewBox: <strong>0 0 900 600</strong> · Zoom: <span class="zoom-level" id="zoom-level">100%</span></span>
+      <span>🖱 Lăn chuột để zoom · Kéo để pan · Click để pick · Toạ độ: <span id="cursor-pos">—</span></span>
+    </div>
+    <div class="svg-stage">
+      <svg id="map" viewBox="0 0 900 600" xmlns="http://www.w3.org/2000/svg">
+        <image href="images/caobang_map.jpg" x="0" y="0" width="900" height="600" preserveAspectRatio="none"/>
+        <g id="existing-layer"></g>
+        <g id="picked-layer"></g>
+      </svg>
+      <div class="zoom-ctrl">
+        <button id="zoom-in" title="Zoom in">+</button>
+        <button id="zoom-out" title="Zoom out">−</button>
+        <button id="zoom-reset" class="small" title="Reset view">100%</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Điểm đã chọn</h2>
+
+    <label class="toggle">
+      <input type="checkbox" id="show-existing" checked>
+      Hiện 16 điểm có sẵn (để tham chiếu)
+    </label>
+
+    <div class="controls">
+      <button id="copy-btn">📋 Copy JS</button>
+      <button class="secondary" id="undo-btn">↶ Undo</button>
+      <button class="danger" id="clear-btn">🗑 Clear</button>
+    </div>
+
+    <div class="list" id="list">
+      <div class="list-empty">Click lên bản đồ để thêm điểm…</div>
+    </div>
+
+    <div class="output">
+      <label>Dữ liệu để dán vào itinerary.html</label>
+      <textarea id="output" readonly placeholder="Sau khi click các điểm, code mẫu sẽ xuất hiện ở đây…"></textarea>
+      <p class="hint">💡 Click <strong>tên</strong> trong danh sách để chỉnh sửa. Code mẫu cập nhật tự động.</p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ─── 16 điểm có sẵn để tham chiếu ───
+const EXISTING = [
+  {id:'blacksmith',    name:'Blacksmith Village',      sx:650, sy:301},
+  {id:'ba-quang',      name:'Ba Quang Panorama',       sx:764, sy:297},
+  {id:'nguom-ngao',    name:'Nguom Ngao Cave',         sx:801, sy:212},
+  {id:'stone-village', name:'Stone Village',           sx:796, sy:216},
+  {id:'ban-gioc',      name:'Ban Gioc Waterfall',      sx:819, sy:207},
+  {id:'thoongot',      name:'Thoongot Viewpoint',      sx:756, sy:220},
+  {id:'phat-tich',     name:'Phat Tich Pagoda',        sx:811, sy:210},
+  {id:'eye-mountain',  name:'Eye Mountain Angel',      sx:592, sy:258},
+  {id:'thang-hen',     name:'Thang Hen Lake',          sx:582, sy:264},
+  {id:'lung-luong',    name:'Lung Luong Valley',       sx:465, sy:156},
+  {id:'pac-bo',        name:'Pac Bo',                  sx:444, sy:145},
+  {id:'kim-dong',      name:'Kim Dong Historical',     sx:440, sy:164},
+  {id:'khau-coc-cha',  name:'Khau Coc Cha Pass',       sx:305, sy:169},
+  {id:'bamboo',        name:'Nguyen Binh Bamboo',      sx:335, sy:296},
+  {id:'phia-oac',      name:'Phia Oac Peak',           sx:363, sy:348},
+  {id:'kolia-tea',     name:'Kolia Tea Hills',         sx:352, sy:366},
+];
+
+const svg = document.getElementById('map');
+const existingLayer = document.getElementById('existing-layer');
+const pickedLayer = document.getElementById('picked-layer');
+const listEl = document.getElementById('list');
+const outputEl = document.getElementById('output');
+const cursorEl = document.getElementById('cursor-pos');
+const showExistingChk = document.getElementById('show-existing');
+
+let picked = [];
+
+// ─── Vẽ điểm có sẵn ───
+function drawExisting(){
+  existingLayer.innerHTML = '';
+  if(!showExistingChk.checked) return;
+  EXISTING.forEach(p => {
+    existingLayer.insertAdjacentHTML('beforeend',`
+      <circle class="existing" cx="${p.sx}" cy="${p.sy}" r="5"/>
+      <text class="existing-label" x="${p.sx + 7}" y="${p.sy + 3}">${p.name}</text>
+    `);
+  });
+}
+showExistingChk.addEventListener('change', drawExisting);
+drawExisting();
+
+// ─── Click để pick ───
+function svgPointFromEvent(e){
+  const pt = svg.createSVGPoint();
+  pt.x = e.clientX; pt.y = e.clientY;
+  const ctm = svg.getScreenCTM().inverse();
+  const p = pt.matrixTransform(ctm);
+  return { sx: Math.round(p.x), sy: Math.round(p.y) };
+}
+
+// ─── Zoom & Pan ───
+const VB_W = 900, VB_H = 600;
+let vb = { x:0, y:0, w:VB_W, h:VB_H };
+const MIN_ZOOM = 1;        // 1x (toàn ảnh)
+const MAX_ZOOM = 12;       // 12x
+
+function applyViewBox(){
+  svg.setAttribute('viewBox', `${vb.x} ${vb.y} ${vb.w} ${vb.h}`);
+  const z = VB_W / vb.w;
+  document.getElementById('zoom-level').textContent = Math.round(z*100) + '%';
+}
+
+function clampVB(){
+  vb.w = Math.max(VB_W/MAX_ZOOM, Math.min(VB_W/MIN_ZOOM, vb.w));
+  vb.h = vb.w * (VB_H/VB_W);
+  vb.x = Math.max(0, Math.min(VB_W - vb.w, vb.x));
+  vb.y = Math.max(0, Math.min(VB_H - vb.h, vb.y));
+}
+
+function zoomAt(svgX, svgY, factor){
+  const newW = vb.w / factor;
+  const newH = vb.h / factor;
+  const ratio = (svgX - vb.x) / vb.w;
+  const ratioY = (svgY - vb.y) / vb.h;
+  vb.x = svgX - ratio * newW;
+  vb.y = svgY - ratioY * newH;
+  vb.w = newW; vb.h = newH;
+  clampVB(); applyViewBox();
+}
+
+svg.addEventListener('wheel', e => {
+  e.preventDefault();
+  const {sx, sy} = svgPointFromEvent(e);
+  const factor = e.deltaY < 0 ? 1.2 : 1/1.2;
+  zoomAt(sx, sy, factor);
+}, {passive:false});
+
+document.getElementById('zoom-in').addEventListener('click', () => zoomAt(vb.x + vb.w/2, vb.y + vb.h/2, 1.4));
+document.getElementById('zoom-out').addEventListener('click', () => zoomAt(vb.x + vb.w/2, vb.y + vb.h/2, 1/1.4));
+document.getElementById('zoom-reset').addEventListener('click', () => { vb = {x:0,y:0,w:VB_W,h:VB_H}; applyViewBox(); });
+
+// ─── Pan (kéo chuột) + Click pick (chỉ khi không kéo) ───
+let isDown = false, startScreen = null, startVB = null, hasDragged = false;
+const DRAG_THRESHOLD = 4; // pixel
+
+svg.addEventListener('mousedown', e => {
+  isDown = true; hasDragged = false;
+  startScreen = { x: e.clientX, y: e.clientY };
+  startVB = { x: vb.x, y: vb.y };
+});
+
+window.addEventListener('mousemove', e => {
+  if(isDown){
+    const dx = e.clientX - startScreen.x;
+    const dy = e.clientY - startScreen.y;
+    if(!hasDragged && Math.hypot(dx,dy) > DRAG_THRESHOLD){
+      hasDragged = true;
+      svg.classList.add('panning');
+    }
+    if(hasDragged){
+      const rect = svg.getBoundingClientRect();
+      const scaleX = vb.w / rect.width;
+      const scaleY = vb.h / rect.height;
+      vb.x = startVB.x - dx * scaleX;
+      vb.y = startVB.y - dy * scaleY;
+      clampVB(); applyViewBox();
+    }
+  }
+  // luôn hiển thị toạ độ chuột (khi không kéo)
+  if(e.target === svg || svg.contains(e.target)){
+    const {sx, sy} = svgPointFromEvent(e);
+    cursorEl.textContent = `sx:${sx}, sy:${sy}`;
+  }
+});
+
+window.addEventListener('mouseup', e => {
+  if(!isDown) return;
+  isDown = false;
+  svg.classList.remove('panning');
+  if(!hasDragged && (e.target === svg || svg.contains(e.target))){
+    const {sx, sy} = svgPointFromEvent(e);
+    const idx = picked.length + 1;
+    picked.push({ id: `new-${idx}`, name: `New Point ${idx}`, sx, sy });
+    render();
+  }
+});
+
+svg.addEventListener('mouseleave', () => cursorEl.textContent = '—');
+
+// ─── Render danh sách + điểm pick ───
+function render(){
+  // markers
+  pickedLayer.innerHTML = picked.map((p,i) => `
+    <circle class="picked" cx="${p.sx}" cy="${p.sy}" r="7"/>
+    <text class="picked-label" x="${p.sx + 10}" y="${p.sy + 4}">#${i+1} ${p.name}</text>
+  `).join('');
+
+  // list
+  if(!picked.length){
+    listEl.innerHTML = '<div class="list-empty">Click lên bản đồ để thêm điểm…</div>';
+  } else {
+    listEl.innerHTML = picked.map((p,i) => `
+      <div class="row">
+        <span class="idx">#${i+1}</span>
+        <div>
+          <input data-i="${i}" data-k="name" value="${p.name}" />
+          <div class="coords">sx:${p.sx}, sy:${p.sy}</div>
+        </div>
+        <button class="rm" data-rm="${i}" title="Xoá">✕</button>
+      </div>
+    `).join('');
+
+    listEl.querySelectorAll('input').forEach(inp => {
+      inp.addEventListener('input', e => {
+        const i = +e.target.dataset.i;
+        picked[i][e.target.dataset.k] = e.target.value;
+        updateOutput();
+      });
+    });
+    listEl.querySelectorAll('[data-rm]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        picked.splice(+btn.dataset.rm, 1);
+        render();
+      });
+    });
+  }
+
+  updateOutput();
+}
+
+function slugify(s){
+  return s.toLowerCase().trim()
+    .normalize('NFD').replace(/[̀-ͯ]/g,'')
+    .replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'') || 'new';
+}
+
+function updateOutput(){
+  if(!picked.length){ outputEl.value = ''; return; }
+  const lines = picked.map(p => {
+    const id = slugify(p.name);
+    return `  {id:'${id}', name:'${p.name}', cat:'nature', km:0, img:'images/places/${id}.jpg', sx:${p.sx}, sy:${p.sy}, maps:''},`;
+  });
+  outputEl.value = lines.join('\n');
+}
+
+// ─── Buttons ───
+document.getElementById('copy-btn').addEventListener('click', () => {
+  if(!outputEl.value) return;
+  navigator.clipboard.writeText(outputEl.value).then(() => {
+    const btn = document.getElementById('copy-btn');
+    const old = btn.textContent;
+    btn.textContent = '✓ Đã copy';
+    setTimeout(() => btn.textContent = old, 1500);
+  });
+});
+
+document.getElementById('undo-btn').addEventListener('click', () => {
+  picked.pop();
+  render();
+});
+
+document.getElementById('clear-btn').addEventListener('click', () => {
+  if(picked.length && !confirm('Xoá tất cả điểm đã chọn?')) return;
+  picked = [];
+  render();
+});
+</script>
+</body>
+</html>

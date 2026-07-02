@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8"/>
+<title>🎨 Site Editor · Sen's Homestay</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; height: 100vh; display: flex; flex-direction: column; background: #f3f4f6; }
+
+  /* TOPBAR */
+  .topbar { padding: 10px 16px; background: #111827; color: #fff; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .topbar strong { font-size: 15px; }
+  .topbar select { background: #1f2937; color: #fff; border: 1px solid #374151; padding: 6px 10px; border-radius: 6px; font-size: 13px; cursor: pointer; }
+  .topbar select:hover { background: #374151; }
+  .btn { padding: 6px 14px; border: none; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 500; }
+  .btn-primary { background: #2563eb; color: #fff; }
+  .btn-primary:hover { background: #1d4ed8; }
+  .btn-success { background: #16a34a; color: #fff; }
+  .btn-success:hover { background: #15803d; }
+  .btn-danger { background: #dc2626; color: #fff; }
+  .btn-danger:hover { background: #b91c1c; }
+  .btn-purple { background: #9333ea; color: #fff; }
+  .btn-purple:hover { background: #7e22ce; }
+  .btn-ghost { background: rgba(255,255,255,0.12); color: #fff; }
+  .btn-ghost:hover { background: rgba(255,255,255,0.2); }
+  .spacer { flex: 1; }
+
+  /* Mode group */
+  .mode-group { display: inline-flex; background: rgba(255,255,255,0.08); border-radius: 8px; padding: 3px; gap: 2px; }
+  .mode-btn { padding: 5px 12px; border: none; background: transparent; color: rgba(255,255,255,0.7); cursor: pointer; border-radius: 6px; font-size: 12px; font-weight: 500; }
+  .mode-btn:hover { background: rgba(255,255,255,0.08); color: #fff; }
+  .mode-btn.active.edit { background: #16a34a; color: #fff; }
+  .mode-btn.active.command { background: #9333ea; color: #fff; }
+  .mode-btn.active.off { background: #6b7280; color: #fff; }
+
+  .badge { background: #dc2626; color: #fff; padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: 600; }
+  .badge.zero { background: #4b5563; }
+
+  /* WARNING */
+  .warning { background: #fef3c7; color: #92400e; padding: 10px 16px; font-size: 13px; border-bottom: 1px solid #fbbf24; }
+  .warning code { background: #fde68a; padding: 2px 6px; border-radius: 4px; }
+
+  /* MAIN */
+  .main { flex: 1; display: flex; min-height: 0; }
+  iframe { flex: 1; border: none; background: #fff; }
+
+  /* SIDEPANEL */
+  .sidepanel { width: 380px; background: #f9fafb; border-left: 1px solid #e5e7eb; overflow-y: auto; display: flex; flex-direction: column; }
+
+  /* TABS */
+  .tabs { display: flex; border-bottom: 1px solid #e5e7eb; background: #fff; position: sticky; top: 0; z-index: 2; }
+  .tab { flex: 1; padding: 12px 8px; background: none; border: none; cursor: pointer; font-size: 12px; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 1px; border-bottom: 2px solid transparent; }
+  .tab:hover { color: #111; }
+  .tab.active { color: #111; border-bottom-color: #2563eb; }
+  .tab .cnt { background: #e5e7eb; color: #374151; padding: 1px 7px; border-radius: 10px; font-size: 10px; margin-left: 4px; }
+  .tab.active .cnt { background: #2563eb; color: #fff; }
+
+  .tab-pane { padding: 14px; display: none; }
+  .tab-pane.active { display: block; }
+
+  .empty-state { color: #9ca3af; text-align: center; padding: 30px 16px; font-size: 13px; font-style: italic; }
+  .empty-state .arrow { font-size: 32px; display: block; margin-bottom: 8px; }
+
+  .page-group { margin-bottom: 16px; }
+  .page-group-header { font-size: 11px; text-transform: uppercase; color: #4b5563; font-weight: 700; letter-spacing: 1px; margin-bottom: 6px; padding: 4px 0; border-bottom: 1px solid #e5e7eb; }
+
+  .edit-item { background: #fff; padding: 10px 12px; border-radius: 8px; margin-bottom: 6px; font-size: 12px; border: 1px solid #e5e7eb; }
+  .edit-meta { color: #9ca3af; font-size: 10px; font-family: monospace; margin-bottom: 4px; }
+  .edit-old { color: #b91c1c; text-decoration: line-through; word-break: break-word; }
+  .edit-new { color: #166534; font-weight: 600; word-break: break-word; margin-top: 2px; }
+  .edit-revert { margin-top: 6px; font-size: 11px; background: #f3f4f6; color: #6b7280; border: none; padding: 3px 8px; border-radius: 4px; cursor: pointer; }
+  .edit-revert:hover { background: #e5e7eb; color: #111; }
+
+  /* Command composer */
+  .cmd-composer { background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px; margin-bottom: 14px; }
+  .cmd-empty { color: #9ca3af; font-size: 12px; font-style: italic; text-align: center; padding: 14px; }
+  .crumb { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; font-size: 11px; font-family: monospace; margin-bottom: 8px; }
+  .crumb-seg { background: #f3f4f6; padding: 2px 7px; border-radius: 4px; cursor: pointer; border: 1px solid #e5e7eb; color: #374151; }
+  .crumb-seg:hover { background: #e5e7eb; }
+  .crumb-seg.active { background: #9333ea; color: #fff; border-color: #9333ea; }
+  .crumb-sep { color: #9ca3af; }
+  .sel-info { font-size: 11px; color: #6b7280; margin-bottom: 8px; }
+  .sel-info b { color: #111; }
+  .html-preview { background: #1f2937; color: #d1d5db; padding: 8px 10px; border-radius: 6px; font-family: 'Courier New', monospace; font-size: 10px; max-height: 90px; overflow: auto; margin-bottom: 8px; white-space: pre-wrap; word-break: break-all; }
+  .cmd-prompt { width: 100%; min-height: 80px; padding: 8px 10px; border: 1px solid #d1d5db; border-radius: 6px; font-family: inherit; font-size: 13px; resize: vertical; box-sizing: border-box; }
+  .cmd-prompt:focus { outline: none; border-color: #9333ea; box-shadow: 0 0 0 2px rgba(147,51,234,0.15); }
+  .cmd-actions { display: flex; gap: 6px; margin-top: 8px; }
+  .cmd-actions button { flex: 1; padding: 7px 10px; font-size: 12px; border: none; border-radius: 6px; cursor: pointer; font-weight: 500; }
+  .cmd-add { background: #9333ea; color: #fff; }
+  .cmd-add:hover { background: #7e22ce; }
+  .cmd-add:disabled { background: #d1d5db; cursor: not-allowed; }
+  .cmd-clear { background: #f3f4f6; color: #6b7280; }
+  .cmd-clear:hover { background: #e5e7eb; color: #111; }
+
+  .cmd-item { background: #fff; padding: 10px 12px; border-radius: 8px; margin-bottom: 6px; font-size: 12px; border: 1px solid #e5e7eb; border-left: 3px solid #9333ea; }
+  .cmd-item .cmd-meta { color: #9ca3af; font-size: 10px; font-family: monospace; margin-bottom: 4px; word-break: break-all; }
+  .cmd-item .cmd-text { color: #111; font-weight: 500; margin-top: 2px; }
+  .cmd-item .cmd-del { margin-top: 6px; font-size: 11px; background: #f3f4f6; color: #6b7280; border: none; padding: 3px 8px; border-radius: 4px; cursor: pointer; }
+  .cmd-item .cmd-del:hover { background: #e5e7eb; color: #111; }
+
+  .help { font-size: 11px; color: #6b7280; line-height: 1.5; margin: 14px; padding: 10px; background: #fff; border-radius: 6px; border: 1px dashed #d1d5db; }
+  .help b { color: #111; }
+  .help kbd { background: #f3f4f6; border: 1px solid #d1d5db; border-radius: 3px; padding: 1px 5px; font-family: monospace; font-size: 10px; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <strong>🎨 Site Editor</strong>
+  <select id="pageSelect">
+    <option value="index.html">🏠 Home</option>
+    <option value="welcome.html">👋 Welcome</option>
+    <option value="rooms.html">🛏️ Rooms</option>
+    <option value="motorbike.html">🏍️ Motorbike</option>
+    <option value="motorbike-v2.html">🏍️ Motorbike v2</option>
+    <option value="tours.html">🗺️ Tours</option>
+    <option value="food.html">🍜 Food</option>
+    <option value="services.html">🍳 Services</option>
+    <option value="itinerary.html">📅 Plan Trip</option>
+    <option value="itinerary-builder.html">🧭 Itinerary Builder</option>
+    <option value="itinerary-v2/itinerary-v2.html">🗺️ Itinerary v2</option>
+    <option value="bus-ticket.html">🚌 Bus Tickets</option>
+    <option value="how-to-ride.html">📖 How to Ride</option>
+    <option value="pick-coords.html">📍 Pick Coords</option>
+  </select>
+
+  <div class="mode-group">
+    <button class="mode-btn off active" data-mode="off">🔍 Browse</button>
+    <button class="mode-btn edit" data-mode="edit">✏️ Edit</button>
+    <button class="mode-btn command" data-mode="command">💬 Command</button>
+  </div>
+
+  <button id="reloadBtn" class="btn btn-ghost" title="Reload page">🔄</button>
+  <div class="spacer"></div>
+  <span id="totalCount" class="badge zero">0 pending</span>
+  <button id="exportBtn" class="btn btn-success">📥 Export</button>
+  <button id="copyBtn" class="btn btn-ghost">📋 Copy</button>
+  <button id="resetBtn" class="btn btn-danger">🗑️ Reset</button>
+</div>
+
+<div id="warningBar" class="warning" style="display:none">
+  ⚠️ Editor đang chạy bằng <code>file://</code> — iframe sẽ bị chặn. Mở qua Live Server (chuột phải file → "Open with Live Server").
+</div>
+
+<div class="main">
+  <iframe id="pageFrame" src="index.html"></iframe>
+  <div class="sidepanel">
+
+    <div class="tabs">
+      <button class="tab active" data-tab="edits">✏️ Edits <span class="cnt" id="cntEdits">0</span></button>
+      <button class="tab" data-tab="commands">💬 Commands <span class="cnt" id="cntCmds">0</span></button>
+    </div>
+
+    <!-- EDITS TAB -->
+    <div class="tab-pane active" id="paneEdits">
+      <div id="editsList"></div>
+    </div>
+
+    <!-- COMMANDS TAB -->
+    <div class="tab-pane" id="paneCommands">
+      <div class="cmd-composer" id="cmdComposer">
+        <div class="cmd-empty" id="cmdEmpty">
+          Bật <b>Command Mode</b> ở topbar, rồi click 1 element trên trang để chọn.
+        </div>
+        <div id="cmdSelected" style="display:none">
+          <div class="crumb" id="crumb"></div>
+          <div class="sel-info" id="selInfo"></div>
+          <div class="html-preview" id="htmlPreview"></div>
+          <textarea class="cmd-prompt" id="cmdPrompt" placeholder="Mô tả điều bạn muốn — ví dụ:&#10;• Rewrite tagline ngắn gọn và hấp dẫn hơn&#10;• Translate this section sang tiếng Việt&#10;• Add a new bike card: Honda SH 350i, 600k/day, premium&#10;• Thêm 1 nhà hàng vegetarian mới tên 'Green Bowl'&#10;• Make this section more visually balanced"></textarea>
+          <div class="cmd-actions">
+            <button class="cmd-clear" id="cmdClear">✕ Bỏ chọn</button>
+            <button class="cmd-add" id="cmdAdd">💾 Save Command</button>
+          </div>
+        </div>
+      </div>
+      <div id="cmdsList"></div>
+    </div>
+
+    <div class="help">
+      <b>Edit Mode:</b> click text → sửa tại chỗ.<br>
+      <b>Command Mode:</b> click element → viết prompt mô tả ý định (rewrite / translate / add new / remove…). Claude sẽ thực hiện.<br>
+      <b>Breadcrumb:</b> click ancestor để mở rộng vùng chọn (vd: chọn cả card thay vì chỉ heading).<br>
+      <kbd>Esc</kbd> bỏ chọn · <kbd>Enter</kbd> lưu text edit.
+    </div>
+  </div>
+</div>
+
+<script>
+const STORAGE_KEY = 'sen_editor_state_v2';
+const EDITABLE_TAGS = ['H1','H2','H3','H4','H5','H6','P','SPAN','A','BUTTON','LI','TD','TH','LABEL','FIGCAPTION','BLOCKQUOTE','EM','STRONG','B','I','SMALL','DIV'];
+const SKIP_TAGS = ['SCRIPT','STYLE','NOSCRIPT','SVG','PATH','IFRAME','VIDEO','AUDIO','CANVAS','INPUT','TEXTAREA','SELECT','OPTION'];
+
+// ── STATE ────────────────────────────────────────────────────
+let mode = 'off';                  // 'off' | 'edit' | 'command'
+let state = loadState();           // { edits: {pageHtml: [..]}, commands: [..] }
+let selectedEl = null;             // currently selected DOM element in iframe (command mode)
+
+function loadState() {
+  const raw = localStorage.getItem(STORAGE_KEY);
+  if (raw) return JSON.parse(raw);
+  // migrate from v1 (edits-only key)
+  const old = JSON.parse(localStorage.getItem('sen_editor_edits_v1') || '{}');
+  return { edits: old, commands: [] };
+}
+function saveState() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+// ── DOM REFS ─────────────────────────────────────────────────
+const frame = document.getElementById('pageFrame');
+const pageSelect = document.getElementById('pageSelect');
+const reloadBtn = document.getElementById('reloadBtn');
+const exportBtn = document.getElementById('exportBtn');
+const copyBtn = document.getElementById('copyBtn');
+const resetBtn = document.getElementById('resetBtn');
+const editsList = document.getElementById('editsList');
+const cmdsList = document.getElementById('cmdsList');
+const totalCount = document.getElementById('totalCount');
+const cntEdits = document.getElementById('cntEdits');
+const cntCmds = document.getElementById('cntCmds');
+const warningBar = document.getElementById('warningBar');
+const cmdComposer = document.getElementById('cmdComposer');
+const cmdEmpty = document.getElementById('cmdEmpty');
+const cmdSelected = document.getElementById('cmdSelected');
+const crumb = document.getElementById('crumb');
+const selInfo = document.getElementById('selInfo');
+const htmlPreview = document.getElementById('htmlPreview');
+const cmdPrompt = document.getElementById('cmdPrompt');
+const cmdAdd = document.getElementById('cmdAdd');
+const cmdClear = document.getElementById('cmdClear');
+
+if (location.protocol === 'file:') warningBar.style.display = 'block';
+
+// ── TABS ─────────────────────────────────────────────────────
+document.querySelectorAll('.tab').forEach(t => {
+  t.onclick = () => {
+    document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+    document.querySelectorAll('.tab-pane').forEach(x => x.classList.remove('active'));
+    t.classList.add('active');
+    document.getElementById('pane' + t.dataset.tab[0].toUpperCase() + t.dataset.tab.slice(1)).classList.add('active');
+  };
+});
+
+// ── PAGE NAV ─────────────────────────────────────────────────
+pageSelect.onchange = () => { frame.src = pageSelect.value; clearSelection(); };
+reloadBtn.onclick = () => { frame.src = frame.src; clearSelection(); };
+
+// ── MODE TOGGLE ──────────────────────────────────────────────
+document.querySelectorAll('.mode-btn').forEach(b => {
+  b.onclick = () => setMode(b.dataset.mode);
+});
+
+function setMode(m) {
+  mode = m;
+  document.querySelectorAll('.mode-btn').forEach(b => b.classList.toggle('active', b.dataset.mode === m));
+  if (m !== 'command') clearSelection();
+  applyMode();
+
+  // Auto-switch tab to match
+  if (m === 'command') document.querySelector('[data-tab="commands"]').click();
+  else if (m === 'edit') document.querySelector('[data-tab="edits"]').click();
+}
+
+// ── IFRAME LIFECYCLE ─────────────────────────────────────────
+frame.addEventListener('load', () => {
+  setTimeout(() => {
+    try {
+      reapplyEditsToDOM();
+      applyMode();
+    } catch (err) {
+      console.error('Editor iframe error:', err);
+      warningBar.style.display = 'block';
+      warningBar.innerHTML = '⚠️ Không truy cập được iframe — phải chạy qua local server (Live Server).';
+    }
+  }, 400);
+});
+
+function getDoc() { try { return frame.contentDocument; } catch { return null; } }
+
+// ── APPLY MODE TO IFRAME ─────────────────────────────────────
+function applyMode() {
+  const doc = getDoc();
+  if (!doc) return;
+
+  // Reset all editor traces
+  doc.querySelectorAll('[data-editor-bound]').forEach(el => {
+    el.removeAttribute('contenteditable');
+    el.removeAttribute('data-editor-bound');
+    el.removeAttribute('data-editor-original');
+  });
+  doc.querySelectorAll('[data-cmd-hover],[data-cmd-selected]').forEach(el => {
+    el.removeAttribute('data-cmd-hover');
+    el.removeAttribute('data-cmd-selected');
+  });
+  doc.getElementById('__editor_styles')?.remove();
+  // Detach old listeners by cloning body is too disruptive; rely on flags.
+  // We use named handler refs below for command mode.
+  doc.removeEventListener('mouseover', onCmdHover, true);
+  doc.removeEventListener('mouseout',  onCmdOut,   true);
+  doc.removeEventListener('click',     onCmdClick, true);
+
+  if (mode === 'off') return;
+
+  // Inject styles
+  const style = doc.createElement('style');
+  style.id = '__editor_styles';
+  style.textContent = `
+    [data-editor-bound]:hover { outline: 2px dashed #2563eb !important; outline-offset: 1px; cursor: text !important; background: rgba(37,99,235,0.05) !important; }
+    [data-editor-bound][contenteditable="true"]:focus { outline: 2px solid #16a34a !important; background: #fef9c3 !important; }
+    [data-editor-bound] * { pointer-events: none; }
+    [data-cmd-hover] { outline: 2px dashed #9333ea !important; outline-offset: 2px; cursor: crosshair !important; background: rgba(147,51,234,0.06) !important; }
+    [data-cmd-selected] { outline: 3px solid #ea580c !important; outline-offset: 2px; background: rgba(234,88,12,0.08) !important; }
+  `;
+  doc.head.appendChild(style);
+
+  if (mode === 'edit') {
+    walkAndBindEdit(doc.body);
+  } else if (mode === 'command') {
+    doc.addEventListener('mouseover', onCmdHover, true);
+    doc.addEventListener('mouseout',  onCmdOut,   true);
+    doc.addEventListener('click',     onCmdClick, true);
+    // Re-mark selectedEl if still alive
+    if (selectedEl && doc.body.contains(selectedEl)) {
+      selectedEl.setAttribute('data-cmd-selected', '');
+    } else {
+      selectedEl = null;
+      renderSelection();
+    }
+  }
+}
+
+// ── EDIT MODE: BIND EDITABLE LEAF ELEMENTS ───────────────────
+function walkAndBindEdit(root) {
+  root.querySelectorAll(EDITABLE_TAGS.join(',')).forEach(el => {
+    if (SKIP_TAGS.includes(el.tagName)) return;
+    if (el.closest('script, style, nav .nav-hamburger')) return;
+    const text = (el.textContent || '').trim();
+    if (!text || text.length > 1000) return;
+    const hasEditableChild = Array.from(el.children).some(c =>
+      EDITABLE_TAGS.includes(c.tagName) && (c.textContent || '').trim().length > 0
+    );
+    if (hasEditableChild) return;
+    const onlyMedia = Array.from(el.children).every(c => SKIP_TAGS.includes(c.tagName) || c.tagName === 'IMG');
+    if (el.children.length > 0 && onlyMedia && !el.firstChild?.textContent?.trim()) return;
+
+    el.setAttribute('data-editor-bound', '');
+    el.setAttribute('contenteditable', 'true');
+    el.dataset.editorOriginal = el.textContent;
+    el.addEventListener('blur', onTextBlur);
+    el.addEventListener('keydown', onTextKeydown);
+    el.addEventListener('click', onEditClick, true);
+    el.addEventListener('paste', onPaste);
+  });
+}
+function onPaste(e) {
+  e.preventDefault();
+  const text = (e.clipboardData || window.clipboardData).getData('text/plain');
+  getDoc().execCommand('insertText', false, text);
+}
+function onEditClick(e) { e.preventDefault(); e.stopPropagation(); }
+function onTextKeydown(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); e.target.blur(); }
+  if (e.key === 'Escape') { e.target.textContent = e.target.dataset.editorOriginal; e.target.blur(); }
+}
+function onTextBlur(e) {
+  const el = e.target;
+  const original = el.dataset.editorOriginal;
+  const newText = el.textContent;
+  if (original === newText) return;
+
+  const page = pageSelect.value;
+  if (!state.edits[page]) state.edits[page] = [];
+  const existing = state.edits[page].find(x => x.original === original);
+  if (existing) {
+    if (newText === original) state.edits[page] = state.edits[page].filter(x => x !== existing);
+    else existing.new = newText;
+  } else if (newText !== original) {
+    state.edits[page].push({
+      original, new: newText,
+      tag: el.tagName.toLowerCase(),
+      class: (el.className || '').toString().split(' ').filter(Boolean).slice(0, 3).join(' '),
+    });
+  }
+  if (state.edits[page] && state.edits[page].length === 0) delete state.edits[page];
+  saveState();
+  renderAll();
+}
+
+// ── COMMAND MODE ─────────────────────────────────────────────
+function onCmdHover(e) {
+  if (selectedEl && e.target === selectedEl) return;
+  // Don't mark body/html itself
+  if (e.target === getDoc().body || e.target === getDoc().documentElement) return;
+  if (SKIP_TAGS.includes(e.target.tagName)) return;
+  e.target.setAttribute('data-cmd-hover', '');
+}
+function onCmdOut(e) {
+  e.target.removeAttribute('data-cmd-hover');
+}
+function onCmdClick(e) {
+  e.preventDefault();
+  e.stopPropagation();
+  if (SKIP_TAGS.includes(e.target.tagName)) return;
+  if (e.target === getDoc().body) return;
+  selectEl(e.target);
+}
+
+function selectEl(el) {
+  const doc = getDoc();
+  if (!doc) return;
+  // Clear previous selection
+  doc.querySelectorAll('[data-cmd-selected]').forEach(x => x.removeAttribute('data-cmd-selected'));
+  doc.querySelectorAll('[data-cmd-hover]').forEach(x => x.removeAttribute('data-cmd-hover'));
+  selectedEl = el;
+  if (el) {
+    el.setAttribute('data-cmd-selected', '');
+    // Scroll into view if needed
+    el.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'smooth' });
+  }
+  renderSelection();
+}
+
+function clearSelection() {
+  const doc = getDoc();
+  if (doc) doc.querySelectorAll('[data-cmd-selected]').forEach(x => x.removeAttribute('data-cmd-selected'));
+  selectedEl = null;
+  cmdPrompt.value = '';
+  renderSelection();
+}
+cmdClear.onclick = clearSelection;
+
+// Esc in iframe to clear selection
+window.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && mode === 'command') clearSelection();
+});
+
+// Save command
+cmdAdd.onclick = () => {
+  if (!selectedEl) return;
+  const prompt = cmdPrompt.value.trim();
+  if (!prompt) { cmdPrompt.focus(); return; }
+  state.commands.push({
+    page: pageSelect.value,
+    selector: getSelector(selectedEl),
+    tag: selectedEl.tagName.toLowerCase(),
+    classes: (selectedEl.className || '').toString().trim(),
+    outerHTML: selectedEl.outerHTML,
+    prompt,
+    ts: Date.now(),
+  });
+  saveState();
+  renderAll();
+  cmdPrompt.value = '';
+  // Keep selection so user can write another prompt for same element
+  // (if they want to clear they have Esc / Bỏ chọn button)
+  cmdAdd.textContent = '✓ Saved!';
+  setTimeout(() => cmdAdd.textContent = '💾 Save Command', 1200);
+};
+
+// ── SELECTION RENDER (breadcrumb + preview) ──────────────────
+function renderSelection() {
+  if (!selectedEl) {
+    cmdEmpty.style.display = 'block';
+    cmdSelected.style.display = 'none';
+    return;
+  }
+  cmdEmpty.style.display = 'none';
+  cmdSelected.style.display = 'block';
+
+  // Breadcrumb (ancestors → current)
+  const chain = [];
+  let cur = selectedEl;
+  while (cur && cur.nodeType === 1 && cur.tagName !== 'BODY') {
+    chain.unshift(cur);
+    cur = cur.parentElement;
+  }
+  crumb.innerHTML = '';
+  chain.forEach((el, i) => {
+    const seg = document.createElement('span');
+    seg.className = 'crumb-seg' + (el === selectedEl ? ' active' : '');
+    let label = el.tagName.toLowerCase();
+    const cls = (el.className || '').toString().split(' ').filter(Boolean)[0];
+    if (cls) label += '.' + cls;
+    if (el.id) label += '#' + el.id;
+    seg.textContent = label;
+    seg.onclick = () => selectEl(el);
+    crumb.appendChild(seg);
+    if (i < chain.length - 1) {
+      const sep = document.createElement('span');
+      sep.className = 'crumb-sep';
+      sep.textContent = '›';
+      crumb.appendChild(sep);
+    }
+  });
+
+  // Info
+  const rect = selectedEl.getBoundingClientRect();
+  const childCount = selectedEl.children.length;
+  selInfo.innerHTML = `<b>${selectedEl.tagName.toLowerCase()}</b> · ${Math.round(rect.width)}×${Math.round(rect.height)}px · ${childCount} child${childCount !== 1 ? 'ren' : ''}`;
+
+  // HTML preview (truncate)
+  const html = selectedEl.outerHTML;
+  htmlPreview.textContent = html.length > 600 ? html.slice(0, 600) + '\n…(' + (html.length - 600) + ' more chars)' : html;
+}
+
+// ── SELECTOR BUILDER ─────────────────────────────────────────
+function getSelector(el) {
+  const parts = [];
+  let cur = el;
+  while (cur && cur.nodeType === 1 && cur.tagName !== 'BODY' && cur.tagName !== 'HTML') {
+    let part = cur.tagName.toLowerCase();
+    if (cur.id) { part += '#' + cur.id; parts.unshift(part); break; }
+    const cls = (cur.className || '').toString().split(' ').filter(Boolean)[0];
+    if (cls) part += '.' + CSS.escape(cls);
+    const parent = cur.parentElement;
+    if (parent) {
+      const sameTag = Array.from(parent.children).filter(c => c.tagName === cur.tagName);
+      if (sameTag.length > 1) {
+        const idx = sameTag.indexOf(cur) + 1;
+        part += `:nth-of-type(${idx})`;
+      }
+    }
+    parts.unshift(part);
+    cur = cur.parentElement;
+  }
+  return 'body > ' + parts.join(' > ');
+}
+
+// ── REAPPLY EDITS TO LOADED IFRAME ───────────────────────────
+function reapplyEditsToDOM() {
+  const doc = getDoc();
+  if (!doc) return;
+  const page = pageSelect.value;
+  const pageEdits = state.edits[page] || [];
+  if (pageEdits.length === 0) return;
+  doc.querySelectorAll(EDITABLE_TAGS.join(',')).forEach(el => {
+    const hasEditableChild = Array.from(el.children).some(c =>
+      EDITABLE_TAGS.includes(c.tagName) && (c.textContent || '').trim().length > 0
+    );
+    if (hasEditableChild) return;
+    const txt = el.textContent;
+    const match = pageEdits.find(e => e.original === txt);
+    if (match) el.textContent = match.new;
+  });
+}
+
+// ── RENDER ALL PANELS ────────────────────────────────────────
+function renderAll() {
+  renderEdits();
+  renderCommands();
+  updateBadges();
+}
+
+function updateBadges() {
+  const editCount = Object.values(state.edits).reduce((s, a) => s + a.length, 0);
+  const cmdCount = state.commands.length;
+  const total = editCount + cmdCount;
+  totalCount.textContent = `${total} pending`;
+  totalCount.className = 'badge' + (total === 0 ? ' zero' : '');
+  cntEdits.textContent = editCount;
+  cntCmds.textContent = cmdCount;
+}
+
+function renderEdits() {
+  const editCount = Object.values(state.edits).reduce((s, a) => s + a.length, 0);
+  if (editCount === 0) {
+    editsList.innerHTML = `<div class="empty-state"><span class="arrow">↑</span>Bật Edit Mode rồi click text để sửa.</div>`;
+    return;
+  }
+  editsList.innerHTML = '';
+  Object.entries(state.edits).forEach(([page, list]) => {
+    const group = document.createElement('div');
+    group.className = 'page-group';
+    group.innerHTML = `<div class="page-group-header">${page} · ${list.length}</div>`;
+    list.forEach((e, i) => {
+      const div = document.createElement('div');
+      div.className = 'edit-item';
+      div.innerHTML = `
+        <div class="edit-meta">&lt;${e.tag}${e.class ? '.' + e.class.split(' ')[0] : ''}&gt;</div>
+        <div class="edit-old">${escapeHtml(truncate(e.original, 100))}</div>
+        <div class="edit-new">→ ${escapeHtml(truncate(e.new, 100))}</div>
+        <button class="edit-revert" data-page="${page}" data-idx="${i}">↶ Revert</button>
+      `;
+      group.appendChild(div);
+    });
+    editsList.appendChild(group);
+  });
+  editsList.querySelectorAll('.edit-revert').forEach(btn => {
+    btn.onclick = () => {
+      const page = btn.dataset.page;
+      const idx = parseInt(btn.dataset.idx);
+      state.edits[page].splice(idx, 1);
+      if (state.edits[page].length === 0) delete state.edits[page];
+      saveState(); renderAll();
+      if (page === pageSelect.value) frame.src = frame.src;
+    };
+  });
+}
+
+function renderCommands() {
+  if (state.commands.length === 0) {
+    cmdsList.innerHTML = `<div class="empty-state" style="padding:12px">Chưa có command nào.</div>`;
+    return;
+  }
+  // Group by page
+  const byPage = {};
+  state.commands.forEach((c, i) => {
+    if (!byPage[c.page]) byPage[c.page] = [];
+    byPage[c.page].push({ ...c, _idx: i });
+  });
+  cmdsList.innerHTML = '';
+  Object.entries(byPage).forEach(([page, list]) => {
+    const group = document.createElement('div');
+    group.className = 'page-group';
+    group.innerHTML = `<div class="page-group-header">${page} · ${list.length}</div>`;
+    list.forEach(c => {
+      const div = document.createElement('div');
+      div.className = 'cmd-item';
+      div.innerHTML = `
+        <div class="cmd-meta">&lt;${c.tag}${c.classes ? '.' + c.classes.split(' ')[0] : ''}&gt;</div>
+        <div class="cmd-text">${escapeHtml(truncate(c.prompt, 200))}</div>
+        <button class="cmd-del" data-idx="${c._idx}">✕ Delete</button>
+      `;
+      group.appendChild(div);
+    });
+    cmdsList.appendChild(group);
+  });
+  cmdsList.querySelectorAll('.cmd-del').forEach(btn => {
+    btn.onclick = () => {
+      const idx = parseInt(btn.dataset.idx);
+      state.commands.splice(idx, 1);
+      saveState(); renderAll();
+    };
+  });
+}
+
+function escapeHtml(s) { return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function truncate(s, n) { s = String(s); return s.length > n ? s.slice(0, n) + '…' : s; }
+
+// ── EXPORT / COPY / RESET ────────────────────────────────────
+function buildExport() {
+  return { edits: state.edits, commands: state.commands };
+}
+
+exportBtn.onclick = () => {
+  const editCount = Object.values(state.edits).reduce((s, a) => s + a.length, 0);
+  if (editCount === 0 && state.commands.length === 0) { alert('Chưa có gì để export.'); return; }
+  const blob = new Blob([JSON.stringify(buildExport(), null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `editor-${new Date().toISOString().slice(0,10)}-${Date.now().toString().slice(-4)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+};
+
+copyBtn.onclick = async () => {
+  const editCount = Object.values(state.edits).reduce((s, a) => s + a.length, 0);
+  if (editCount === 0 && state.commands.length === 0) { alert('Chưa có gì để copy.'); return; }
+  const text = JSON.stringify(buildExport(), null, 2);
+  try {
+    await navigator.clipboard.writeText(text);
+    copyBtn.textContent = '✅ Copied!';
+    setTimeout(() => copyBtn.textContent = '📋 Copy', 1500);
+  } catch {
+    prompt('Copy thủ công:', text);
+  }
+};
+
+resetBtn.onclick = () => {
+  const editCount = Object.values(state.edits).reduce((s, a) => s + a.length, 0);
+  const total = editCount + state.commands.length;
+  if (total === 0) return;
+  if (!confirm(`Xoá tất cả ${total} item đang chờ?`)) return;
+  state = { edits: {}, commands: [] };
+  saveState(); renderAll();
+  frame.src = frame.src;
+};
+
+// ── INIT ─────────────────────────────────────────────────────
+renderAll();
+</script>
+</body>
+</html>
