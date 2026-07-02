@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Cao Bang Travel Map — Waterfalls, Caves &amp; City Guide</title>
+  <meta name="description"
+    content="Interactive travel map of Cao Bang, Vietnam — Ban Gioc waterfall, Nguom Ngao cave, Pac Bo, plus where to eat, sleep and drink in Cao Bang city.">
+  <meta name="theme-color" content="#0B2530">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+  <style>
+    :root {
+      --ink: #0B2530;
+      --ink-2: #46626F;
+      --surface: #FFFFFF;
+      --bg-soft: #EEF6F9;
+      --line: #D9E7EC;
+      --accent: #EA580C;
+      /* decorative orange */
+      --accent-deep: #C2410C;
+      /* solid buttons — AA with white text */
+      --primary: #0E7490;
+      --shadow-1: 0 2px 10px rgba(11, 37, 48, .12);
+      --shadow-2: 0 10px 32px rgba(11, 37, 48, .22);
+      --r-md: 14px;
+      --r-lg: 20px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+    }
+
+    body {
+      font-family: "Be Vietnam Pro", system-ui, -apple-system, sans-serif;
+      color: var(--ink);
+      background: var(--bg-soft);
+      overflow: hidden;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    button {
+      font-family: inherit;
+      cursor: pointer;
+    }
+
+    :focus-visible {
+      outline: 3px solid var(--accent);
+      outline-offset: 2px;
+      border-radius: 6px;
+    }
+
+    #map {
+      position: fixed;
+      inset: 0;
+      height: 100dvh;
+      width: 100%;
+      background: #CFE7EE;
+      z-index: 1;
+    }
+
+    /* ---------------- Top bar: brand + search + chips ---------------- */
+    .topbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      padding: calc(10px + env(safe-area-inset-top)) 12px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      pointer-events: none;
+    }
+
+    .search-card {
+      pointer-events: auto;
+      width: 100%;
+      max-width: 480px;
+      margin: 0 auto;
+      background: var(--surface);
+      border-radius: var(--r-lg);
+      box-shadow: var(--shadow-1);
+      padding: 8px 14px 9px;
+      position: relative;
+      z-index: 10;
+      /* keep the results dropdown above the chips row */
+    }
+
+    .search-brand {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: .14em;
+      color: var(--accent-deep);
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin: 1px 0 0 2px;
+    }
+
+    .search-brand svg {
+      width: 11px;
+      height: 11px;
+    }
+
+    .search-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .search-row .lead-icon {
+      width: 18px;
+      height: 18px;
+      color: var(--ink-2);
+      flex: none;
+    }
+
+    #search-input {
+      flex: 1;
+      border: 0;
+      outline: none;
+      background: transparent;
+      font: inherit;
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--ink);
+      height: 38px;
+      min-width: 0;
+    }
+
+    #search-input::placeholder {
+      color: #7C949F;
+      font-weight: 400;
+    }
+
+    #search-clear {
+      flex: none;
+      width: 34px;
+      height: 34px;
+      margin-right: -6px;
+      border: 0;
+      background: transparent;
+      border-radius: 50%;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      color: var(--ink-2);
+    }
+
+    #search-clear:hover {
+      background: var(--bg-soft);
+    }
+
+    #search-clear svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .search-open #search-clear {
+      display: flex;
+    }
+
+    .results {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: calc(100% + 6px);
+      background: var(--surface);
+      border-radius: var(--r-md);
+      box-shadow: var(--shadow-2);
+      overflow: hidden auto;
+      max-height: min(340px, 46dvh);
+      display: none;
+    }
+
+    .search-open .results.has-items {
+      display: block;
+    }
+
+    .result {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      width: 100%;
+      padding: 9px 14px;
+      border: 0;
+      background: none;
+      text-align: left;
+      min-height: 52px;
+    }
+
+    .result:hover,
+    .result:focus-visible {
+      background: var(--bg-soft);
+    }
+
+    .result .dot {
+      flex: none;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+    }
+
+    .result .dot svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .result .t {
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 1.25;
+    }
+
+    .result .s {
+      font-size: 12px;
+      color: var(--ink-2);
+      line-height: 1.3;
+    }
+
+    .result.none {
+      color: var(--ink-2);
+      font-size: 14px;
+      cursor: default;
+    }
+
+    .chips {
+      pointer-events: auto;
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      padding: 2px 12px 10px;
+      margin: 0 -12px;
+      -webkit-overflow-scrolling: touch;
+      mask-image: linear-gradient(90deg, transparent 0, #000 12px, #000 calc(100% - 12px), transparent 100%);
+    }
+
+    .chips::-webkit-scrollbar {
+      display: none;
+    }
+
+    .chip {
+      flex: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      height: 40px;
+      padding: 0 14px;
+      background: var(--surface);
+      color: var(--ink);
+      border: 1px solid transparent;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+      box-shadow: var(--shadow-1);
+      transition: background .18s ease, color .18s ease, transform .18s ease;
+    }
+
+    .chip:active {
+      transform: scale(.96);
+    }
+
+    .chip svg {
+      width: 15px;
+      height: 15px;
+      color: var(--chip-c, var(--ink-2));
+    }
+
+    .chip[aria-pressed="true"] {
+      background: var(--ink);
+      color: #fff;
+    }
+
+    .chip[aria-pressed="true"] svg {
+      color: #fff;
+    }
+
+    /* ---------------- Markers ---------------- */
+    .poi-wrap {
+      background: none;
+      border: none;
+    }
+
+    .pin {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: var(--c, var(--primary));
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2.5px solid #fff;
+      box-shadow: 0 2px 8px rgba(11, 37, 48, .35);
+      transition: transform .18s ease;
+      position: relative;
+    }
+
+    .pin::after {
+      content: "";
+      position: absolute;
+      inset: -8px;
+      border-radius: 50%;
+    }
+
+    /* bigger touch target */
+    .pin svg {
+      width: 15px;
+      height: 15px;
+    }
+
+    .pin-lg {
+      width: 38px;
+      height: 38px;
+    }
+
+    .pin-lg svg {
+      width: 19px;
+      height: 19px;
+    }
+
+    .zl-mid .pin:not(.pin-lg) {
+      transform: scale(.74);
+    }
+
+    .leaflet-marker-icon:hover .pin,
+    .pin-active {
+      transform: scale(1.14) !important;
+    }
+
+    .pin-active {
+      box-shadow: 0 0 0 5px color-mix(in srgb, var(--c) 30%, transparent), 0 4px 14px rgba(11, 37, 48, .4);
+    }
+
+    .pin-featured::before {
+      content: "";
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      background: #FACC15 url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23713F12"><path d="M12 2l2.9 6.26 6.6.57-5 4.4 1.5 6.47L12 16.9 5.99 19.7l1.5-6.47-5-4.4 6.6-.57L12 2z"/></svg>') center/9px no-repeat;
+      border: 1.5px solid #fff;
+    }
+
+    .pin-label {
+      position: absolute;
+      top: calc(50% + 21px);
+      left: 50%;
+      transform: translateX(-50%);
+      white-space: nowrap;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--ink);
+      text-shadow: 0 1px 0 #fff, 0 -1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff, 0 0 6px #fff;
+      pointer-events: none;
+    }
+
+    .pin-label.city-label {
+      display: none;
+    }
+
+    .zl-max .pin-label.city-label {
+      display: block;
+      top: calc(50% + 17px);
+    }
+
+    .gateway {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: max-content;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--ink);
+      color: #fff;
+      padding: 8px 14px 8px 10px;
+      border-radius: 999px;
+      box-shadow: var(--shadow-2);
+      white-space: nowrap;
+      font-size: 13px;
+      font-weight: 700;
+      border: 2px solid #fff;
+      transition: transform .18s ease;
+    }
+
+    .gateway:hover {
+      transform: translate(-50%, -50%) scale(1.05);
+    }
+
+    .gateway svg {
+      width: 16px;
+      height: 16px;
+      color: #7DD3FC;
+    }
+
+    .gateway small {
+      display: block;
+      font-size: 10px;
+      font-weight: 500;
+      color: #A8C5D1;
+    }
+
+    /* ---------------- Detail card ---------------- */
+    .card {
+      position: fixed;
+      z-index: 1100;
+      left: 12px;
+      right: 12px;
+      bottom: calc(14px + env(safe-area-inset-bottom));
+      max-width: 440px;
+      margin: 0 auto;
+      background: var(--surface);
+      border-radius: var(--r-lg);
+      box-shadow: var(--shadow-2);
+      overflow: hidden;
+      transform: translateY(24px);
+      opacity: 0;
+      visibility: hidden;
+      transition: transform .22s ease, opacity .22s ease, visibility .22s;
+    }
+
+    .card.open {
+      transform: none;
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .card-media {
+      position: relative;
+      height: 148px;
+      background: var(--bg-soft);
+    }
+
+    .card-media img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .card-media .fallback {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--c);
+      /* fallback for browsers without color-mix */
+      background: linear-gradient(135deg, color-mix(in srgb, var(--c) 88%, #000 0%), color-mix(in srgb, var(--c) 60%, #063041));
+    }
+
+    .card-media .fallback svg {
+      width: 52px;
+      height: 52px;
+      color: rgba(255, 255, 255, .85);
+    }
+
+    .card-close {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 40px;
+      height: 40px;
+      border: 0;
+      border-radius: 50%;
+      background: rgba(8, 25, 33, .55);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(4px);
+    }
+
+    .card-close svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .card-tags {
+      position: absolute;
+      left: 12px;
+      bottom: 10px;
+      display: flex;
+      gap: 6px;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #fff;
+      background: rgba(8, 25, 33, .6);
+      backdrop-filter: blur(4px);
+      padding: 4px 10px;
+      border-radius: 999px;
+    }
+
+    .tag .swatch {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--c);
+    }
+
+    .card-body {
+      padding: 13px 16px calc(15px + env(safe-area-inset-bottom) * 0);
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 800;
+      line-height: 1.2;
+      margin: 0;
+    }
+
+    .card-local {
+      font-size: 12.5px;
+      color: var(--ink-2);
+      margin: 2px 0 0;
+    }
+
+    .card-desc {
+      font-size: 13.5px;
+      line-height: 1.55;
+      color: var(--ink);
+      margin: 8px 0 0;
+    }
+
+    .card-dist {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--primary);
+      margin-top: 8px;
+    }
+
+    .card-dist svg {
+      width: 14px;
+      height: 14px;
+      flex: none;
+    }
+
+    .card-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .btn {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      height: 46px;
+      border-radius: 12px;
+      border: 0;
+      font-size: 14px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: transform .15s ease, filter .15s ease;
+    }
+
+    .btn:active {
+      transform: scale(.97);
+    }
+
+    .btn svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .btn-primary {
+      background: var(--accent-deep);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      filter: brightness(1.08);
+    }
+
+    .btn-secondary {
+      background: var(--bg-soft);
+      color: var(--ink);
+      border: 1px solid var(--line);
+    }
+
+    .btn-secondary:hover {
+      background: #E2EEF3;
+    }
+
+    .btn-icon {
+      flex: 0 0 46px;
+    }
+
+    /* ---------------- View toggle ---------------- */
+    .seg {
+      position: fixed;
+      z-index: 1000;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: calc(14px + env(safe-area-inset-bottom));
+      display: flex;
+      gap: 3px;
+      padding: 4px;
+      background: var(--surface);
+      border-radius: 999px;
+      box-shadow: var(--shadow-2);
+      transition: opacity .2s ease;
+    }
+
+    .seg button {
+      border: 0;
+      background: transparent;
+      color: var(--ink-2);
+      height: 40px;
+      padding: 0 18px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .seg button svg {
+      width: 15px;
+      height: 15px;
+    }
+
+    .seg button.on {
+      background: var(--ink);
+      color: #fff;
+    }
+
+    body.card-open .seg {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* ---------------- Welcome overlay ---------------- */
+    .welcome {
+      position: fixed;
+      inset: 0;
+      z-index: 2000;
+      background: rgba(8, 25, 33, .5);
+      backdrop-filter: blur(3px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 1;
+      transition: opacity .25s ease, visibility .25s;
+    }
+
+    .welcome.hide {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .welcome-card {
+      width: 100%;
+      max-width: 340px;
+      background: var(--surface);
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: var(--shadow-2);
+    }
+
+    .welcome-hero {
+      height: 150px;
+      position: relative;
+      background: linear-gradient(135deg, #0E7490, #0B2530);
+    }
+
+    .welcome-hero img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .welcome-hero::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 45%, rgba(8, 25, 33, .65));
+    }
+
+    .welcome-hero h1 {
+      position: absolute;
+      z-index: 1;
+      left: 18px;
+      bottom: 12px;
+      margin: 0;
+      color: #fff;
+      font-size: 24px;
+      font-weight: 800;
+      line-height: 1.1;
+    }
+
+    .welcome-hero h1 small {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .16em;
+      color: #FDBA74;
+      margin-bottom: 4px;
+    }
+
+    .welcome-body {
+      padding: 16px 18px calc(18px + env(safe-area-inset-bottom));
+    }
+
+    .welcome-body p {
+      margin: 0 0 14px;
+      font-size: 13.5px;
+      line-height: 1.55;
+      color: var(--ink-2);
+    }
+
+    .welcome-body .btn+.btn {
+      margin-top: 8px;
+    }
+
+    .welcome-skip {
+      display: block;
+      width: 100%;
+      margin-top: 10px;
+      padding: 8px;
+      border: 0;
+      background: none;
+      color: var(--ink-2);
+      font-size: 12.5px;
+      font-weight: 600;
+      text-decoration: underline;
+    }
+
+    /* ---------------- Toast & misc ---------------- */
+    .toast {
+      position: fixed;
+      z-index: 3000;
+      left: 50%;
+      transform: translateX(-50%) translateY(8px);
+      bottom: calc(78px + env(safe-area-inset-bottom));
+      background: var(--ink);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 10px 16px;
+      border-radius: 999px;
+      box-shadow: var(--shadow-2);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .2s ease, transform .2s ease;
+      max-width: min(90vw, 420px);
+      text-align: center;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .leaflet-control-zoom {
+      border: 0 !important;
+      box-shadow: var(--shadow-1) !important;
+      border-radius: 12px !important;
+      overflow: hidden;
+    }
+
+    .leaflet-control-zoom a {
+      color: var(--ink) !important;
+    }
+
+    .leaflet-bottom.leaflet-right {
+      bottom: calc(64px + env(safe-area-inset-bottom));
+    }
+
+    .leaflet-control-attribution {
+      font-size: 10px !important;
+      background: rgba(255, 255, 255, .75) !important;
+    }
+
+    @media (max-width: 520px) {
+      .leaflet-control-zoom {
+        display: none;
+      }
+
+      /* pinch to zoom on phones */
+      .leaflet-bottom.leaflet-right {
+        bottom: calc(10px + env(safe-area-inset-bottom));
+      }
+    }
+
+    @media (min-width: 768px) {
+      .topbar {
+        align-items: flex-start;
+        padding-left: 16px;
+      }
+
+      .search-card {
+        margin: 0;
+        max-width: 400px;
+      }
+
+      .chips {
+        max-width: calc(100vw - 32px);
+      }
+
+      .card {
+        left: 16px;
+        right: auto;
+        width: 400px;
+        bottom: 16px;
+      }
+
+      .seg {
+        left: auto;
+        right: 16px;
+        transform: none;
+      }
+
+      body.card-open .seg {
+        opacity: 1;
+        pointer-events: auto;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+
+      *,
+      *::before,
+      *::after {
+        transition-duration: .01ms !important;
+        animation: none !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="map" role="application" aria-label="Interactive map of Cao Bang"></div>
+
+  <header class="topbar">
+    <div class="search-card" id="search-card">
+      <div class="search-brand" id="brand"></div>
+      <div class="search-row">
+        <span class="lead-icon" id="lead-icon"></span>
+        <input id="search-input" type="search" autocomplete="off" spellcheck="false"
+          placeholder="Search waterfalls, food, hotels…" aria-label="Search places in Cao Bang">
+        <button id="search-clear" aria-label="Clear search"></button>
+      </div>
+      <div class="results" id="results" role="listbox" aria-label="Search results"></div>
+    </div>
+    <nav class="chips" id="chips" aria-label="Filter by category"></nav>
+  </header>
+
+  <div class="card" id="card" role="dialog" aria-modal="false" aria-labelledby="card-title">
+    <div class="card-media" id="card-media"></div>
+    <div class="card-body">
+      <h2 class="card-title" id="card-title"></h2>
+      <p class="card-local" id="card-local"></p>
+      <p class="card-desc" id="card-desc"></p>
+      <div class="card-dist" id="card-dist"></div>
+      <div class="card-actions" id="card-actions"></div>
+    </div>
+  </div>
+
+  <div class="seg" id="seg">
+    <button id="seg-province" type="button"></button>
+    <button id="seg-city" type="button"></button>
+  </div>
+
+  <div class="welcome hide" id="welcome" role="dialog" aria-modal="true" aria-label="Welcome">
+    <div class="welcome-card">
+      <div class="welcome-hero">
+        <img id="welcome-img" alt="Cao Bang city seen from above" loading="eager">
+        <h1><small>VIETNAM'S WILD NORTHEAST</small>Cao Bằng</h1>
+      </div>
+      <div class="welcome-body">
+        <p>Waterfalls on the China border, glowing caves, karst lakes — and a friendly little city that feeds you well.
+          Where to first?</p>
+        <button class="btn btn-primary" id="welcome-province" type="button"></button>
+        <button class="btn btn-secondary" id="welcome-city" type="button"></button>
+        <button class="welcome-skip" id="welcome-skip" type="button">Just show me the map</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+
+</html>
