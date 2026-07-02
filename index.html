@@ -32,6 +32,65 @@
       --r-lg: 20px;
     }
 
+    /* ---------------- Dark mode ---------------- */
+    body.dark {
+      --ink: #E9F2F6;
+      --ink-2: #9DB4BF;
+      --surface: #14262F;
+      --bg-soft: #0D1B22;
+      --line: #24404C;
+      --primary: #4FC3E8;
+      --shadow-1: 0 2px 10px rgba(0, 0, 0, .5);
+      --shadow-2: 0 10px 32px rgba(0, 0, 0, .65);
+    }
+
+    body.dark #map {
+      background: #0D1B22;
+    }
+
+    body.dark .pin-label {
+      text-shadow: 0 1px 0 #0D1B22, 0 -1px 0 #0D1B22, 1px 0 0 #0D1B22, -1px 0 0 #0D1B22, 0 0 6px #0D1B22;
+    }
+
+    body.dark .chip[aria-pressed="true"],
+    body.dark .seg button.on,
+    body.dark .toast {
+      background: #E9F2F6;
+      color: #0B2530;
+    }
+
+    body.dark .chip[aria-pressed="true"] svg {
+      color: #0B2530;
+    }
+
+    body.dark .btn-secondary {
+      background: #1D3440;
+      border-color: #24404C;
+      color: #E9F2F6;
+    }
+
+    body.dark .btn-secondary:hover {
+      background: #24404C;
+    }
+
+    body.dark .welcome {
+      background: rgba(0, 0, 0, .62);
+    }
+
+    body.dark .leaflet-control-zoom a {
+      background: #14262F !important;
+      color: #E9F2F6 !important;
+    }
+
+    body.dark .leaflet-control-attribution {
+      background: rgba(13, 27, 34, .8) !important;
+      color: #9DB4BF !important;
+    }
+
+    body.dark .leaflet-control-attribution a {
+      color: #B8D2DD !important;
+    }
+
     * {
       box-sizing: border-box;
     }
@@ -147,27 +206,41 @@
       font-weight: 400;
     }
 
-    #search-clear {
+    #search-clear,
+    #theme-btn {
       flex: none;
       width: 34px;
       height: 34px;
-      margin-right: -6px;
       border: 0;
       background: transparent;
       border-radius: 50%;
-      display: none;
       align-items: center;
       justify-content: center;
       color: var(--ink-2);
     }
 
-    #search-clear:hover {
+    #search-clear {
+      display: none;
+    }
+
+    #theme-btn {
+      display: flex;
+      margin-right: -6px;
+    }
+
+    #search-clear:hover,
+    #theme-btn:hover {
       background: var(--bg-soft);
     }
 
     #search-clear svg {
       width: 16px;
       height: 16px;
+    }
+
+    #theme-btn svg {
+      width: 17px;
+      height: 17px;
     }
 
     .search-open #search-clear {
@@ -376,6 +449,11 @@
       pointer-events: none;
     }
 
+    .pin-label.label-above {
+      top: auto;
+      bottom: calc(50% + 21px);
+    }
+
     .pin-label.city-label {
       display: none;
     }
@@ -385,42 +463,145 @@
       top: calc(50% + 17px);
     }
 
-    .gateway {
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      transform: translate(-50%, -50%);
-      width: max-content;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      background: var(--ink);
-      color: #fff;
-      padding: 8px 14px 8px 10px;
-      border-radius: 999px;
-      box-shadow: var(--shadow-2);
-      white-space: nowrap;
-      font-size: 13px;
-      font-weight: 700;
-      border: 2px solid #fff;
+    /* Photo pins — hero sights show their own photo instead of an icon */
+    .photo-pin {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      border: 2.5px solid #fff;
+      background: var(--bg-soft);
+      box-shadow: 0 0 0 2px var(--c, var(--primary)), 0 3px 10px rgba(11, 37, 48, .45);
+      position: relative;
       transition: transform .18s ease;
     }
 
-    .gateway:hover {
-      transform: translate(-50%, -50%) scale(1.05);
-    }
-
-    .gateway svg {
-      width: 16px;
-      height: 16px;
-      color: #7DD3FC;
-    }
-
-    .gateway small {
+    .photo-pin img {
+      /* !important beats Leaflet's ".leaflet-marker-pane img { width: auto }" */
+      width: 100% !important;
+      height: 100% !important;
+      object-fit: cover;
+      border-radius: 50%;
       display: block;
-      font-size: 10px;
-      font-weight: 500;
-      color: #A8C5D1;
+    }
+
+    .leaflet-marker-icon:hover .photo-pin,
+    .photo-pin.pin-active {
+      transform: scale(1.12);
+    }
+
+    .photo-pin.pin-active {
+      box-shadow: 0 0 0 3px var(--c, var(--primary)), 0 4px 14px rgba(11, 37, 48, .55);
+    }
+
+    .photo-wrap .pin-label {
+      top: calc(50% + 34px);
+    }
+
+    .photo-wrap .pin-label.label-above {
+      top: auto;
+      bottom: calc(50% + 34px);
+    }
+
+    /* smaller photo pins: regular province sights and city places */
+    .photo-pin.photo-md {
+      width: 42px;
+      height: 42px;
+    }
+
+    .photo-pin.photo-sm {
+      width: 38px;
+      height: 38px;
+    }
+
+    .photo-md-wrap .pin-label {
+      top: calc(50% + 27px);
+    }
+
+    .photo-md-wrap .pin-label.label-above {
+      top: auto;
+      bottom: calc(50% + 27px);
+    }
+
+    .photo-sm-wrap .pin-label {
+      top: calc(50% + 25px);
+    }
+
+    .zl-max .photo-sm-wrap .pin-label.city-label {
+      top: calc(50% + 25px);
+    }
+
+    .zl-mid .photo-pin.photo-sm {
+      transform: scale(.8);
+    }
+
+    /* small category badge on every photo pin */
+    .photo-pin .cat-badge {
+      position: absolute;
+      bottom: -3px;
+      right: -3px;
+      z-index: 1;
+      width: 17px;
+      height: 17px;
+      border-radius: 50%;
+      background: var(--c, var(--primary));
+      border: 1.5px solid #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+    }
+
+    .photo-pin .cat-badge svg {
+      width: 9px;
+      height: 9px;
+    }
+
+    /* The capital: photo pin ringed in red with a star badge + soft ping */
+    .photo-pin-capital {
+      box-shadow: 0 0 0 2px #DC2626, 0 3px 10px rgba(11, 37, 48, .45);
+    }
+
+    .photo-pin-capital::before {
+      content: "";
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      z-index: 1;
+      width: 17px;
+      height: 17px;
+      border-radius: 50%;
+      background: #DC2626 url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23fff"><path d="M12 2l2.9 6.26 6.6.57-5 4.4 1.5 6.47L12 16.9 5.99 19.7l1.5-6.47-5-4.4 6.6-.57L12 2z"/></svg>') center/10px no-repeat;
+      border: 1.5px solid #fff;
+    }
+
+    .capital-wrap {
+      cursor: pointer;
+    }
+
+    .capital-wrap::before {
+      content: "";
+      position: absolute;
+      inset: -5px;
+      border-radius: 50%;
+      border: 2px solid rgba(220, 38, 38, .45);
+      animation: star-ping 2.4s ease-out infinite;
+      pointer-events: none;
+    }
+
+    @keyframes star-ping {
+      0% {
+        transform: scale(.55);
+        opacity: .9;
+      }
+
+      70% {
+        transform: scale(1.15);
+        opacity: 0;
+      }
+
+      100% {
+        opacity: 0;
+      }
     }
 
     /* ---------------- Detail card ---------------- */
@@ -478,6 +659,11 @@
       color: rgba(255, 255, 255, .85);
     }
 
+    .card-media .fallback[hidden] {
+      display: none;
+      /* photo loaded — keep the gradient out of the way */
+    }
+
     .card-close {
       position: absolute;
       top: 10px;
@@ -525,6 +711,14 @@
       height: 8px;
       border-radius: 50%;
       background: var(--c);
+    }
+
+    .tag-pick {
+      background: #B45309;
+    }
+
+    .tag-veg {
+      background: #15803D;
     }
 
     .card-body {
@@ -663,6 +857,263 @@
     body.card-open .seg {
       opacity: 0;
       pointer-events: none;
+    }
+
+    /* ---------------- Trips (suggested itineraries) ---------------- */
+    .trips-sheet {
+      position: fixed;
+      inset: 0;
+      z-index: 1900;
+      background: rgba(8, 25, 33, .5);
+      backdrop-filter: blur(3px);
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+    }
+
+    .trips-sheet[hidden] {
+      display: none;
+    }
+
+    .trips-panel {
+      width: 100%;
+      max-width: 480px;
+      background: var(--surface);
+      border-radius: 24px 24px 0 0;
+      max-height: 78dvh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: var(--shadow-2);
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+
+    .trips-head {
+      padding: 16px 18px 6px;
+      position: relative;
+    }
+
+    .trips-head h2 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    .trips-head p {
+      margin: 4px 44px 0 0;
+      font-size: 12.5px;
+      line-height: 1.45;
+      color: var(--ink-2);
+    }
+
+    #trips-close,
+    #trip-close {
+      border: 0;
+      border-radius: 50%;
+      background: var(--bg-soft);
+      color: var(--ink);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #trips-close {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 40px;
+      height: 40px;
+    }
+
+    #trips-close svg,
+    #trip-close svg {
+      width: 15px;
+      height: 15px;
+    }
+
+    .trips-list {
+      overflow-y: auto;
+      padding: 10px 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .trip-card {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      text-align: left;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      border-radius: 16px;
+      padding: 10px;
+    }
+
+    .trip-card:hover {
+      background: var(--bg-soft);
+    }
+
+    .trip-card img {
+      width: 56px;
+      height: 56px;
+      border-radius: 12px;
+      object-fit: cover;
+      flex: none;
+    }
+
+    .trip-card-title {
+      display: block;
+      font-weight: 800;
+      font-size: 14.5px;
+      color: var(--ink);
+    }
+
+    .trip-card-sub {
+      display: block;
+      font-size: 12px;
+      color: var(--ink-2);
+      line-height: 1.4;
+      margin-top: 2px;
+    }
+
+    .trip-card-meta {
+      display: block;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-top: 4px;
+    }
+
+    .trip-bar {
+      position: fixed;
+      z-index: 1000;
+      left: 12px;
+      right: 12px;
+      bottom: calc(14px + env(safe-area-inset-bottom));
+      max-width: 480px;
+      margin: 0 auto;
+      background: var(--surface);
+      border-radius: 18px;
+      box-shadow: var(--shadow-2);
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .trip-bar[hidden] {
+      display: none;
+    }
+
+    #trip-close {
+      flex: none;
+      width: 38px;
+      height: 38px;
+    }
+
+    .trip-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    #trip-title {
+      display: block;
+      font-size: 14px;
+      font-weight: 800;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    #trip-meta {
+      font-size: 12px;
+      color: var(--ink-2);
+      font-weight: 600;
+    }
+
+    .trip-days {
+      display: flex;
+      gap: 5px;
+      margin-top: 5px;
+      flex-wrap: wrap;
+    }
+
+    .day-chip {
+      font-size: 10.5px;
+      font-weight: 800;
+      color: #fff;
+      background: var(--dc, var(--accent-deep));
+      border-radius: 999px;
+      padding: 2px 8px;
+    }
+
+    .trip-planner {
+      flex: none;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      height: 40px;
+      padding: 0 12px;
+      border-radius: 12px;
+      background: var(--accent-deep);
+      color: #fff;
+      font-size: 12.5px;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .trip-planner svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    body.card-open .trip-bar {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    body.trip-open .seg {
+      display: none;
+    }
+
+    /* numbered stop badges on the route */
+    .trip-stop-wrap {
+      background: none;
+      border: none;
+    }
+
+    .trip-stop {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--dc, var(--accent-deep));
+      color: #fff;
+      font-family: "Be Vietnam Pro", system-ui, sans-serif;
+      font-size: 11px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid #fff;
+      box-shadow: 0 2px 6px rgba(11, 37, 48, .4);
+    }
+
+    .trip-stop svg {
+      width: 11px;
+      height: 11px;
+    }
+
+    .trip-stop-home {
+      background: var(--ink);
+    }
+
+    body.dark .trip-stop {
+      border-color: #14262F;
+    }
+
+    body.dark .trip-stop-home {
+      background: #E9F2F6;
+      color: #0B2530;
     }
 
     /* ---------------- Welcome overlay ---------------- */
@@ -878,6 +1329,7 @@
         <input id="search-input" type="search" autocomplete="off" spellcheck="false"
           placeholder="Search waterfalls, food, hotels…" aria-label="Search places in Cao Bang">
         <button id="search-clear" aria-label="Clear search"></button>
+        <button id="theme-btn" aria-label="Toggle dark mode"></button>
       </div>
       <div class="results" id="results" role="listbox" aria-label="Search results"></div>
     </div>
@@ -898,6 +1350,28 @@
   <div class="seg" id="seg">
     <button id="seg-province" type="button"></button>
     <button id="seg-city" type="button"></button>
+    <button id="seg-trips" type="button"></button>
+  </div>
+
+  <div class="trip-bar" id="trip-bar" hidden>
+    <button id="trip-close" aria-label="Exit itinerary"></button>
+    <div class="trip-info">
+      <strong id="trip-title"></strong>
+      <span id="trip-meta"></span>
+      <div class="trip-days" id="trip-days"></div>
+    </div>
+    <a class="trip-planner" id="trip-planner" target="_blank" rel="noopener"></a>
+  </div>
+
+  <div class="trips-sheet" id="trips-sheet" hidden role="dialog" aria-modal="true" aria-label="Suggested itineraries">
+    <div class="trips-panel">
+      <div class="trips-head">
+        <h2>Suggested itineraries</h2>
+        <p>Road trips curated by Sen — tap one to see it drawn on the map.</p>
+        <button id="trips-close" aria-label="Close"></button>
+      </div>
+      <div class="trips-list" id="trips-list"></div>
+    </div>
   </div>
 
   <div class="welcome hide" id="welcome" role="dialog" aria-modal="true" aria-label="Welcome">
@@ -920,7 +1394,9 @@
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="boundary.js"></script>
   <script src="data.js"></script>
+  <script src="trips.js"></script>
   <script src="app.js"></script>
 </body>
 

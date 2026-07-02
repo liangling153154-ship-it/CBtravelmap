@@ -27,7 +27,10 @@
     all: '<polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/>',
     city: '<rect x="4" y="8" width="16" height="13" rx="1"/><path d="M9 21v-4h6v4"/><path d="M8 12h.01M12 12h.01M16 12h.01M8 16h.01M16 16h.01"/><path d="M8 8V4h8v4"/>',
     route: '<circle cx="6" cy="19" r="3"/><circle cx="18" cy="5" r="3"/><path d="M12 19h4.5a3.5 3.5 0 0 0 0-7h-9a3.5 3.5 0 0 1 0-7H12"/>',
-    pin: '<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/>'
+    pin: '<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/>',
+    home: '<path d="m3 10.5 9-7.5 9 7.5"/><path d="M5 10v11h14V10"/>',
+    moon: '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>',
+    sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>'
   };
   function svg(name, extra) {
     return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"' +
@@ -54,10 +57,39 @@
     zoomSnap: 0.5
   });
   L.control.zoom({ position: "bottomright" }).addTo(map);
-  L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/">CARTO</a> · photos Wikimedia',
+
+  var tileOpts = {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/">CARTO</a> · photos &copy; Sen&#39;s Homestay',
     subdomains: "abcd",
     maxZoom: 19
+  };
+  var lightTiles = L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", tileOpts);
+  var darkTiles = L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", tileOpts);
+
+  /* ---------------- Province boundary + dim everything outside ---------------- */
+  function ringToLatLngs(ring) {
+    return ring.map(function (c) { return [c[1], c[0]]; });
+  }
+  // outer ring of each polygon (Polygon or MultiPolygon)
+  var provinceRings = (CAO_BANG_BOUNDARY.type === "Polygon"
+    ? [CAO_BANG_BOUNDARY.coordinates]
+    : CAO_BANG_BOUNDARY.coordinates
+  ).map(function (poly) { return ringToLatLngs(poly[0]); });
+
+  // world-sized polygon with the province cut out = dimmed "outside"
+  var worldRing = [[-85, -180], [-85, 180], [85, 180], [85, -180]];
+  var outsideMask = L.polygon([worldRing].concat(provinceRings), {
+    stroke: false,
+    fillColor: "#0B2530",
+    fillOpacity: 0.14,
+    interactive: false
+  }).addTo(map);
+  var boundaryLine = L.polygon(provinceRings, {
+    fill: false,
+    color: "#0E7490",
+    weight: 2.5,
+    opacity: 0.85,
+    interactive: false
   }).addTo(map);
 
   var provinceBounds = L.latLngBounds(POIS.filter(function (p) { return p.tier === "province"; })
@@ -69,15 +101,42 @@
   var activeCat = "all";
   var selected = null;
 
+  /* pins use tiny generated thumbnails (make-thumbs.ps1); fall back to the full photo */
+  function pinSrc(img) {
+    return img.indexOf(ASSETS) === 0 ? ASSETS + "thumbs/" + img.slice(ASSETS.length) : img;
+  }
+  function pinImgTag(img) {
+    return '<img src="' + esc(pinSrc(img)) + '" alt="" loading="lazy" ' +
+      'onerror="this.onerror=null;this.src=\'' + esc(img) + '\'">';
+  }
+
   function makeIcon(poi, cat) {
     var isProv = poi.tier === "province";
-    var size = isProv ? 38 : 30;
     var labelCls = isProv ? "pin-label" : "pin-label city-label";
+    if (poi.labelAbove) { labelCls += " label-above"; }
+    var label = '<span class="' + labelCls + '">' + esc(poi.name) + "</span>";
+
+    if (poi.img) {
+      // every place with a photo gets a round photo pin;
+      // hero places (photoPin) are bigger, city pins smallest
+      var size = poi.photoPin ? 56 : (isProv ? 42 : 38);
+      var sizeCls = poi.photoPin ? "" : (isProv ? " photo-md" : " photo-sm");
+      var wrapCls = "poi-wrap photo-wrap" + (poi.photoPin ? "" : (isProv ? " photo-md-wrap" : " photo-sm-wrap"));
+      return L.divIcon({
+        className: wrapCls,
+        html: '<div class="photo-pin' + sizeCls + (poi.featured ? " pin-featured" : "") +
+          '" style="--c:' + cat.color + '">' + pinImgTag(poi.img) +
+          '<span class="cat-badge">' + svg(cat.icon) + "</span></div>" + label,
+        iconSize: [size, size],
+        iconAnchor: [size / 2, size / 2]
+      });
+    }
+
+    var s = isProv ? 38 : 30;
     var html =
       '<div class="pin' + (isProv ? " pin-lg" : "") + (poi.featured ? " pin-featured" : "") +
-      '" style="--c:' + cat.color + '">' + svg(cat.icon) + "</div>" +
-      '<span class="' + labelCls + '">' + esc(poi.name) + "</span>";
-    return L.divIcon({ className: "poi-wrap", html: html, iconSize: [size, size], iconAnchor: [size / 2, size / 2] });
+      '" style="--c:' + cat.color + '">' + svg(cat.icon) + "</div>" + label;
+    return L.divIcon({ className: "poi-wrap", html: html, iconSize: [s, s], iconAnchor: [s / 2, s / 2] });
   }
 
   POIS.forEach(function (poi) {
@@ -88,21 +147,23 @@
       keyboard: true,
       alt: poi.name
     });
+    if (poi.zPriority) { marker.setZIndexOffset(poi.zPriority); } // hero pins win overlaps
     var rec = { poi: poi, cat: cat, marker: marker, onMap: false };
     marker.on("click", function () { selectPoi(rec, false); });
     records.push(rec);
   });
 
-  /* City gateway pin — shown while zoomed out */
+  /* City gateway — capital photo pin (red ring + star badge) while zoomed out */
   var gateway = L.marker(MAP_CONFIG.cityCenter, {
     icon: L.divIcon({
-      className: "poi-wrap",
-      html: '<div class="gateway">' + svg("city") + "<span>Cao Bằng City<small>Tap for food, stay &amp; nightlife</small></span></div>",
-      iconSize: [10, 10],
-      iconAnchor: [5, 20]
+      className: "poi-wrap photo-wrap capital-wrap",
+      html: '<div class="photo-pin photo-pin-capital">' + pinImgTag(MAP_CONFIG.cityPinImg) + "</div>" +
+        '<span class="pin-label">Cao Bằng City</span>',
+      iconSize: [56, 56],
+      iconAnchor: [28, 28]
     }),
     zIndexOffset: 900,
-    alt: "Cao Bang City — tap to explore"
+    alt: "Cao Bang City — tap to explore food, coffee and stay"
   }).on("click", function () { goCity(); });
   var gatewayOn = false;
 
@@ -127,14 +188,20 @@
     var cityVisible = zoom >= MAP_CONFIG.cityThreshold;
 
     records.forEach(function (r) {
-      var ok = (activeCat === "all" || r.poi.category === activeCat) &&
-        (r.poi.tier === "province" || cityVisible) &&
-        zoom >= (r.poi.minZoom || 0);
+      var ok;
+      if (activeTrip) {
+        // trip mode: show exactly the itinerary's stops, nothing else
+        ok = !!activeTrip._set[r.poi.id];
+      } else {
+        ok = (activeCat === "all" || r.poi.category === activeCat) &&
+          (r.poi.tier === "province" || cityVisible) &&
+          zoom >= (r.poi.minZoom || 0);
+      }
       if (ok && !r.onMap) { r.marker.addTo(map); r.onMap = true; applyActiveClass(r); }
       else if (!ok && r.onMap) { map.removeLayer(r.marker); r.onMap = false; }
     });
 
-    var wantGateway = !cityVisible;
+    var wantGateway = !cityVisible && !activeTrip;
     if (wantGateway && !gatewayOn) { gateway.addTo(map); gatewayOn = true; }
     else if (!wantGateway && gatewayOn) { map.removeLayer(gateway); gatewayOn = false; }
 
@@ -148,8 +215,11 @@
   /* ---------------- Category chips ---------------- */
   var chipsEl = document.getElementById("chips");
   function buildChips() {
+    var used = {};
+    POIS.forEach(function (p) { used[p.category] = true; });
     var html = '<button class="chip" data-cat="all" aria-pressed="true">' + svg("all") + "All</button>";
     Object.keys(CATEGORIES).forEach(function (key) {
+      if (!used[key]) { return; } // no places in this category — no chip
       var c = CATEGORIES[key];
       html += '<button class="chip" data-cat="' + key + '" aria-pressed="false" style="--chip-c:' + c.color + '">' +
         svg(c.icon) + esc(c.label) + "</button>";
@@ -158,6 +228,7 @@
     chipsEl.addEventListener("click", function (e) {
       var btn = e.target.closest(".chip");
       if (!btn) { return; }
+      exitTrip(); // filtering leaves itinerary mode
       activeCat = btn.dataset.cat;
       chipsEl.querySelectorAll(".chip").forEach(function (ch) {
         ch.setAttribute("aria-pressed", ch === btn ? "true" : "false");
@@ -179,9 +250,9 @@
   function applyActiveClass(rec) {
     var el = rec.marker.getElement();
     if (!el) { return; }
-    var pin = el.querySelector(".pin");
+    var pin = el.querySelector(".pin, .photo-pin");
     if (pin) { pin.classList.toggle("pin-active", selected === rec); }
-    rec.marker.setZIndexOffset(selected === rec ? 1000 : 0);
+    rec.marker.setZIndexOffset(selected === rec ? 1000 : (rec.poi.zPriority || 0));
   }
 
   function selectPoi(rec, fly) {
@@ -199,6 +270,8 @@
     media += '<div class="fallback" style="--c:' + cat.color + '"' + (poi.img ? ' hidden' : "") + ">" + svg(cat.icon) + "</div>";
     media += '<button class="card-close" id="card-close" aria-label="Close">' + svg("close") + "</button>";
     media += '<div class="card-tags" style="--c:' + cat.color + '"><span class="tag"><span class="swatch"></span>' + esc(cat.label) + "</span>" +
+      (poi.pick ? '<span class="tag tag-pick">★ Sen&#39;s pick</span>' : "") +
+      (poi.veg ? '<span class="tag tag-veg">Veg-friendly</span>' : "") +
       (poi.approx ? '<span class="tag">≈ approx. spot</span>' : "") + "</div>";
     cardMedia.innerHTML = media;
     var img = cardMedia.querySelector("img");
@@ -212,15 +285,21 @@
 
     cardTitle.textContent = poi.name;
     cardLocal.textContent = poi.localName || "";
-    cardLocal.style.display = poi.localName ? "" : "none";
+    cardLocal.style.display = (poi.localName && poi.localName !== poi.name) ? "" : "none";
     cardDesc.textContent = poi.desc;
-    cardDist.innerHTML = poi.distance ? svg("route") + esc(poi.distance) : "";
-    cardDist.style.display = poi.distance ? "" : "none";
+    var meta = [];
+    if (poi.distance) { meta.push(esc(poi.distance)); }
+    if (poi.price) { meta.push(esc(poi.price)); }
+    cardDist.innerHTML = meta.length ? svg("route") + meta.join(" · ") : "";
+    cardDist.style.display = meta.length ? "" : "none";
 
-    var gmaps = "https://www.google.com/maps/dir/?api=1&destination=" + poi.lat + "," + poi.lng;
-    var actions = '<a class="btn btn-primary" href="' + gmaps + '" target="_blank" rel="noopener">' + svg("nav") + "Directions</a>";
+    var gmaps = poi.maps || ("https://www.google.com/maps/dir/?api=1&destination=" + poi.lat + "," + poi.lng);
+    var actions = '<a class="btn btn-primary" href="' + esc(gmaps) + '" target="_blank" rel="noopener">' + svg("nav") + "Directions</a>";
     if (poi.bookUrl) {
       actions += '<a class="btn btn-secondary" href="' + esc(poi.bookUrl) + '" target="_blank" rel="noopener">' + svg("book") + "Book now</a>";
+    }
+    if (poi.guideUrl) {
+      actions += '<a class="btn btn-secondary" href="' + esc(poi.guideUrl) + '" target="_blank" rel="noopener">' + svg("book") + esc(poi.guideLabel || "Guide") + "</a>";
     }
     if (poi.phone) {
       actions += '<a class="btn btn-secondary btn-icon" href="tel:' + esc(poi.phone) + '" aria-label="Call ' + esc(poi.name) + '">' + svg("phone") + "</a>";
@@ -299,6 +378,7 @@
     if (!rec) { return; }
     clearSearch();
     input.blur(); // hide mobile keyboard
+    if (activeTrip && !activeTrip._set[rec.poi.id]) { exitTrip(); }
     if (activeCat !== "all" && rec.poi.category !== activeCat) {
       activeCat = "all";
       chipsEl.querySelectorAll(".chip").forEach(function (ch) {
@@ -332,12 +412,143 @@
   segProvince.addEventListener("click", goProvince);
   segCity.addEventListener("click", goCity);
 
+  /* ---------------- Suggested itineraries (trips) ---------------- */
+  var tripsSheet = document.getElementById("trips-sheet");
+  var tripsList = document.getElementById("trips-list");
+  var tripBar = document.getElementById("trip-bar");
+  var tripTitle = document.getElementById("trip-title");
+  var tripMeta = document.getElementById("trip-meta");
+  var tripDaysEl = document.getElementById("trip-days");
+  var tripPlanner = document.getElementById("trip-planner");
+  var segTrips = document.getElementById("seg-trips");
+  var activeTrip = null;
+  var tripLayer = null;
+  var tripCasings = [];
+
+  segTrips.innerHTML = svg("route") + "Trips";
+  tripPlanner.href = ASSETS + "itinerary-v2/itinerary-v2.html";
+  tripPlanner.innerHTML = svg("book") + "Planner";
+  document.getElementById("trips-close").innerHTML = svg("close");
+  document.getElementById("trip-close").innerHTML = svg("close");
+
+  function buildTripsSheet() {
+    var html = "";
+    TRIPS.forEach(function (t) {
+      html += '<button class="trip-card" data-trip="' + t.id + '">' +
+        '<img src="' + esc(pinSrc(t.cover)) + '" alt="" loading="lazy">' +
+        '<span class="trip-card-body"><span class="trip-card-title">' + esc(t.title) + "</span>" +
+        '<span class="trip-card-sub">' + esc(t.subtitle) + "</span>" +
+        '<span class="trip-card-meta">' + t.days + (t.days > 1 ? " days" : " day") +
+        " · ~" + t.km + " km · " + esc(t.pace) + "</span></span></button>";
+    });
+    tripsList.innerHTML = html;
+  }
+  function openTripsSheet() { tripsSheet.hidden = false; }
+  function closeTripsSheet() { tripsSheet.hidden = true; }
+  segTrips.addEventListener("click", openTripsSheet);
+  document.getElementById("trips-close").addEventListener("click", closeTripsSheet);
+  tripsSheet.addEventListener("click", function (e) {
+    if (e.target === tripsSheet) { closeTripsSheet(); }
+  });
+  tripsList.addEventListener("click", function (e) {
+    var btn = e.target.closest(".trip-card");
+    if (!btn) { return; }
+    var trip = TRIPS.find(function (t) { return t.id === btn.dataset.trip; });
+    closeTripsSheet();
+    if (trip) { activateTrip(trip); }
+  });
+
+  function activateTrip(trip) {
+    exitTrip();
+    closeCard();
+    clearSearch();
+    activeTrip = trip;
+    if (!trip._set) {
+      trip._set = { "sens-homestay": true }; // route always starts at Sen's
+      trip.stopsByDay.forEach(function (day) {
+        day.forEach(function (id) { trip._set[id] = true; });
+      });
+    }
+
+    var dark = document.body.classList.contains("dark");
+    tripLayer = L.layerGroup();
+    tripCasings = [];
+    var allPts = [];
+
+    trip.segsByDay.forEach(function (segs, di) {
+      var color = DAY_COLORS[di % DAY_COLORS.length];
+      segs.forEach(function (line) {
+        allPts = allPts.concat(line);
+        var casing = L.polyline(line, { color: dark ? "#14262F" : "#FFFFFF", weight: 7, opacity: 0.9, interactive: false });
+        tripCasings.push(casing);
+        tripLayer.addLayer(casing);
+        tripLayer.addLayer(L.polyline(line, { color: color, weight: 4, opacity: 0.9, interactive: false }));
+      });
+    });
+
+    var n = 0;
+    trip.stopsByDay.forEach(function (day, di) {
+      var color = DAY_COLORS[di % DAY_COLORS.length];
+      day.forEach(function (id) {
+        var rec = records.find(function (r) { return r.poi.id === id; });
+        if (!rec) { return; }
+        var isHome = id === "sens-homestay";
+        if (!isHome) { n++; }
+        var badge = L.marker([rec.poi.lat, rec.poi.lng], {
+          icon: L.divIcon({
+            className: "trip-stop-wrap",
+            html: '<div class="trip-stop' + (isHome ? " trip-stop-home" : "") +
+              '" style="--dc:' + color + '">' + (isHome ? svg("home") : n) + "</div>",
+            iconSize: [22, 22],
+            iconAnchor: [28, 32] // sits at the pin's top-left shoulder
+          }),
+          zIndexOffset: 1500,
+          alt: "Stop " + (isHome ? "Sen's" : n)
+        }).on("click", function () { selectPoi(rec, true); });
+        tripLayer.addLayer(badge);
+      });
+    });
+    tripLayer.addTo(map);
+
+    tripTitle.textContent = trip.title;
+    tripMeta.textContent = trip.days + (trip.days > 1 ? " days" : " day") + " · ~" + trip.km + " km";
+    var chips = "";
+    if (trip.days > 1) {
+      for (var d = 0; d < trip.days; d++) {
+        chips += '<span class="day-chip" style="--dc:' + DAY_COLORS[d % DAY_COLORS.length] + '">Day ' + (d + 1) + "</span>";
+      }
+    }
+    tripDaysEl.innerHTML = chips;
+    tripDaysEl.style.display = chips ? "" : "none";
+    tripBar.hidden = false;
+    document.body.classList.add("trip-open");
+
+    refresh();
+    var b = L.latLngBounds(allPts).pad(0.08);
+    if (REDUCED) { map.fitBounds(b); }
+    else { map.flyToBounds(b, { duration: 0.9 }); }
+  }
+
+  function exitTrip() {
+    if (!activeTrip) { return; }
+    activeTrip = null;
+    if (tripLayer) { map.removeLayer(tripLayer); tripLayer = null; }
+    tripCasings = [];
+    tripBar.hidden = true;
+    document.body.classList.remove("trip-open");
+    refresh();
+  }
+  document.getElementById("trip-close").addEventListener("click", exitTrip);
+  buildTripsSheet();
+
   /* ---------------- Welcome overlay ---------------- */
   var welcome = document.getElementById("welcome");
   var seenKey = "cbmap-welcomed";
-  document.getElementById("welcome-img").src = MAP_CONFIG.cityImg;
+  var welcomeImg = document.getElementById("welcome-img");
+  welcomeImg.addEventListener("error", function () { welcomeImg.remove(); });
+  welcomeImg.src = MAP_CONFIG.cityImg;
   document.getElementById("welcome-province").innerHTML = svg("mountain") + "Explore the province";
-  document.getElementById("welcome-city").innerHTML = svg("city") + "City food, stay & nightlife";
+  document.getElementById("welcome-city").innerHTML = svg("city") + "City food & coffee guide";
   function dismissWelcome() {
     welcome.classList.add("hide");
     try { localStorage.setItem(seenKey, "1"); } catch (e) { /* private mode */ }
@@ -348,6 +559,33 @@
   var seen = false;
   try { seen = !!localStorage.getItem(seenKey); } catch (e) { /* private mode */ }
   if (!seen) { welcome.classList.remove("hide"); }
+
+  /* ---------------- Theme (light / dark) ---------------- */
+  var themeBtn = document.getElementById("theme-btn");
+  var themeKey = "cbmap-theme";
+  var metaTheme = document.querySelector('meta[name="theme-color"]');
+  function applyTheme(dark) {
+    document.body.classList.toggle("dark", dark);
+    if (dark) {
+      if (map.hasLayer(lightTiles)) { map.removeLayer(lightTiles); }
+      darkTiles.addTo(map);
+    } else {
+      if (map.hasLayer(darkTiles)) { map.removeLayer(darkTiles); }
+      lightTiles.addTo(map);
+    }
+    boundaryLine.setStyle({ color: dark ? "#38BDF8" : "#0E7490" });
+    outsideMask.setStyle({ fillColor: dark ? "#000000" : "#0B2530", fillOpacity: dark ? 0.35 : 0.14 });
+    tripCasings.forEach(function (c) { c.setStyle({ color: dark ? "#14262F" : "#FFFFFF" }); });
+    themeBtn.innerHTML = svg(dark ? "sun" : "moon");
+    themeBtn.setAttribute("aria-label", dark ? "Switch to light mode" : "Switch to dark mode");
+    if (metaTheme) { metaTheme.content = dark ? "#0D1B22" : "#0B2530"; }
+    try { localStorage.setItem(themeKey, dark ? "dark" : "light"); } catch (e) { /* private mode */ }
+  }
+  var storedTheme = null;
+  try { storedTheme = localStorage.getItem(themeKey); } catch (e) { /* private mode */ }
+  var isDark = storedTheme ? storedTheme === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches;
+  themeBtn.addEventListener("click", function () { isDark = !isDark; applyTheme(isDark); });
+  applyTheme(isDark);
 
   /* ---------------- Misc UI ---------------- */
   document.getElementById("brand").innerHTML = svg("pin") + "Cao Bằng Travel Map";
@@ -379,7 +617,9 @@
   document.addEventListener("keydown", function (e) {
     if (e.key === "Escape") {
       if (!welcome.classList.contains("hide")) { dismissWelcome(); }
+      else if (!tripsSheet.hidden) { closeTripsSheet(); }
       else if (card.classList.contains("open")) { closeCard(); }
+      else if (activeTrip) { exitTrip(); }
     }
   });
 

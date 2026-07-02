@@ -2,24 +2,40 @@
    CAO BANG TRAVEL MAP — DATA
    ---------------------------------------------------------------------
    Edit this file to add / move / remove places. No build step needed.
+   Every place below comes from Sen's own lists:
+     · SEN WEB OTA - main/itinerary-v2/itinerary-v2-data.js  (sights)
+     · SEN WEB OTA - main/food.html                          (restaurants)
+     · Sen's services (rooms, motorbike rental, Ban Gioc bus)
 
    Fields:
      id        unique slug
      name      English display name
      localName Vietnamese name (shown small — useful to show drivers)
-     category  one of CATEGORIES keys below
+     category  one of CATEGORIES keys below (chips only appear for
+               categories that are actually used)
      tier      "province" (shown when zoomed out) | "city" (zoom >= 12)
      lat, lng  WGS84 coordinates  (open index.html?edit and click the
                map to copy exact coordinates to your clipboard)
      minZoom   optional — hide the pin below this zoom (declutters)
      desc      1–2 line English description
      distance  optional — travel info line (province tier)
-     img       optional — photo URL (falls back to a styled header)
+     price     optional — price hint, shown next to distance
+     img       optional — photo path/URL (falls back to styled header)
+     maps      optional — Google Maps place link ("Directions" opens
+               this instead of raw coordinates — reviews, hours, photos)
      bookUrl   optional — shows a "Book now" button
+     guideUrl  optional — shows a guide button (label = guideLabel)
      phone     optional — shows a "Call" button
+     pick      true = "Sen's pick" badge on the card
+     veg       true = "Veg-friendly" badge on the card
      approx    true = coordinates are approximate, please fine-tune
      featured  true = highlighted pin with a star badge
+
+   Photos live in the "SEN WEB OTA - main" folder — deploy it together
+   with the map (paths below are relative, case-sensitive on Linux!).
    ===================================================================== */
+
+var ASSETS = "SEN WEB OTA - main/";
 
 var CATEGORIES = {
   sights:    { label: "Sights & Nature",   color: "#0E9F6E", icon: "mountain" },
@@ -40,7 +56,8 @@ var MAP_CONFIG = {
   provinceCenter: [22.75, 106.20],
   provinceZoom: 9,
   maxBounds: [[21.85, 104.90], [23.45, 107.40]],
-  cityImg: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Thanhphocaobang2024.jpg/330px-Thanhphocaobang2024.jpg"
+  cityImg: ASSETS + "images/hero/hero-main.jpg",
+  cityPinImg: ASSETS + "images/homestay.jpg"   // photo shown in the city's map pin
 };
 
 var POIS = [
@@ -48,256 +65,384 @@ var POIS = [
   /* ================= PROVINCE — East: Ban Gioc route ================= */
   {
     id: "ban-gioc", name: "Ban Gioc Waterfall", localName: "Thác Bản Giốc",
-    category: "sights", tier: "province", lat: 22.8536, lng: 106.7240,
+    category: "sights", tier: "province", lat: 22.85436, lng: 106.72427,
+    photoPin: true, zPriority: 700,
     desc: "Southeast Asia's widest waterfall, thundering in tiers on the Chinese border. Best flow Sep–Nov; bamboo rafts run right into the spray.",
-    distance: "85 km east of the city · ~2 h by car or motorbike",
-    img: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Bangioc9tam.jpg/330px-Bangioc9tam.jpg",
+    distance: "84.6 km east · ~2 h drive",
+    img: ASSETS + "images/places/ban-gioc.jpg",
+    maps: "https://maps.app.goo.gl/gyWXajPY783VWbYRA",
     featured: true
   },
   {
     id: "nguom-ngao", name: "Nguom Ngao Cave", localName: "Động Ngườm Ngao",
-    category: "sights", tier: "province", lat: 22.8266, lng: 106.7050, minZoom: 10,
+    category: "sights", tier: "province", lat: 22.84542, lng: 106.70585, minZoom: 10,
     desc: "A 2 km walk-through cave of golden stalactites, 10 minutes from Ban Gioc. Cool inside all year — perfect midday escape.",
-    distance: "82 km east · pairs with Ban Gioc",
-    img: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/%C4%90%E1%BB%99ng_Ng%C6%B0%E1%BB%9Dm_Ngao.jpg/330px-%C4%90%E1%BB%99ng_Ng%C6%B0%E1%BB%9Dm_Ngao.jpg"
+    distance: "83.5 km east · pairs with Ban Gioc",
+    img: ASSETS + "images/places/nguom-ngao.jpg",
+    maps: "https://maps.app.goo.gl/cbi4wK8gWubkjGKS6"
   },
   {
     id: "khuoi-ky", name: "Khuoi Ky Stone Village", localName: "Làng đá Khuổi Ky",
-    category: "culture", tier: "province", lat: 22.8380, lng: 106.7075, minZoom: 11, approx: true,
-    desc: "400-year-old Tày village of stone stilt houses between Ban Gioc and Nguom Ngao. Several families run homestays."
-  },
-  {
-    id: "lans-homestay", name: "Lan's Homestay", localName: "Homestay Làng đá Khuổi Ky",
-    category: "stay", tier: "province", lat: 22.8385, lng: 106.7068, minZoom: 12, approx: true,
-    desc: "The best-known stone-house homestay in Khuoi Ky — rice-paddy views and family dinners. Book ahead in autumn."
-  },
-  {
-    id: "yen-nhi-homestay", name: "Yen Nhi Homestay", localName: "Homestay Yến Nhi",
-    category: "stay", tier: "province", lat: 22.8470, lng: 106.7150, minZoom: 12, approx: true,
-    desc: "Simple, friendly homestay minutes from the falls — handy for a sunrise visit before the tour buses arrive."
+    category: "culture", tier: "province", lat: 22.85485, lng: 106.70091, minZoom: 11,
+    desc: "400-year-old Tày village of stone stilt houses between Ban Gioc and Nguom Ngao. Several families run homestays.",
+    img: ASSETS + "images/places/stone-village.jpg",
+    maps: "https://maps.app.goo.gl/fwJ37eFqSRSDfErf6"
   },
   {
     id: "phat-tich-pagoda", name: "Phat Tich Truc Lam Pagoda", localName: "Chùa Phật Tích Trúc Lâm Bản Giốc",
-    category: "culture", tier: "province", lat: 22.8500, lng: 106.7180, minZoom: 11, approx: true,
-    desc: "Hillside pagoda with the classic panorama over Ban Gioc falls. Free entry, short climb, best light in the afternoon."
+    category: "culture", tier: "province", lat: 22.85085, lng: 106.72313, minZoom: 11,
+    desc: "Hillside pagoda with the classic panorama over Ban Gioc falls. Free entry, short climb, best light in the afternoon.",
+    img: ASSETS + "images/places/phat-tich.jpg",
+    maps: "https://maps.app.goo.gl/aqcQssDgcGJYH9HQ6"
   },
   {
-    id: "trung-khanh", name: "Trung Khanh Town", localName: "Thị trấn Trùng Khánh",
-    category: "food", tier: "province", lat: 22.8290, lng: 106.5180, minZoom: 10, approx: true,
-    desc: "Last proper town before Ban Gioc — noodle lunches, fuel and ATMs. Famous for roasted chestnuts in Oct–Nov.",
-    distance: "62 km east · natural lunch stop"
+    id: "quay-son-swim", name: "Quay Son River Swim Spot", localName: "Tắm sông Quây Sơn",
+    category: "sights", tier: "province", lat: 22.8560, lng: 106.7080, minZoom: 12, approx: true,
+    desc: "Jade-green swimming hole in the Quay Son river near Khuoi Ky village. Summer only — the water is glacial-clear and cold.",
+    distance: "83 km east · 1.5 km from Ban Gioc",
+    img: ASSETS + "images/places/swimming-quay-son-river.jpg"
   },
   {
-    id: "ma-phuc", name: "Ma Phuc Pass", localName: "Đèo Mã Phục",
-    category: "sights", tier: "province", lat: 22.7220, lng: 106.3230, minZoom: 10, approx: true,
-    desc: "Seven switchbacks squeezed between twin limestone walls on the road to Ban Gioc. Pull over at the top viewpoint.",
-    distance: "22 km east · on QL3 to Ban Gioc"
+    id: "pi-pha", name: "Pi Pha Viewpoint", localName: "Điểm ngắm cảnh Pì Phà",
+    category: "sights", tier: "province", lat: 22.884, lng: 106.583, minZoom: 10, approx: true,
+    desc: "Ridge-top panorama over the Phong Nam valley — rice paddies, jade river bends and karst towers. Best light at sunrise.",
+    distance: "95 km east · 30 min beyond Ban Gioc",
+    img: ASSETS + "images/places/pi-pha-viewpoint.jpg"
   },
   {
-    id: "quang-uyen", name: "Quang Uyen Roast Duck", localName: "Vịt quay 7 vị Quảng Uyên",
-    category: "food", tier: "province", lat: 22.6990, lng: 106.4440, minZoom: 10, approx: true,
-    desc: "Classic lunch stop on the Ban Gioc run: seven-spice roast duck. Every 5th day a hill-tribe market floods the main street.",
-    distance: "37 km east · halfway to Ban Gioc"
+    id: "pac-nga-bridge", name: "Pac Nga Hanging Bridge", localName: "Cầu treo Pác Ngà",
+    category: "sights", tier: "province", lat: 22.899, lng: 106.562, minZoom: 11, approx: true,
+    desc: "Wooden hanging bridge swaying over the Quay Son river, deep in the Phong Nam rice-paddy valley. A photographers' favourite.",
+    distance: "92.5 km east",
+    img: ASSETS + "images/places/pac-nga-hanging-bridge.jpg"
+  },
+  {
+    id: "ba-quang", name: "Ba Quang Hills", localName: "Đồi cỏ cháy Vinh Quý (Bả Quang)",
+    category: "sights", tier: "province", lat: 22.67261, lng: 106.61750,
+    photoPin: true, zPriority: 600,
+    desc: "Bare golden hills with 360° panoramas — the famous 'burnt grass' look peaks in the dry season. Locals camp here for sunset.",
+    distance: "68.2 km east · ~1 h 45 min",
+    img: ASSETS + "images/places/ba-quang.jpg",
+    maps: "https://maps.app.goo.gl/u34WeRJym6qau61BA"
+  },
+  {
+    id: "thoongot", name: "Thoong Got Panorama", localName: "Thoong Gót",
+    category: "sights", tier: "province", lat: 22.83006, lng: 106.61694, minZoom: 11,
+    desc: "Roadside panorama over a horseshoe bend of the Quay Son river — an easy photo stop on the way to Ban Gioc.",
+    distance: "70.7 km east · on the Ban Gioc road",
+    img: ASSETS + "images/places/thoongot.jpg",
+    maps: "https://maps.app.goo.gl/NMmEz9uQupietzm36"
+  },
+  {
+    id: "blacksmith", name: "Pac Rang Forging Village", localName: "Làng rèn Pác Rằng, Phúc Sen",
+    category: "culture", tier: "province", lat: 22.68546, lng: 106.42057, minZoom: 10,
+    desc: "Nung An blacksmiths have hand-forged knives over coal fires here for 300+ years. Watch the sparks fly, then buy a blade.",
+    distance: "32.3 km east · ~45 min",
+    img: ASSETS + "images/places/blacksmith.jpg",
+    maps: "https://maps.app.goo.gl/i59gAWAHYFwmf3TMA"
   },
   {
     id: "phia-thap", name: "Phia Thap Incense Village", localName: "Làng hương Phia Thắp",
-    category: "culture", tier: "province", lat: 22.6900, lng: 106.4000, minZoom: 11, approx: true,
-    desc: "Nùng An village where every yard dries fans of pink incense sticks made from wild bee-tree bark. Combine with Quang Uyen."
+    category: "culture", tier: "province", lat: 22.696, lng: 106.398, minZoom: 11, approx: true,
+    desc: "Nùng An village where every yard dries fans of pink incense sticks made from wild bee-tree bark. Next door to the forging village.",
+    distance: "35 km east · ~50 min",
+    img: ASSETS + "images/places/phia-thap-village-incense.jpg"
+  },
+  {
+    id: "dia-tren", name: "Dia Tren Paper Village", localName: "Làng giấy bản Dìa Trên",
+    category: "culture", tier: "province", lat: 22.714, lng: 106.410, minZoom: 12, approx: true,
+    desc: "Village still hand-making 'giay ban' bamboo paper the ancient way — soaking, pulping and sun-drying sheets in the yard.",
+    distance: "28.5 km east",
+    img: ASSETS + "images/places/dia-tren-village-paper.jpg"
   },
 
   /* ================= PROVINCE — Northeast: lakes ================= */
   {
     id: "thang-hen", name: "Thang Hen Lake", localName: "Hồ Thang Hen",
-    category: "sights", tier: "province", lat: 22.7570, lng: 106.3060, approx: true,
+    category: "sights", tier: "province", lat: 22.75900, lng: 106.29720, minZoom: 10,
+    labelAbove: true, // keeps the label clear of Angel Eye's photo pin nearby
     desc: "A chain of 36 karst lakes that rise and fall with underground rivers. Kayak rental and stilt-house lodges on the shore.",
-    distance: "30 km northeast · ~45 min"
+    distance: "28.2 km northeast · ~45 min",
+    img: ASSETS + "images/places/thang-hen.jpg",
+    maps: "https://maps.app.goo.gl/Vw7fLEnYAZUcYExaA"
   },
   {
     id: "mat-than", name: "Angel Eye Mountain", localName: "Núi Mắt Thần",
-    category: "sights", tier: "province", lat: 22.7450, lng: 106.3150, minZoom: 11, approx: true,
+    category: "sights", tier: "province", lat: 22.77421, lng: 106.31766,
+    photoPin: true, zPriority: 800, labelAbove: true,
     desc: "A karst peak pierced by a giant circular 'eye', ringed by meadows and grazing horses. Cao Bang's favourite picnic and camping spot.",
-    distance: "36 km northeast · short walk from the road"
+    distance: "26.5 km northeast · short walk from the road",
+    img: ASSETS + "images/places/eye-mountain.jpg",
+    maps: "https://maps.app.goo.gl/RHmtCPCC7nrTbKcm7"
   },
 
   /* ================= PROVINCE — North: Pac Bo ================= */
   {
     id: "pac-bo", name: "Pac Bo Cave", localName: "Khu di tích Pác Bó",
-    category: "culture", tier: "province", lat: 22.9520, lng: 106.0330,
+    category: "culture", tier: "province", lat: 22.98708, lng: 106.05040,
+    photoPin: true, zPriority: 500,
     desc: "The border cave where Ho Chi Minh returned to Vietnam in 1941, beside the impossibly jade Lenin Stream. Easy boardwalk trails.",
-    distance: "52 km north · ~1 h 15 min",
-    img: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/P%C3%A1c_B%C3%B3.jpg/330px-P%C3%A1c_B%C3%B3.jpg",
+    distance: "50.4 km north · ~1 h 15 min",
+    img: ASSETS + "images/places/pac-bo.jpg",
+    maps: "https://maps.app.goo.gl/CbrfWz1GHAASczcm9",
     featured: true
+  },
+  {
+    id: "kim-dong", name: "Kim Dong Memorial", localName: "Khu di tích Kim Đồng",
+    category: "culture", tier: "province", lat: 22.93281, lng: 106.04641, minZoom: 10,
+    desc: "Memorial of Kim Dong, the 14-year-old revolutionary messenger — a peaceful, shaded stop on the road to Pac Bo.",
+    distance: "44.6 km north · on the Pac Bo road",
+    img: ASSETS + "images/places/kim-dong.jpg",
+    maps: "https://maps.app.goo.gl/yzf3SmD1Ch8d6ohSA"
+  },
+  {
+    id: "lung-luong", name: "Lung Luong Stone Flowers", localName: "Cúc đá Lũng Luông",
+    category: "sights", tier: "province", lat: 22.92765, lng: 106.06731, minZoom: 11,
+    desc: "A hillside scattered with rare daisy-shaped 'stone flower' fossils above a quiet valley — combine with Pac Bo.",
+    distance: "46.4 km north",
+    img: ASSETS + "images/places/lung-luong.jpg",
+    maps: "https://maps.app.goo.gl/H4yuti4Z2HXgUiqh6"
   },
 
   /* ================= PROVINCE — Southwest: Phia Oac ================= */
   {
-    id: "phia-oac", name: "Phia Oac Peak", localName: "Vườn quốc gia Phia Oắc – Phia Đén",
-    category: "sights", tier: "province", lat: 22.5620, lng: 105.8700, approx: true,
+    id: "phia-oac", name: "Phia Oac Peak", localName: "Đỉnh Phia Oắc 1931 m",
+    category: "sights", tier: "province", lat: 22.61527, lng: 105.86343,
     desc: "1,931 m cloud-forest summit famous for winter frost and abandoned French villas. Part of the UNESCO Global Geopark.",
-    distance: "75 km southwest · ~2 h",
-    img: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/13/Rung_suong_mu_Phia_Oac.JPG/330px-Rung_suong_mu_Phia_Oac.JPG"
+    distance: "63.4 km southwest · ~2 h",
+    img: ASSETS + "images/places/phia-oac.jpg",
+    maps: "https://maps.app.goo.gl/psHFoHu77Bmb4vkv9"
   },
   {
-    id: "kolia", name: "Kolia Tea Farm & Lodge", localName: "Nông trại Kolia, Phia Đén",
-    category: "stay", tier: "province", lat: 22.5560, lng: 105.8830, minZoom: 11, approx: true,
+    id: "kolia", name: "Kolia Tea Farm & Lodge", localName: "Đồn điền chè Kolia, Phia Đén",
+    category: "stay", tier: "province", lat: 22.55935, lng: 105.86123, minZoom: 10,
     desc: "Organic tea terraces at 1,200 m with rooms, farm-to-table meals and sunrise cloud-hunting on Phia Oac's slopes.",
-    distance: "70 km southwest"
+    distance: "69.7 km southwest",
+    img: ASSETS + "images/places/kolia-tea.jpg",
+    maps: "https://maps.app.goo.gl/mk9rtcNMpH4z66yUA"
   },
   {
-    id: "hoai-khao", name: "Hoai Khao Village", localName: "Xóm Hoài Khao",
-    category: "culture", tier: "province", lat: 22.6350, lng: 105.9600, minZoom: 10, approx: true,
-    desc: "Quiet Dao Tien village doing community homestays — indigo dyeing, beeswax batik and forest walks. En route to Phia Oac.",
-    distance: "60 km southwest"
-  },
-
-  /* ================= PROVINCE — Far west: Bao Lac ================= */
-  {
-    id: "bao-lac", name: "Bao Lac", localName: "Thị trấn Bảo Lạc",
-    category: "stay", tier: "province", lat: 22.9530, lng: 105.6760, approx: true,
-    desc: "Riverside market town — the classic overnight stop when riding on to the Ha Giang Loop. Lively ethnic market on Sundays.",
-    distance: "134 km west · ~3 h 30 min"
-  },
-  {
-    id: "khau-coc-cha", name: "Khau Coc Cha Pass", localName: "Đèo Khau Cốc Chà (Mẻ Pia)",
-    category: "sights", tier: "province", lat: 22.8600, lng: 105.7800, minZoom: 10, approx: true,
-    desc: "Vietnam's wildest road: 15 stacked switchbacks climbing out of the Bao Lac valley. The photo viewpoint is a 40-min hike above the road.",
-    distance: "Near Bao Lac · far west"
+    id: "bamboo-forest", name: "Nguyen Binh Bamboo Forest", localName: "Rừng trúc Nguyên Bình",
+    category: "sights", tier: "province", lat: 22.68268, lng: 105.84408, minZoom: 10,
+    desc: "A boardwalk winds through a silent forest of giant bamboo — cool, green and other-worldly, best in morning mist.",
+    distance: "68.1 km southwest · ~2 h",
+    img: ASSETS + "images/places/bamboo.jpg",
+    maps: "https://maps.app.goo.gl/38ibUAVzZFtbFi4dA"
   },
 
-  /* ======================= CITY — Stay ======================= */
+  /* ================= PROVINCE — Far west ================= */
   {
-    id: "sens-homestay", name: "Sen's Homestay", localName: "Sen Nghỉ Giờ",
-    category: "stay", tier: "city", lat: 22.6663, lng: 106.2568, approx: true,
-    desc: "Cosy private rooms in the centre with big-screen projectors — book by the hour to rest between road trips, or stay the night.",
+    id: "khau-coc-cha", name: "Khau Coc Cha Pass", localName: "Đèo Khau Cốc Chà (15 tầng)",
+    category: "sights", tier: "province", lat: 22.92637, lng: 105.78320,
+    photoPin: true, zPriority: 400,
+    desc: "Vietnam's wildest road: 15 stacked switchbacks climbing out of the Bao Lac valley. The photo viewpoint is a short hike above the road.",
+    distance: "87.9 km west · ~2 h 45 min",
+    img: ASSETS + "images/places/khau-coc-cha.jpg",
+    maps: "https://maps.app.goo.gl/2aMpTG8VB2NJbous5"
+  },
+
+  /* ======================= CITY — Sen's ======================= */
+  {
+    id: "sens-homestay", name: "Sen's Homestay", localName: "Sen's Homestay – Tours & Motorbike Rental",
+    category: "stay", tier: "city", lat: 22.67379, lng: 106.25561, minZoom: 12, zPriority: 300,
+    desc: "Cosy rooms with big-screen projectors, homemade breakfast & coffee, motorbike rental and honest local tips — book hourly or overnight.",
+    img: ASSETS + "images/homestay.jpg",
+    maps: "https://maps.app.goo.gl/PQXqThDmfQtj135CA",
     bookUrl: "https://sen-nghi-gio-production.up.railway.app/book",
     phone: "0822946888",
     featured: true
   },
   {
-    id: "hoa-an-hotel", name: "Hoa An Hotel", localName: "Khách sạn Hòa An",
-    category: "stay", tier: "city", lat: 22.6680, lng: 106.2555, approx: true,
-    desc: "Dependable mid-range hotel in the centre — an easy walk to the market and the riverside."
+    id: "motorbike-rental", name: "Motorbike Rental at Sen's", localName: "Thuê xe máy — Sen's Homestay",
+    category: "services", tier: "city", lat: 22.6739, lng: 106.2560, minZoom: 13,
+    desc: "Well-kept semi-autos, scooters and manuals for the Ban Gioc loop — helmets, rain gear and route advice included.",
+    price: "180–550k₫/day",
+    img: ASSETS + "images/bikes/bike-rental-hero.jpg",
+    maps: "https://maps.app.goo.gl/PQXqThDmfQtj135CA",
+    guideUrl: ASSETS + "motorbike.html", guideLabel: "Bikes & prices",
+    phone: "0822946888"
   },
   {
-    id: "max-boutique", name: "Max Boutique Hotel", localName: "Khách sạn Max Boutique",
-    category: "stay", tier: "city", lat: 22.6641, lng: 106.2542, approx: true,
-    desc: "One of the smarter addresses in town — modern rooms, breakfast included, helpful tour desk."
-  },
-  {
-    id: "bang-giang-hotel", name: "Bang Giang Hotel", localName: "Khách sạn Bằng Giang",
-    category: "stay", tier: "city", lat: 22.6693, lng: 106.2618, approx: true,
-    desc: "Old landmark by the bridge over the Bang Giang river — simple but central, with easy parking."
-  },
-  {
-    id: "primrose-homestay", name: "Primrose Homestay", localName: "Primrose Homestay Cao Bằng",
-    category: "stay", tier: "city", lat: 22.6650, lng: 106.2600, approx: true,
-    desc: "Backpacker favourite: dorms and doubles, motorbike rental and honest route advice for the Ban Gioc loop."
+    id: "ban-gioc-bus-stop", name: "Ban Gioc Bus Stop (at Sen's)", localName: "Xe buýt Hòa Bình đi Bản Giốc",
+    category: "transport", tier: "city", lat: 22.6736, lng: 106.2552, minZoom: 13,
+    desc: "The Hoa Binh public bus to Ban Gioc passes right in front of Sen's — flag it down from the pavement and pay on board. Best departures 7:25–8:00 am; last bus back from the falls at 5 pm.",
+    img: ASSETS + "bus/bus-hero.jpg",
+    guideUrl: ASSETS + "bus/ban-gioc-bus-guide.html", guideLabel: "Bus guide"
   },
 
-  /* ======================= CITY — Food & Café ======================= */
+  /* ======================= CITY — Food & Café (from Sen's food guide) ======================= */
   {
-    id: "banh-cuon-row", name: "Banh Cuon Breakfast Row", localName: "Bánh cuốn canh",
-    category: "food", tier: "city", lat: 22.6656, lng: 106.2556, approx: true,
-    desc: "Cao Bang's signature breakfast: silky rice rolls served in pork-bone broth instead of dipping sauce. Stalls fire up from 6 am."
+    id: "pho-chua-quyen", name: "Pho Chua Quyen", localName: "Phở Chua Gia Truyền Quyên",
+    category: "food", tier: "city", lat: 22.66593, lng: 106.25623, minZoom: 13,
+    desc: "Cold rice-noodle salad with roast duck, crispy fried potato and a tangy sweet-sour dressing — a Cao Bang original you won't find elsewhere.",
+    price: "from 35,000₫ · breakfast–lunch",
+    img: ASSETS + "images/Food/pho-chua/1.jpg",
+    maps: "https://maps.app.goo.gl/Bv9JXW63mBWqjyrBA",
+    guideUrl: ASSETS + "food.html", guideLabel: "Food guide",
+    pick: true
   },
   {
-    id: "pho-chua", name: "Pho Chua Stalls", localName: "Phở chua Cao Bằng",
-    category: "food", tier: "city", lat: 22.6667, lng: 106.2590, approx: true,
-    desc: "The city's famous 'sour noodles' — roast duck, peanuts and a tangy dressing. Find them around the market before noon."
+    id: "banh-cuon-phong-uyen", name: "Banh Cuon Phong Uyen", localName: "Bánh cuốn Phong Uyên (Phố Cũ)",
+    category: "food", tier: "city", lat: 22.66418, lng: 106.25696, minZoom: 13,
+    desc: "Silky steamed rice rolls served Cao Bang-style: in hot pork-bone broth with a poached egg, not fish sauce.",
+    price: "~35,000₫ · all day",
+    img: ASSETS + "images/Food/banh-cuon/1.jpg",
+    maps: "https://maps.app.goo.gl/MeTDqWwXvL1vTvSVA",
+    guideUrl: ASSETS + "food.html", guideLabel: "Food guide",
+    pick: true
   },
   {
-    id: "ap-chao", name: "Ap Chao Corner", localName: "Bánh áp chao",
-    category: "food", tier: "city", lat: 22.6648, lng: 106.2568, approx: true,
-    desc: "Winter street snack of duck fried inside a crispy rice-flour shell — vendors appear at dusk from October to February."
+    id: "pho-vit-dung-thinh", name: "Pho Vit Dung Thinh", localName: "Phở Vịt Dung Thịnh",
+    category: "food", tier: "city", lat: 22.66423, lng: 106.26515, minZoom: 13,
+    desc: "Roast-duck pho — duck marinated with mac mat forest leaves and roasted till the skin shatters. This branch roasts fresh in the evening.",
+    price: "from 40,000₫ · dinner",
+    img: ASSETS + "images/Food/pho-vit-quay/1.jpg",
+    maps: "https://maps.app.goo.gl/uaWm8fFdpRFge5zb6",
+    guideUrl: ASSETS + "food.html", guideLabel: "Food guide"
   },
   {
-    id: "vuon-cam", name: "Vuon Cam Food Street", localName: "Phố ăn vặt Vườn Cam",
-    category: "food", tier: "city", lat: 22.6634, lng: 106.2547, approx: true,
-    desc: "Evening snack street: grilled skewers, sugarcane juice and sweet soups. Liveliest between 5 and 10 pm."
+    id: "vit-quay-o-thoa", name: "Vit Quay Gion O Thoa", localName: "Vịt Quay Giòn O Thoa",
+    category: "food", tier: "city", lat: 22.66205, lng: 106.25992, minZoom: 13,
+    desc: "Crispy roast duck and pork belly over fragrant rice or noodles — plus rare Hong Kong-style char siu, genuinely excellent.",
+    price: "from 40,000₫ · lunch & dinner",
+    img: ASSETS + "images/Food/vit-quay-gion/1.jpg",
+    maps: "https://maps.app.goo.gl/rfJYvmaUDfKJ9LTy8",
+    guideUrl: ASSETS + "food.html", guideLabel: "Food guide",
+    pick: true
   },
   {
-    id: "riverside-cafes", name: "Riverside Cafés", localName: "Cà phê ven sông Bằng",
-    category: "food", tier: "city", lat: 22.6685, lng: 106.2605, approx: true,
-    desc: "Balcony coffee with a view over the Bang Giang river, near the bridge. Order a Vietnamese egg coffee at sunset."
-  },
-
-  /* ======================= CITY — Nightlife ======================= */
-  {
-    id: "walking-street", name: "Kim Dong Walking Street", localName: "Phố đi bộ Kim Đồng",
-    category: "nightlife", tier: "city", lat: 22.6660, lng: 106.2580, approx: true,
-    desc: "Friday and Saturday nights the centre closes to traffic: street food, live music and a very local crowd."
+    id: "ap-chao-co-hac", name: "Ap Chao Co Hac", localName: "Áp chao vịt rán cô Hạc",
+    category: "food", tier: "city", lat: 22.66996, lng: 106.25417, minZoom: 14,
+    desc: "Deep-fried duck dumplings with a shattering crust — the street snack Cao Bang is famous for on cool evenings.",
+    price: "7,000₫/piece · evening",
+    img: ASSETS + "images/Food/ap-chao/1.jpg",
+    maps: "https://maps.app.goo.gl/gbaghegtzEAn1Aah6",
+    guideUrl: ASSETS + "food.html", guideLabel: "Food guide"
   },
   {
-    id: "bia-hoi", name: "Bia Hoi Gardens", localName: "Bia hơi",
-    category: "nightlife", tier: "city", lat: 22.6702, lng: 106.2612, approx: true,
-    desc: "Fresh draft beer by the glass with grilled snacks — open-air joints fill up from 6 pm. Just point at what looks good."
+    id: "nem-nuong-co-lo", name: "Nem Nuong Co Lo", localName: "Nem nướng Cô Lô",
+    category: "food", tier: "city", lat: 22.66560, lng: 106.26172, minZoom: 14,
+    desc: "Charcoal-grilled pork rolls you wrap yourself in rice paper with herbs and green mango — the warm shrimp dip is the star.",
+    price: "40,000₫ · lunch & dinner",
+    img: ASSETS + "images/Food/nem-nuong/1.jpg",
+    maps: "https://maps.app.goo.gl/qvcCdVDPVsR4epGe9",
+    guideUrl: ASSETS + "food.html", guideLabel: "Food guide"
   },
   {
-    id: "karaoke-row", name: "Karaoke Row", localName: "Karaoke",
-    category: "nightlife", tier: "city", lat: 22.6638, lng: 106.2535, approx: true,
-    desc: "Private-room KTV — the classic local night out. Rooms by the hour; a few venues keep English song lists."
-  },
-
-  /* ======================= CITY — Shopping ======================= */
-  {
-    id: "green-market", name: "Green Market", localName: "Chợ Xanh",
-    category: "shopping", tier: "city", lat: 22.6667, lng: 106.2595, approx: true,
-    desc: "The central market: produce, mountain herbs, kitchenware and a superb food corner. Go in the morning."
+    id: "bun-cha-ha-thanh", name: "Bun Cha Ha Thanh", localName: "Bún chả Hà Thành",
+    category: "food", tier: "city", lat: 22.65807, lng: 106.26712, minZoom: 14,
+    desc: "Hanoi-style pork patties grilled over real charcoal, dunked in warm tangy broth with cold vermicelli and herbs.",
+    price: "45,000₫ · breakfast–lunch",
+    img: ASSETS + "images/Food/bun-cha/1.jpg",
+    maps: "https://maps.app.goo.gl/PE3RL2QB63dm3PE29",
+    guideUrl: ASSETS + "food.html", guideLabel: "Food guide"
   },
   {
-    id: "specialty-shops", name: "Local Specialty Shops", localName: "Đặc sản Cao Bằng",
-    category: "shopping", tier: "city", lat: 22.6658, lng: 106.2545, approx: true,
-    desc: "Take-home Cao Bang: roasted chestnuts, miến dong glass noodles, cassava cakes, forest honey and highland tea."
+    id: "banh-mi-thu-thang", name: "Banh Mi Chao Thu Thang", localName: "Bánh mỳ chảo Thu Thắng",
+    category: "food", tier: "city", lat: 22.66213, lng: 106.25998, minZoom: 14,
+    desc: "A sizzling iron pan of eggs, grilled pork and rich meat sauce lands at your table — mop it all up with warm baguettes.",
+    price: "from 45,000₫",
+    img: ASSETS + "images/Food/banh-mi-chao/1.jpg",
+    maps: "https://maps.app.goo.gl/J8HEs3XWh91UfQFp6",
+    guideUrl: ASSETS + "food.html", guideLabel: "Food guide"
   },
   {
-    id: "winmart", name: "WinMart Supermarket", localName: "Siêu thị WinMart",
-    category: "shopping", tier: "city", lat: 22.6622, lng: 106.2532, approx: true,
-    desc: "Modern supermarket for water, snacks, sunscreen and SIM top-ups before heading into the hills."
-  },
-
-  /* ======================= CITY — Services ======================= */
-  {
-    id: "banks-atms", name: "Banks & ATMs", localName: "Ngân hàng · ATM",
-    category: "services", tier: "city", lat: 22.6672, lng: 106.2578, approx: true,
-    desc: "Vietcombank, BIDV and Agribank branches with 24 h ATMs. Exchange USD/EUR at bank counters on weekdays — the last reliable ATMs before the border districts."
+    id: "tiem-banh-trang", name: "Tiem Banh Trang", localName: "Tiệm Bánh Tráng",
+    category: "food", tier: "city", lat: 22.66529, lng: 106.26134, minZoom: 15,
+    desc: "Grilled rice-paper 'street pizza', rice-paper salad and rolls — the perfect afternoon snack stop.",
+    price: "~40,000₫ · snack",
+    img: ASSETS + "images/Food/banh-trang/1.jpg",
+    maps: "https://maps.app.goo.gl/Gr6YpBkR3HLWq4Mq5",
+    guideUrl: ASSETS + "food.html", guideLabel: "Food guide",
+    veg: true
   },
   {
-    id: "motorbike-rental", name: "Motorbike Rental", localName: "Thuê xe máy",
-    category: "services", tier: "city", lat: 22.6652, lng: 106.2588, approx: true,
-    desc: "Semi-autos and manuals for the Ban Gioc loop (~150–200k VND/day). Hotels and Primrose Homestay can arrange bikes — test the brakes."
+    id: "pedros-pizza", name: "Pedro's Pizza", localName: "Pedro's Pizza",
+    category: "food", tier: "city", lat: 22.66756, lng: 106.26157, minZoom: 13,
+    desc: "Hand-rolled thin-crust pizza from real Italian recipes — the town's western comfort-food hideout, with proper veggie options.",
+    price: "from 150,000₫",
+    img: ASSETS + "images/Food/pedros-pizza/1.jpg",
+    maps: "https://maps.app.goo.gl/bEwd77hNN9HogEDU8",
+    guideUrl: ASSETS + "food.html", guideLabel: "Food guide",
+    veg: true
   },
   {
-    id: "petrol-station", name: "Petrolimex Fuel Station", localName: "Cây xăng Petrolimex",
-    category: "services", tier: "city", lat: 22.6712, lng: 106.2502, approx: true,
-    desc: "Fill the tank before leaving town — stations get sparse on mountain roads. Attendant service, cash preferred."
+    id: "lela-vegan", name: "Lela Vegan Bistro", localName: "Lela Vegan",
+    category: "food", tier: "city", lat: 22.66350, lng: 106.25954, minZoom: 13,
+    desc: "The city's beloved vegan bistro — creative plant-based Vietnamese in a bright, modern room. Rare for northern Vietnam.",
+    price: "from 40,000₫",
+    img: ASSETS + "images/Food/lela-vegan/1.jpg",
+    maps: "https://maps.app.goo.gl/ffGQ2KDsymptXf6x5",
+    guideUrl: ASSETS + "food.html", guideLabel: "Food guide",
+    pick: true, veg: true
   },
   {
-    id: "moto-repair", name: "Motorbike Repair Row", localName: "Sửa xe máy",
-    category: "services", tier: "city", lat: 22.6645, lng: 106.2610, approx: true,
-    desc: "Punctures, oil and chain fixes in minutes. Any shop with a 'sửa xe máy' sign will sort you out cheaply."
-  },
-
-  /* ======================= CITY — Health ======================= */
-  {
-    id: "provincial-hospital", name: "Provincial General Hospital", localName: "Bệnh viện Đa khoa tỉnh Cao Bằng",
-    category: "health", tier: "city", lat: 22.6560, lng: 106.2470, approx: true,
-    desc: "The province's main hospital with a 24/7 emergency room. For anything serious, transfer to Hanoi (~7 h) is usually advised."
+    id: "duong-gio-tai", name: "Duong Gio Tai BBQ", localName: "Đồ nướng Dương Gió Tai",
+    category: "food", tier: "city", lat: 22.66639, lng: 106.25336, minZoom: 14,
+    desc: "Chinese-spiced skewers grilled live in front of you — pick your own from the fridge and order a cold beer.",
+    price: "from 50,000₫ · dinner",
+    img: ASSETS + "images/Food/duong-gio-tai/1.jpg",
+    maps: "https://maps.app.goo.gl/HMHDy85BgT2LGMeEA",
+    guideUrl: ASSETS + "food.html", guideLabel: "Food guide",
+    pick: true
   },
   {
-    id: "pharmacies", name: "Pharmacy Row", localName: "Nhà thuốc",
-    category: "health", tier: "city", lat: 22.6660, lng: 106.2560, approx: true,
-    desc: "Well-stocked pharmacies for the basics — motion-sickness pills, rehydration salts, insect repellent. Most sell without prescription."
-  },
-
-  /* ======================= CITY — Transport ======================= */
-  {
-    id: "bus-station", name: "Cao Bang Bus Station", localName: "Bến xe khách Cao Bằng",
-    category: "transport", tier: "city", lat: 22.6480, lng: 106.2380, approx: true,
-    desc: "Sleeper buses to Hanoi (~7 h, several daily) plus local buses toward Trung Khanh / Ban Gioc and Bao Lac."
+    id: "handak-chicken", name: "Handak Korean Chicken", localName: "Handak Korean Chicken",
+    category: "food", tier: "city", lat: 22.66334, lng: 106.25776, minZoom: 15,
+    desc: "The only Korean fried chicken in town — crispy, saucy and a fun break from noodles.",
+    price: "from 50,000₫",
+    img: ASSETS + "images/Food/handak/1.jpg",
+    maps: "https://maps.app.goo.gl/HZ4gnWVmdD6ZRikZ7",
+    guideUrl: ASSETS + "food.html", guideLabel: "Food guide"
   },
   {
-    id: "taxi-point", name: "Taxi & Ride Point", localName: "Điểm đón taxi",
-    category: "transport", tier: "city", lat: 22.6661, lng: 106.2601, approx: true,
-    desc: "Metered taxis wait near the market — or ask your hotel to call one. Ride-hailing apps barely cover Cao Bang; agree day-trip fares up front."
+    id: "tao-pho-lanh", name: "Tao Pho Lanh", localName: "Tào Phớ Lành",
+    category: "food", tier: "city", lat: 22.66833, lng: 106.26081, minZoom: 15,
+    desc: "The creamiest tofu pudding in the city — longan, lotus seed or caramel toppings. Opens late afternoon.",
+    price: "from 8,000₫ · dessert",
+    img: ASSETS + "images/Food/tao-pho-lanh/1.jpg",
+    maps: "https://maps.app.goo.gl/aCKapfavtxCNrim57",
+    guideUrl: ASSETS + "food.html", guideLabel: "Food guide",
+    veg: true
+  },
+  {
+    id: "che-pho", name: "Che Pho Dessert Bar", localName: "Chè Phố",
+    category: "food", tier: "city", lat: 22.66384, lng: 106.26060, minZoom: 15,
+    desc: "Thai sweet soups, avocado ice cream and fruit yogurts right on the walking street — something for everyone.",
+    price: "from 20,000₫ · dessert",
+    img: ASSETS + "images/Food/che-pho/1.jpg",
+    maps: "https://maps.app.goo.gl/s2ab9RysFCkZ6V5X8",
+    guideUrl: ASSETS + "food.html", guideLabel: "Food guide",
+    pick: true, veg: true
+  },
+  {
+    id: "fenice-caffe", name: "Fenice Caffè", localName: "Fenice Caffè – Tiệm Cafe & Bánh Ngọt",
+    category: "food", tier: "city", lat: 22.66413, lng: 106.25944, minZoom: 14,
+    desc: "Proper espresso and cappuccino with Italian desserts — home of the best tiramisu in Cao Bang.",
+    price: "from 30,000₫ · café",
+    img: ASSETS + "images/Food/fenice-caffe/1.jpg",
+    maps: "https://maps.app.goo.gl/z8JzJAkx1Ur937ZY8",
+    guideUrl: ASSETS + "food.html", guideLabel: "Food guide",
+    pick: true, veg: true
+  },
+  {
+    id: "with-us-coffee", name: "With Us Coffee", localName: "With Us Coffee",
+    category: "food", tier: "city", lat: 22.66247, lng: 106.25896, minZoom: 14,
+    desc: "Premium matcha and good coffee alongside crispy local-style banh mi — a quick, reliable breakfast combo.",
+    price: "from 20,000₫ · café",
+    img: ASSETS + "images/Food/with-us-coffee/1.jpg",
+    maps: "https://maps.app.goo.gl/Gv7oB79cdrhw2vGU8",
+    guideUrl: ASSETS + "food.html", guideLabel: "Food guide",
+    pick: true
+  },
+  {
+    id: "yen-me-nau", name: "Yen — Ngon Nhu Me Nau", localName: "Yên - Ngon như mẹ nấu",
+    category: "food", tier: "city", lat: 22.66538, lng: 106.25356, minZoom: 14,
+    desc: "Home-style Vietnamese family trays (com mam) and signature hotpots in a vintage room — the proper sit-down dinner in town.",
+    price: "from 150,000₫ · lunch & dinner",
+    img: ASSETS + "images/Food/yen-com-me-nau/1.jpg",
+    maps: "https://maps.app.goo.gl/Hq7DbK77aLzs8pvUA",
+    guideUrl: ASSETS + "food.html", guideLabel: "Food guide",
+    pick: true
   }
 ];
