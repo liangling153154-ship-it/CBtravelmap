@@ -33,7 +33,10 @@
     globe: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a15 15 0 0 1 0 18"/><path d="M12 3a15 15 0 0 0 0 18"/>',
     gmaps: '<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/>',
     moon: '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>',
-    sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>'
+    sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>',
+    locate: '<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/>',
+    arrow: '<path d="M9 18l6-6-6-6"/>',
+    compass: '<circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>'
   };
   function svg(name, extra) {
     return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"' +
@@ -64,23 +67,38 @@
   var tileOpts = {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/">CARTO</a> · photos &copy; Sen&#39;s Homestay',
     subdomains: "abcd",
-    maxZoom: 19
+    maxZoom: 19,
+    // smoother mobile panning: load a wide ring of tiles beyond the viewport,
+    // start loading mid-pan instead of waiting for the gesture to end,
+    // and request tiles in CORS mode so the service worker can cache them
+    keepBuffer: 4,
+    updateWhenIdle: false,
+    crossOrigin: true
   };
   var lightTiles = L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", tileOpts);
   var darkTiles = L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", tileOpts);
   var satTiles = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {
     attribution: 'Imagery &copy; Esri, Maxar, Earthstar Geographics · photos &copy; Sen&#39;s Homestay',
     maxZoom: 19,
-    maxNativeZoom: 18
+    maxNativeZoom: 18,
+    keepBuffer: 4,
+    updateWhenIdle: false,
+    crossOrigin: true
   });
   var satLabels = L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png", {
     subdomains: "abcd",
-    maxZoom: 19
+    maxZoom: 19,
+    keepBuffer: 4,
+    updateWhenIdle: false,
+    crossOrigin: true
   });
   var topoTiles = L.tileLayer("https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png", {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a>, SRTM · &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (CC-BY-SA) · photos &copy; Sen&#39;s Homestay',
     maxZoom: 19,
-    maxNativeZoom: 17
+    maxNativeZoom: 17,
+    keepBuffer: 4,
+    updateWhenIdle: false,
+    crossOrigin: true
   });
   var ALL_BASE_LAYERS = [lightTiles, darkTiles, satTiles, satLabels, topoTiles];
 
@@ -274,8 +292,6 @@
 
     document.body.classList.toggle("zl-mid", zoom >= MAP_CONFIG.cityThreshold && zoom < 15);
     document.body.classList.toggle("zl-max", zoom >= 17);
-    segProvince.classList.toggle("on", !cityVisible);
-    segCity.classList.toggle("on", cityVisible);
   }
   map.on("zoomend", refresh);
 
@@ -498,21 +514,10 @@
   }
   clearBtn.addEventListener("click", function () { clearSearch(); input.focus(); });
 
-  /* ---------------- View toggle ---------------- */
-  var segProvince = document.getElementById("seg-province");
-  var segCity = document.getElementById("seg-city");
-  segProvince.innerHTML = svg("mountain") + "Province";
-  segCity.innerHTML = svg("city") + "City";
-  function goProvince() {
-    closeCard();
-    if (REDUCED) { map.fitBounds(provinceBounds); }
-    else { map.flyToBounds(provinceBounds, { duration: 0.9 }); }
-  }
+  /* ---------------- View helpers ---------------- */
   function goCity() {
     flyTo(MAP_CONFIG.cityCenter, MAP_CONFIG.cityZoom);
   }
-  segProvince.addEventListener("click", goProvince);
-  segCity.addEventListener("click", goCity);
 
   /* ---------------- Suggested itineraries (trips) ---------------- */
   var tripsSheet = document.getElementById("trips-sheet");
@@ -522,12 +527,10 @@
   var tripMeta = document.getElementById("trip-meta");
   var tripDaysEl = document.getElementById("trip-days");
   var tripPlanner = document.getElementById("trip-planner");
-  var segTrips = document.getElementById("seg-trips");
   var activeTrip = null;
   var tripLayer = null;
   var tripCasings = [];
 
-  segTrips.innerHTML = svg("route") + "Trips";
   document.getElementById("trips-planner-link").href = ASSETS + "itinerary-v2/itinerary-v2.html";
   document.getElementById("trips-close").innerHTML = svg("close");
   document.getElementById("trip-close").innerHTML = svg("close");
@@ -546,7 +549,6 @@
   }
   function openTripsSheet() { tripsSheet.hidden = false; }
   function closeTripsSheet() { tripsSheet.hidden = true; }
-  segTrips.addEventListener("click", openTripsSheet);
   document.getElementById("trips-close").addEventListener("click", closeTripsSheet);
   tripsSheet.addEventListener("click", function (e) {
     if (e.target === tripsSheet) { closeTripsSheet(); }
@@ -674,21 +676,117 @@
   document.getElementById("trip-close").addEventListener("click", exitTrip);
   buildTripsSheet();
 
+  /* ---------------- "What are you looking for?" menu ---------------- */
+  var lookingBtn = document.getElementById("looking-btn");
+  var askSheet = document.getElementById("ask-sheet");
+  var listSheet = document.getElementById("list-sheet");
+  var listItemsEl = document.getElementById("list-items");
+  var listTitleEl = document.getElementById("list-title");
+
+  document.getElementById("looking-ic").innerHTML = svg("compass");
+  document.getElementById("ask-close").innerHTML = svg("close");
+  document.getElementById("list-close").innerHTML = svg("close");
+  document.getElementById("list-back").innerHTML = svg("arrow", 'style="transform:rotate(180deg)"');
+  // fill the small icons inside the ask options + welcome options
+  document.querySelectorAll("[data-ic]").forEach(function (el) {
+    var name = el.getAttribute("data-ic");
+    el.innerHTML = svg(name === "arrow" ? "arrow" : name);
+  });
+
+  function openAsk() { askSheet.hidden = false; }
+  function closeAsk() { askSheet.hidden = true; }
+  function openList() { listSheet.hidden = false; }
+  function closeList() { listSheet.hidden = true; }
+
+  // Build a scrollable list of places for a category, then let the user pick one.
+  function showPlaceList(category, title) {
+    var rows = records
+      .filter(function (r) { return r.poi.category === category; })
+      .sort(function (a, b) {
+        // Sen's places first, then featured, then the rest
+        var sa = (a.poi.id === "sens-homestay" ? 2 : 0) + (a.poi.featured ? 1 : 0);
+        var sb = (b.poi.id === "sens-homestay" ? 2 : 0) + (b.poi.featured ? 1 : 0);
+        return sb - sa;
+      });
+    listTitleEl.textContent = title;
+    if (!rows.length) {
+      listItemsEl.innerHTML = '<div class="list-empty">Nothing here yet.</div>';
+    } else {
+      listItemsEl.innerHTML = rows.map(function (r) {
+        var p = r.poi, c = r.cat;
+        var img = p.img ? '<img src="' + esc(pinSrc(p.img)) + '" alt="" loading="lazy">'
+          : '<span class="list-row-img"></span>';
+        var badges = "";
+        if (p.pick) { badges += '<span class="list-badge" style="background:#B45309">★ Sen&#39;s pick</span>'; }
+        if (p.veg) { badges += '<span class="list-badge" style="background:#15803D">Veg</span>'; }
+        if (p.price) { badges += '<span class="list-badge" style="background:' + c.color + '">' + esc(p.price) + "</span>"; }
+        return '<button class="list-row" data-id="' + p.id + '">' + img +
+          '<span class="list-row-body">' +
+          '<span class="list-row-title">' + esc(p.name) + "</span>" +
+          '<span class="list-row-sub">' + esc(p.desc || "") + "</span>" +
+          (badges ? '<span class="list-row-badges">' + badges + "</span>" : "") +
+          "</span></button>";
+      }).join("");
+    }
+    listItemsEl.scrollTop = 0;
+    openList();
+  }
+
+  // the three top-level choices
+  function pickAsk(kind) {
+    closeAsk();
+    if (kind === "trips") {
+      openTripsSheet();
+    } else if (kind === "food") {
+      showPlaceList("food", "Food & Coffee");
+    } else if (kind === "stay") {
+      showPlaceList("stay", "Places to stay");
+    }
+  }
+
+  lookingBtn.addEventListener("click", openAsk);
+  document.getElementById("ask-close").addEventListener("click", closeAsk);
+  askSheet.addEventListener("click", function (e) { if (e.target === askSheet) { closeAsk(); } });
+  askSheet.addEventListener("click", function (e) {
+    var opt = e.target.closest(".ask-opt");
+    if (opt) { pickAsk(opt.dataset.ask); }
+  });
+
+  document.getElementById("list-close").addEventListener("click", closeList);
+  document.getElementById("list-back").addEventListener("click", function () { closeList(); openAsk(); });
+  listSheet.addEventListener("click", function (e) { if (e.target === listSheet) { closeList(); } });
+  listItemsEl.addEventListener("click", function (e) {
+    var row = e.target.closest(".list-row[data-id]");
+    if (!row) { return; }
+    var rec = records.find(function (r) { return r.poi.id === row.dataset.id; });
+    if (!rec) { return; }
+    closeList();
+    if (activeTrip && !activeTrip._set[rec.poi.id]) { exitTrip(); }
+    if (activeCat !== "all" && rec.poi.category !== activeCat) {
+      activeCat = "all";
+      chipsEl.querySelectorAll(".chip").forEach(function (ch) {
+        ch.setAttribute("aria-pressed", ch.dataset.cat === "all" ? "true" : "false");
+      });
+    }
+    selectPoi(rec, true);
+    setTimeout(refresh, 0);
+  });
+
   /* ---------------- Welcome overlay ---------------- */
   var welcome = document.getElementById("welcome");
   var seenKey = "cbmap-welcomed";
   var welcomeImg = document.getElementById("welcome-img");
   welcomeImg.addEventListener("error", function () { welcomeImg.remove(); });
   welcomeImg.src = MAP_CONFIG.cityImg;
-  document.getElementById("welcome-province").innerHTML = svg("mountain") + "Explore the province";
-  document.getElementById("welcome-city").innerHTML = svg("city") + "City food & coffee guide";
   function dismissWelcome() {
     welcome.classList.add("hide");
     try { localStorage.setItem(seenKey, "1"); } catch (e) { /* private mode */ }
   }
   document.getElementById("welcome-skip").addEventListener("click", dismissWelcome);
-  document.getElementById("welcome-province").addEventListener("click", function () { dismissWelcome(); goProvince(); });
-  document.getElementById("welcome-city").addEventListener("click", function () { dismissWelcome(); goCity(); });
+  // the three welcome options mirror the "What are you looking for?" menu
+  welcome.querySelectorAll(".wopt").forEach(function (opt) {
+    opt.addEventListener("click", function () { dismissWelcome(); pickAsk(opt.dataset.ask); });
+  });
   var seen = false;
   try { seen = !!localStorage.getItem(seenKey); } catch (e) { /* private mode */ }
   if (!seen) { welcome.classList.remove("hide"); }
@@ -737,6 +835,7 @@
       b.setAttribute("aria-pressed", b.dataset.bm === basemap ? "true" : "false");
     });
     try { localStorage.setItem("cbmap-basemap", basemap); } catch (e) { /* private mode */ }
+    schedulePreload(); // quietly pre-download this style's tiles too
   }
   function closeBmMenu() { bmMenu.hidden = true; }
   bmBtn.addEventListener("click", function () { bmMenu.hidden = !bmMenu.hidden; });
@@ -812,11 +911,187 @@
     if (e.key === "Escape") {
       if (!welcome.classList.contains("hide")) { dismissWelcome(); }
       else if (!bmMenu.hidden) { closeBmMenu(); }
+      else if (!listSheet.hidden) { closeList(); }
+      else if (!askSheet.hidden) { closeAsk(); }
       else if (!tripsSheet.hidden) { closeTripsSheet(); }
       else if (card.classList.contains("open")) { closeCard(); }
       else if (activeTrip) { exitTrip(); }
     }
   });
+
+  /* ---------------- Full-province tile preload ---------------- */
+  // Cao Bang is small, so we can pre-download every tile a visitor will
+  // realistically need: the whole province at z8–z12 plus the city block at
+  // z13–z16 (~550 tiles). Combined with the service worker they're cached
+  // permanently, so panning never shows grey tiles again.
+  if ("serviceWorker" in navigator &&
+      (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1")) {
+    navigator.serviceWorker.register("sw.js").catch(function () { /* ignore */ });
+  }
+
+  var PROVINCE_BBOX = [22.357, 105.267, 23.119, 106.838]; // S, W, N, E
+  var CITY_BBOX = [22.62, 106.22, 22.70, 106.30];
+
+  function lng2x(lng, z) { return Math.floor((lng + 180) / 360 * Math.pow(2, z)); }
+  function lat2y(lat, z) {
+    var r = lat * Math.PI / 180;
+    return Math.floor((1 - Math.log(Math.tan(r) + 1 / Math.cos(r)) / Math.PI) / 2 * Math.pow(2, z));
+  }
+
+  function preloadTileUrl(z, x, y) {
+    if (basemap === "satellite") {
+      return "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/" + z + "/" + y + "/" + x;
+    }
+    if (basemap === "terrain") {
+      return "https://" + "abc"[(x + y) % 3] + ".tile.opentopomap.org/" + z + "/" + x + "/" + y + ".png";
+    }
+    var style = document.body.classList.contains("dark") ? "dark_all" : "rastertiles/voyager";
+    var r = L.Browser.retina ? "@2x" : "";
+    return "https://" + "abcd"[(x + y) % 4] + ".basemaps.cartocdn.com/" + style + "/" + z + "/" + x + "/" + y + r + ".png";
+  }
+
+  function bboxUrls(bbox, zFrom, zTo) {
+    var urls = [];
+    for (var z = zFrom; z <= zTo; z++) {
+      var x0 = lng2x(bbox[1], z), x1 = lng2x(bbox[3], z);
+      var y0 = lat2y(bbox[2], z), y1 = lat2y(bbox[0], z); // north has the smaller y
+      for (var x = x0; x <= x1; x++) {
+        for (var y = y0; y <= y1; y++) { urls.push(preloadTileUrl(z, x, y)); }
+      }
+    }
+    return urls;
+  }
+
+  var preloadRunning = false;
+  function preloadKey() {
+    return "cbmap-preload-" + basemap +
+      (document.body.classList.contains("dark") && basemap === "streets" ? "-dark" : "") +
+      (L.Browser.retina ? "@2x" : "");
+  }
+
+  function runPreload() {
+    if (preloadRunning || !navigator.onLine) { return; }
+    if (navigator.connection && navigator.connection.saveData) { return; } // respect data saver
+    var key = preloadKey();
+    try { if (localStorage.getItem(key)) { return; } } catch (e) { /* private mode */ }
+
+    var urls = bboxUrls(PROVINCE_BBOX, 8, 12).concat(bboxUrls(CITY_BBOX, 13, 16));
+    preloadRunning = true;
+    toast("Downloading the Cao Bằng map for smooth browsing…");
+
+    var i = 0, active = 0, done = 0, MAX = 6;
+    function finish() {
+      preloadRunning = false;
+      try { localStorage.setItem(key, "1"); } catch (e) { /* private mode */ }
+      toast("Map ready — panning is smooth now");
+    }
+    function pump() {
+      if (done >= urls.length) { return; }
+      while (active < MAX && i < urls.length) {
+        active++;
+        fetch(urls[i++], { mode: "cors", credentials: "omit" })
+          .catch(function () { /* a missed tile is fine */ })
+          .then(function () {
+            active--; done++;
+            if (done >= urls.length) { finish(); } else { pump(); }
+          });
+      }
+    }
+    pump();
+  }
+
+  function schedulePreload() {
+    clearTimeout(schedulePreload._t);
+    schedulePreload._t = setTimeout(runPreload, 4000);
+  }
+  window.addEventListener("load", schedulePreload);
+
+  /* ---------------- "Where am I" — live user location ---------------- */
+  // A GPS button (bottom-right, above the zoom control). First tap starts
+  // watching the device location and flies there; a blue dot + accuracy circle
+  // track the user live. Tap again to re-centre.
+  var locBtn = L.control({ position: "bottomright" });
+  locBtn.onAdd = function () {
+    var el = L.DomUtil.create("button", "locate-btn");
+    el.setAttribute("aria-label", "Show my location");
+    el.setAttribute("type", "button");
+    el.innerHTML = svg("locate");
+    L.DomEvent.disableClickPropagation(el);
+    L.DomEvent.on(el, "click", toggleLocate);
+    locBtnEl = el;
+    return el;
+  };
+  locBtn.addTo(map);
+
+  var locBtnEl = null;
+  var locWatchId = null;
+  var locMarker = null;
+  var locCircle = null;
+  var locFollowing = false;
+
+  function setLocBtnState(state) { // "" | "active" | "loading"
+    if (!locBtnEl) { return; }
+    locBtnEl.classList.toggle("locate-active", state === "active");
+    locBtnEl.classList.toggle("locate-loading", state === "loading");
+  }
+
+  function toggleLocate() {
+    if (!("geolocation" in navigator)) {
+      toast("This device can't share its location");
+      return;
+    }
+    if (locWatchId !== null) {
+      // already tracking — just recentre on the user
+      if (locMarker) {
+        locFollowing = true;
+        flyTo(locMarker.getLatLng(), Math.max(map.getZoom(), 14));
+      }
+      return;
+    }
+    setLocBtnState("loading");
+    toast("Finding your location…");
+    locFollowing = true;
+    locWatchId = navigator.geolocation.watchPosition(onLocation, onLocationError, {
+      enableHighAccuracy: true,
+      maximumAge: 10000,
+      timeout: 20000
+    });
+  }
+
+  function onLocation(pos) {
+    var ll = [pos.coords.latitude, pos.coords.longitude];
+    var acc = pos.coords.accuracy || 0;
+    setLocBtnState("active");
+
+    if (!locMarker) {
+      locMarker = L.marker(ll, {
+        icon: L.divIcon({ className: "user-loc-wrap", html: '<div class="user-loc"></div>', iconSize: [22, 22], iconAnchor: [11, 11] }),
+        zIndexOffset: 2000,
+        interactive: false,
+        keyboard: false
+      }).addTo(map);
+      locCircle = L.circle(ll, { radius: acc, stroke: false, fillColor: "#1D4ED8", fillOpacity: 0.12, interactive: false }).addTo(map);
+    } else {
+      locMarker.setLatLng(ll);
+      locCircle.setLatLng(ll).setRadius(acc);
+    }
+
+    if (locFollowing) {
+      locFollowing = false; // only auto-fly on the first fix / explicit recentre
+      var inProvince = ll[0] > 21.9 && ll[0] < 23.4 && ll[1] > 104.9 && ll[1] < 107.4;
+      flyTo(ll, inProvince ? Math.max(map.getZoom(), 14) : map.getZoom());
+      toast(inProvince ? "You're here" : "You're outside Cao Bằng — showing your position");
+    }
+  }
+
+  function onLocationError(err) {
+    setLocBtnState("");
+    if (locWatchId !== null) { navigator.geolocation.clearWatch(locWatchId); locWatchId = null; }
+    var msg = "Couldn't get your location";
+    if (err && err.code === 1) { msg = "Location permission denied — enable it in your browser"; }
+    else if (err && err.code === 3) { msg = "Location timed out — try again outdoors"; }
+    toast(msg);
+  }
 
   buildChips();
   refresh();
