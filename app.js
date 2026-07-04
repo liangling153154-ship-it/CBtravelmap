@@ -36,7 +36,8 @@
     sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>',
     locate: '<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/>',
     arrow: '<path d="M9 18l6-6-6-6"/>',
-    compass: '<circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>'
+    compass: '<circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>',
+    star: '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>'
   };
   function svg(name, extra) {
     return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"' +
@@ -117,14 +118,14 @@
   var outsideMask = L.polygon([worldRing].concat(provinceRings), {
     stroke: false,
     fillColor: "#0B2530",
-    fillOpacity: 0.14,
+    fillOpacity: 0.46,
     interactive: false
   }).addTo(map);
   var boundaryLine = L.polygon(provinceRings, {
     fill: false,
     color: "#0E7490",
-    weight: 2.5,
-    opacity: 0.85,
+    weight: 3,
+    opacity: 0.95,
     interactive: false
   }).addTo(map);
 
@@ -147,6 +148,25 @@
   var highwaysToggle = true;   // user on/off preference
   var highwaysOn2 = false;     // whether the layer is currently on the map
   try { highwaysToggle = localStorage.getItem("cbmap-highways") !== "off"; } catch (e) { /* private mode */ }
+
+  /* ---------------- District towns (orientation labels) ---------------- */
+  // Small non-clicking markers (dot + name) that help visitors read where they
+  // are on the province map. Shown only at province zoom, hidden in city / trip.
+  var townLayer = L.layerGroup();
+  var townsOn = false;
+  // cluster-of-three-houses image marking a township / district seat
+  var TOWN_IMG = '<img class="town-glyph" src="' + esc(ASSETS + "images/icons/town.png") + '" alt="" loading="lazy">';
+  if (typeof TOWNS !== "undefined") {
+    TOWNS.forEach(function (t) {
+      var icon = L.divIcon({
+        className: "town-marker",
+        html: TOWN_IMG + '<span class="town-name">' + esc(t.name) + "</span>",
+        iconSize: null,
+        iconAnchor: [19, 12]   // anchor near the centre of the house cluster
+      });
+      L.marker([t.lat, t.lng], { icon: icon, interactive: false, keyboard: false, zIndexOffset: -500 }).addTo(townLayer);
+    });
+  }
 
   var provinceBounds = L.latLngBounds(POIS.filter(function (p) { return p.tier === "province"; })
     .map(function (p) { return [p.lat, p.lng]; })).pad(0.12);
@@ -177,11 +197,12 @@
       // shape (not a plain circle) whose sharp tip marks the exact spot.
       return L.divIcon({
         className: "poi-wrap teardrop-wrap",
-        html: '<div class="teardrop" style="--c:' + cat.color + '">' +
+        html: '<span class="iconic-ping" style="--c:' + cat.color + '"></span>' +
+          '<div class="teardrop" style="--c:' + cat.color + '">' +
           '<div class="teardrop-photo">' + pinImgTag(poi.img) + "</div>" +
           '<span class="cat-badge">' + svg(cat.icon) + "</span></div>" + label,
-        iconSize: [70, 86],
-        iconAnchor: [35, 83] // the tip touches the coordinate
+        iconSize: [54, 70],
+        iconAnchor: [27, 66] // the tip touches the coordinate
       });
     }
 
@@ -221,16 +242,17 @@
     records.push(rec);
   });
 
-  /* City gateway — the provincial capital: a gold STAR (with the city photo
-     inside), the classic map symbol for a capital, shown while zoomed out. */
+  /* City gateway — the provincial capital: a round photo of the city with a
+     distinct GOLD ring + star badge (marks the capital), shown while zoomed out. */
   var gateway = L.marker(MAP_CONFIG.cityCenter, {
     icon: L.divIcon({
       className: "poi-wrap capital-wrap",
-      html: '<div class="capital-star">' +
-        '<div class="capital-star-photo">' + pinImgTag(MAP_CONFIG.cityPinImg) + "</div></div>" +
-        '<span class="pin-label capital-label">★ Cao Bằng City</span>',
-      iconSize: [76, 76],
-      iconAnchor: [38, 38]
+      html: '<div class="capital-pin">' +
+        '<div class="capital-pin-photo">' + pinImgTag(MAP_CONFIG.cityPinImg) + "</div>" +
+        '<span class="capital-badge">★</span></div>' +
+        '<span class="pin-label capital-label">Cao Bằng City</span>',
+      iconSize: [72, 72],
+      iconAnchor: [36, 36]
     }),
     zIndexOffset: 900,
     alt: "Cao Bang City, provincial capital — tap to explore food, coffee and stay"
@@ -275,6 +297,11 @@
     if (wantGateway && !gatewayOn) { gateway.addTo(map); gatewayOn = true; }
     else if (!wantGateway && gatewayOn) { map.removeLayer(gateway); gatewayOn = false; }
 
+    // district town labels: shown at every zoom (orientation), hidden in trip
+    var wantTowns = !activeTrip;
+    if (wantTowns && !townsOn) { townLayer.addTo(map); townsOn = true; }
+    else if (!wantTowns && townsOn) { map.removeLayer(townLayer); townsOn = false; }
+
     // highways: always visible when toggled on (except in trip mode),
     // but fade to subtle lines when zoomed into the city view
     var wantHw = highwaysToggle && !activeTrip;
@@ -292,8 +319,13 @@
 
     document.body.classList.toggle("zl-mid", zoom >= MAP_CONFIG.cityThreshold && zoom < 15);
     document.body.classList.toggle("zl-max", zoom >= 17);
+    // town-house icons: small on the wide province view (avoid overlap),
+    // grow as you zoom into a district
+    document.body.classList.toggle("tz-wide", zoom <= 9);   // whole-province overview
+    document.body.classList.toggle("tz-near", zoom >= 12);  // zoomed into an area
   }
   map.on("zoomend", refresh);
+  map.on("moveend", refresh);   // also fires after initial fitBounds → town zoom classes set from the start
 
   /* ---------------- Category chips ---------------- */
   var chipsEl = document.getElementById("chips");
@@ -406,14 +438,35 @@
     cardDist.innerHTML = meta.length ? svg("route") + meta.join(" · ") : "";
     cardDist.style.display = meta.length ? "" : "none";
 
+    // Sen's Homestay — the host behind this map. Show a friendly promo block that
+    // pitches it as the one-stop, most-welcoming base for the whole trip.
+    var promo = document.getElementById("card-promo");
+    var isHost = poi.id === "sens-homestay";
+    if (isHost) {
+      promo.innerHTML =
+        '<div class="promo-head">' + svg("star") + 'Your friendly local host</div>' +
+        '<p class="promo-text">This map is made by <strong>Sen’s Homestay</strong> — your one place in Cao Bằng for everything: ' +
+        'cosy rooms, motorbike rental, tours, bus tickets and honest local tips. Stay with us and we’ll help you plan the whole trip.</p>';
+      promo.hidden = false;
+    } else {
+      promo.hidden = true;
+      promo.innerHTML = "";
+    }
+
     var links = gmapsLinks(poi);
-    // primary: turn-by-turn directions from the traveller's own location, in Google Maps
-    var actions = '<a class="btn btn-primary" href="' + esc(links.directions) +
+    var actions = "";
+    // For Sen's, promote booking: make "Book your stay" the primary action (top,
+    // full-width) so the map funnels travellers to the host behind it.
+    if (isHost && poi.bookUrl) {
+      actions += '<a class="btn btn-primary" href="' + esc(poi.bookUrl) + '" target="_blank" rel="noopener">' + svg("book") + "Book your stay</a>";
+    }
+    // primary (or secondary for the host): turn-by-turn directions in Google Maps
+    actions += '<a class="btn ' + (isHost ? "btn-secondary" : "btn-primary") + '" href="' + esc(links.directions) +
       '" target="_blank" rel="noopener">' + svg("nav") + "Directions</a>";
     // secondary: open the real Google Maps place page (reviews, photos, hours)
     actions += '<a class="btn btn-secondary" href="' + esc(links.place) +
       '" target="_blank" rel="noopener">' + svg("gmaps") + "Google Maps</a>";
-    if (poi.bookUrl) {
+    if (poi.bookUrl && !isHost) {
       actions += '<a class="btn btn-secondary" href="' + esc(poi.bookUrl) + '" target="_blank" rel="noopener">' + svg("book") + "Book now</a>";
     }
     if (poi.guideUrl) {
@@ -535,9 +588,13 @@
   document.getElementById("trips-close").innerHTML = svg("close");
   document.getElementById("trip-close").innerHTML = svg("close");
 
+  // Only these three itineraries are offered under "Suggested itineraries".
+  var SUGGESTED_TRIP_IDS = ["1d-highlights", "2d-east-loop", "3d-nature-history"];
+  var SUGGESTED_TRIPS = TRIPS.filter(function (t) { return SUGGESTED_TRIP_IDS.indexOf(t.id) !== -1; });
+
   function buildTripsSheet() {
     var html = "";
-    TRIPS.forEach(function (t) {
+    SUGGESTED_TRIPS.forEach(function (t) {
       html += '<button class="trip-card" data-trip="' + t.id + '">' +
         '<img src="' + esc(pinSrc(t.cover)) + '" alt="" loading="lazy">' +
         '<span class="trip-card-body"><span class="trip-card-title">' + esc(t.title) + "</span>" +
@@ -615,20 +672,21 @@
 
     tripTitle.textContent = trip.title;
     tripMeta.textContent = trip.days + (trip.days > 1 ? " days" : " day") + " · ~" + trip.km + " km";
+
+    // Each day becomes its own tappable Google Maps route (Sen's → that day's
+    // stops → Sen's), so travellers can navigate the trip day by day.
     var chips = "";
-    if (trip.days > 1) {
-      for (var d = 0; d < trip.days; d++) {
-        chips += '<span class="day-chip" style="--dc:' + DAY_COLORS[d % DAY_COLORS.length] + '">Day ' + (d + 1) + "</span>";
-      }
+    for (var d = 0; d < trip.days; d++) {
+      var dc = DAY_COLORS[d % DAY_COLORS.length];
+      chips += '<a class="day-chip" style="--dc:' + dc + '" target="_blank" rel="noopener" href="' +
+        esc(tripGmapsRoute(trip, d)) + '">' + svg("gmaps") + "Day " + (d + 1) + "</a>";
     }
     tripDaysEl.innerHTML = chips;
     tripDaysEl.style.display = chips ? "" : "none";
 
-    // "Open in Google Maps" — build a full multi-stop driving route the
-    // traveller can navigate day by day. Google Maps caps waypoints, so use
-    // day 1's stops (origin Sen's -> each stop -> back to Sen's).
-    tripPlanner.href = tripGmapsRoute(trip);
-    tripPlanner.innerHTML = svg("gmaps") + "Google Maps";
+    // The per-day chips carry the Google Maps links now, so hide the single
+    // planner button to avoid duplication.
+    tripPlanner.style.display = "none";
 
     tripBar.hidden = false;
     document.body.classList.add("trip-open");
@@ -639,11 +697,10 @@
     else { map.flyToBounds(b, { duration: 0.9 }); }
   }
 
-  // Build a Google Maps directions URL for the whole first day of a trip:
-  // Sen's -> stop -> stop ... -> Sen's. Uses place names where known so the
-  // route lands on the real businesses. Later days are reachable via the
-  // numbered pins + each place's own Directions button.
-  function tripGmapsRoute(trip) {
+  // Build a Google Maps driving-directions URL for ONE day of a trip:
+  // Sen's -> that day's stops -> Sen's. Uses place names where known so the
+  // route lands on the real businesses. dayIndex defaults to 0 (day 1).
+  function tripGmapsRoute(trip, dayIndex) {
     var byId = {};
     records.forEach(function (r) { byId[r.poi.id] = r.poi; });
     function term(id) {
@@ -653,14 +710,13 @@
                         : (p.lat + "," + p.lng);
     }
     var home = term("sens-homestay");
-    // day 1's stops, minus any trailing 'home' (the route already returns home)
-    var day1 = (trip.stopsByDay[0] || [])
+    var stops = (trip.stopsByDay[dayIndex || 0] || [])
       .filter(function (id) { return id !== "sens-homestay"; })
       .map(term).filter(Boolean)
       .slice(0, 8); // Google Maps allows ~9 waypoints
     var url = "https://www.google.com/maps/dir/?api=1&travelmode=driving" +
       "&origin=" + home + "&destination=" + home;
-    if (day1.length) { url += "&waypoints=" + day1.join("%7C"); } // %7C = |
+    if (stops.length) { url += "&waypoints=" + stops.join("%7C"); } // %7C = |
     return url;
   }
 
@@ -745,6 +801,19 @@
   }
 
   lookingBtn.addEventListener("click", openAsk);
+
+  // Sen's Homestay CTA pill (next to the "what are you looking for" button):
+  // shows the host's photo and opens its card — promotes the host behind the map.
+  var sensCtaPhoto = document.getElementById("sens-cta-photo");
+  var sensCta = document.getElementById("sens-cta");
+  if (sensCtaPhoto) { sensCtaPhoto.innerHTML = pinImgTag(ASSETS + "images/homestay.jpg"); }
+  if (sensCta) {
+    sensCta.addEventListener("click", function () {
+      var rec = records.find(function (r) { return r.poi.id === "sens-homestay"; });
+      if (rec) { selectPoi(rec, true); }
+    });
+  }
+
   document.getElementById("ask-close").addEventListener("click", closeAsk);
   askSheet.addEventListener("click", function (e) { if (e.target === askSheet) { closeAsk(); } });
   askSheet.addEventListener("click", function (e) {
@@ -823,9 +892,9 @@
     }
     // boundary + outside-dim tuned per background
     var line, maskC, maskO;
-    if (basemap === "satellite") { line = "#7DD3FC"; maskC = "#000000"; maskO = 0.42; }
-    else if (basemap === "terrain") { line = "#0E7490"; maskC = "#0B2530"; maskO = dark ? 0.28 : 0.18; }
-    else { line = dark ? "#38BDF8" : "#0E7490"; maskC = dark ? "#000000" : "#0B2530"; maskO = dark ? 0.35 : 0.14; }
+    if (basemap === "satellite") { line = "#7DD3FC"; maskC = "#000000"; maskO = 0.62; }
+    else if (basemap === "terrain") { line = "#0E7490"; maskC = "#0B2530"; maskO = dark ? 0.55 : 0.5; }
+    else { line = dark ? "#38BDF8" : "#0E7490"; maskC = dark ? "#000000" : "#0B2530"; maskO = dark ? 0.58 : 0.46; }
     boundaryLine.setStyle({ color: line });
     outsideMask.setStyle({ fillColor: maskC, fillOpacity: maskO });
     // highway casing: subtle dark halo on satellite, bright white elsewhere
@@ -880,7 +949,9 @@
   applyTheme(isDark);
 
   /* ---------------- Misc UI ---------------- */
-  document.getElementById("brand").innerHTML = svg("pin") + "Cao Bằng Travel Map";
+  document.getElementById("brand").innerHTML =
+    '<span class="brand-title">' + svg("pin") + "Cao Bằng Travel Map</span>" +
+    '<span class="brand-tagline">Made by locals — the spots we’d take a friend</span>';
   document.getElementById("lead-icon").innerHTML = svg("search");
   document.getElementById("search-clear").innerHTML = svg("close");
 

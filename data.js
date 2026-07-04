@@ -58,9 +58,33 @@ var MAP_CONFIG = {
   provinceCenter: [22.75, 106.20],
   provinceZoom: 9,
   maxBounds: [[21.85, 104.90], [23.45, 107.40]],
-  cityImg: ASSETS + "images/hero/hero-main.jpg",
-  cityPinImg: ASSETS + "images/homestay.jpg"   // photo shown in the city's map pin
+  cityImg: ASSETS + "images/places/cao-bang-city.jpg",
+  cityPinImg: ASSETS + "images/places/cao-bang-city.jpg"   // photo shown in the city's map pin
 };
+
+/* ---------------------------------------------------------------------
+   TOWNS — district capitals / townships, shown only as small orientation
+   labels on the province map (NOT clickable places). They help visitors
+   read where they are; each is a real district seat with coordinates from
+   its Google Maps pin. Rendered as a tiny dot + name, hidden at city zoom
+   and while a trip is active. Keep this separate from POIS.
+   --------------------------------------------------------------------- */
+var TOWNS = [
+  { id: "town-bao-lac",     name: "Bao Lac",     localName: "TT. Bảo Lạc",     lat: 22.9506206, lng: 105.6814232 },
+  { id: "town-pac-mieu",    name: "Pac Mieu",    localName: "TT. Pác Miầu",    lat: 22.8375556, lng: 105.4937867 },
+  { id: "town-nuoc-hai",    name: "Nuoc Hai",    localName: "TT. Nước Hai",    lat: 22.7377463, lng: 106.1527843 },
+  { id: "town-thong-nong",  name: "Thong Nong",  localName: "TT. Thông Nông",  lat: 22.7839686, lng: 105.9830988 },
+  { id: "town-xuan-hoa",    name: "Xuan Hoa",    localName: "TT. Xuân Hòa",    lat: 22.9017851, lng: 106.0777214 },
+  { id: "town-thanh-nhat",  name: "Thanh Nhat",  localName: "TT. Thanh Nhật",  lat: 22.6886489, lng: 106.6715246 },
+  { id: "town-dong-khe",    name: "Dong Khe",    localName: "TT. Đông Khê",    lat: 22.4302294, lng: 106.4331808 },
+  { id: "town-nguyen-binh", name: "Nguyen Binh", localName: "TT. Nguyên Bình", lat: 22.6503037, lng: 105.9605228 },
+  { id: "town-tinh-tuc",    name: "Tinh Tuc",    localName: "TT. Tĩnh Túc",    lat: 22.6507543, lng: 105.885985  },
+  { id: "town-trung-khanh", name: "Trung Khanh", localName: "TT. Trùng Khánh", lat: 22.8351068, lng: 106.5247732 },
+  { id: "town-tra-linh",    name: "Tra Linh",    localName: "TT. Trà Lĩnh",    lat: 22.8287264, lng: 106.3227523 },
+  { id: "town-quang-uyen",  name: "Quang Uyen",  localName: "TT. Quảng Uyên",  lat: 22.6966395, lng: 106.4412868 },
+  { id: "town-ta-lung",     name: "Ta Lung",     localName: "TT. Tà Lùng",     lat: 22.4796449, lng: 106.5779043 },
+  { id: "town-hoa-thuan",   name: "Hoa Thuan",   localName: "TT. Hòa Thuận",   lat: 22.530951,  lng: 106.5133739 }
+];
 
 var POIS = [
 
@@ -75,6 +99,7 @@ var POIS = [
     photoPin: true,
     zPriority: 700,
     featured: true,
+    labelAbove: true,
     desc: "Southeast Asia's widest waterfall, thundering in tiers on the Chinese border. Best flow Sep–Nov; bamboo rafts run right into the spray.",
     distance: "84.6 km east · ~2 h drive",
     img: ASSETS + "images/places/ban-gioc.jpg",
@@ -247,6 +272,21 @@ var POIS = [
   },
 
   {
+    id: "nung-indigo",
+    name: "Nung Indigo Cafe & Homestay",
+    localName: "Nùng INDIGO Cafe & Homestay",
+    category: "stay",
+    tier: "province",
+    lat: 22.6894384,
+    lng: 106.3871184,
+    minZoom: 11,
+    desc: "Cafe-homestay run by the Nung An community — watch indigo cloth being dyed and stitched by hand, then browse handmade textile souvenirs over coffee.",
+    distance: "~30 km east · near the forging & incense villages",
+    maps: "https://maps.app.goo.gl/zepousmdRpjJpCeRA",
+    mapsName: "Nùng INDIGO Cafe & Homestay"
+  },
+
+  {
     id: "thang-hen",
     name: "Thang Hen Lake",
     localName: "Hồ Thang Hen",
@@ -328,6 +368,22 @@ var POIS = [
   },
 
   {
+    id: "ban-giang",
+    name: "Ban Giang Waterfall",
+    localName: "Thác Bản Giàng",
+    category: "sights",
+    tier: "province",
+    lat: 22.91214,
+    lng: 106.05841,
+    minZoom: 11,
+    approx: true,
+    desc: "A quieter, less-visited waterfall a short ride from Pac Bo — cascading pools good for a cool dip away from the crowds.",
+    distance: "~50 km north · near Pac Bo",
+    maps: "https://maps.app.goo.gl/Bpfe8KCGCXymrptbA",
+    mapsName: "Thác Bản Giàng"
+  },
+
+  {
     id: "phia-oac",
     name: "Phia Oac Peak",
     localName: "Đỉnh Phia Oắc 1931 m",
@@ -404,6 +460,20 @@ var POIS = [
     mapsName: "Sen’s Homestay – Tours & Motobike Rental",
     bookUrl: "https://sen-nghi-gio-production.up.railway.app/book",
     phone: "0822946888"
+  },
+
+  {
+    id: "hoa-an-hotel",
+    name: "Hoa An Hotel",
+    localName: "Hoà An Hotel",
+    category: "stay",
+    tier: "city",
+    lat: 22.68404,
+    lng: 106.21849,
+    minZoom: 13,
+    desc: "Comfortable mid-range hotel on the northwest edge of town, handy for the bus station and the road out to Pac Bo.",
+    maps: "https://maps.app.goo.gl/VoxTwvR8qB1AorL37",
+    mapsName: "Hoà An Hotel (Cao Bằng)"
   },
 
   {
